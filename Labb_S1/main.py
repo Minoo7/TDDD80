@@ -4,12 +4,11 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 database = {}
-messages = set()
 
 
-@app.route("/")
-def home():
-    return "Hello! this is the main page <h1>HELLO</h1>"
+# @app.route("/")
+# def home():
+#    return "Hello! this is the main page <h1>HELLO</h1>"
 
 
 @app.route("/messages", methods=["GET", "POST"])
@@ -19,7 +18,7 @@ def messages():
         generated_id = str(uuid.uuid4())
         database[generated_id] = {'id': generated_id, 'message': msg, 'readBy': []}
         return jsonify({'id': generated_id}), 200
-    else: #method is get
+    else:  # method is GET
         return jsonify(database), 200
 
 
@@ -45,7 +44,7 @@ def read_msg(MessageID, UserId):
 def get_unread_msg(UserId):
     new_list = []
     for key in database:
-        if UserId in database[key]['readBy']:
+        if UserId not in database[key]['readBy']:
             new_list.append(database[key])
     return jsonify(new_list), 200
 
