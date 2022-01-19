@@ -28,7 +28,7 @@ def get_unread_msgs(user_id):
 if __name__ == "__main__":
 
     # Send message
-    first_message = {'m': 'Hello this is a message!'}
+    first_message = 'Hello this is a message!'
     first_message_id = send_msg({'message': first_message})['id']
 
     # Get message by id

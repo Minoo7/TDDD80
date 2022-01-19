@@ -3,7 +3,7 @@ import uuid
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
-database = {}
+database = []
 
 
 # @app.route("/")
@@ -11,41 +11,57 @@ database = {}
 #    return "Hello! this is the main page <h1>HELLO</h1>"
 
 
+def find_msg(MessageID):
+    for json_msg in database:
+        if json_msg['id'] == MessageID:
+            return database.index(json_msg)
+    return False
+
+
 @app.route("/messages", methods=["GET", "POST"])
 def messages():
     if request.method == "POST":
         msg = request.json['message']
         generated_id = str(uuid.uuid4())
-        database[generated_id] = {'id': generated_id, 'message': msg, 'readBy': []}
-        return jsonify({'id': generated_id}), 200
+        id_dict = {'id': generated_id}
+        database.append(id_dict | {'message': msg, 'readBy': []})
+        return jsonify(id_dict), 200
     else:  # method is GET
         return jsonify(database), 200
 
 
 @app.route("/messages/<MessageID>", methods=["GET"])
 def get_msg(MessageID):
-    return jsonify(database[MessageID]), 200
+    found = find_msg(MessageID)
+    if isinstance(found, int):
+        return jsonify(database[found]), 200
+    return "MessageID not found in database", 404
 
 
 @app.route("/messages/<MessageID>", methods=["DELETE"])
 def delete_msg(MessageID):
-    database.pop(MessageID, None)
-    return "", 200
+    found = find_msg(MessageID)
+    if isinstance(found, int):
+        database.pop(found)
+        return "", 200
+    return "MessageID not found in database", 404
 
 
 @app.route("/messages/<MessageID>/read/<UserId>", methods=["POST"])
 def read_msg(MessageID, UserId):
-    if MessageID in database:
-        database[MessageID]['readBy'].append(UserId)
-    return "", 200
+    found = find_msg(MessageID)
+    if isinstance(found, int):
+        database[find_msg(MessageID)]['readBy'].append(UserId)
+        return "", 200
+    return "MessageID not found in database", 404
 
 
 @app.route("/messages/unread/<UserId>", methods=["GET"])
 def get_unread_msg(UserId):
     new_list = []
-    for key in database:
-        if UserId not in database[key]['readBy']:
-            new_list.append(database[key])
+    for json in database:
+        if UserId not in json['readBy']:
+            new_list.append(json)
     return jsonify(new_list), 200
 
 
