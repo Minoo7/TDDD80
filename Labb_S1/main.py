@@ -12,48 +12,43 @@ def home():
     return "Hello! this is the main page <h1>HELLO</h1>"
 
 
-@app.route("/<name>")
-def user(name):
-    return f"Hello {name}!"
-
-
-@app.route("/save/<msg>")
-def save(msg):
-    if msg not in messages:
-        messages.add(msg)
-    return "", 200
-
-
-@app.route("/show/")
-def show_msgs():
-    lst = []
-    for msg in messages:
-        lst.append(msg)
-    return jsonify(lst)
-    return "", 200
-
-
-@app.route("/login", methods=["POST", "GET"])
-def login():
-    print(request)
-    return "", 200
-
-
-@app.route("/messages", methods=["POST"])
+@app.route("/messages", methods=["GET", "POST"])
 def messages():
-    msg = request.json['message']
-    generated_id = str(uuid.uuid4())
-    print(f"generated_id: {generated_id}")
-    database[generated_id] = {'id': generated_id, 'message': msg, 'readBy': []}
-    database['test'] = {'id': '123'}
-    #print({'id': generated_id})
-    return {'id': generated_id}, 200 #?*
+    if request.method == "POST":
+        msg = request.json['message']
+        generated_id = str(uuid.uuid4())
+        database[generated_id] = {'id': generated_id, 'message': msg, 'readBy': []}
+        return jsonify({'id': generated_id}), 200
+    else: #method is get
+        return jsonify(database), 200
 
 
 @app.route("/messages/<MessageID>", methods=["GET"])
 def get_msg(MessageID):
-    print(f"ret: {database[MessageID]}")
-    return database[MessageID], 200
+    return jsonify(database[MessageID]), 200
+
+
+@app.route("/messages/<MessageID>", methods=["DELETE"])
+def delete_msg(MessageID):
+    database.pop(MessageID, None)
+    return "", 200
+
+
+@app.route("/messages/<MessageID>/read/<UserId>", methods=["POST"])
+def read_msg(MessageID, UserId):
+    if MessageID in database:
+        database[MessageID]['readBy'].append(UserId)
+    return "", 200
+
+
+@app.route("/messages/unread/<UserId>", methods=["GET"])
+def get_unread_msg(UserId):
+    new_list = []
+    for key in database:
+        if UserId in database[key]['readBy']:
+            new_list.append(database[key])
+    return jsonify(new_list), 200
+
 
 if __name__ == "__main__":
     app.debug = True
