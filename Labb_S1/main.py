@@ -33,7 +33,7 @@ def messages():
 @app.route("/messages/<MessageID>", methods=["GET"])
 def get_msg(MessageID):
     found = find_msg(MessageID)
-    if isinstance(found, int):
+    if found is not False:
         return jsonify(database[found]), 200
     return "MessageID not found in database", 404
 
@@ -41,7 +41,7 @@ def get_msg(MessageID):
 @app.route("/messages/<MessageID>", methods=["DELETE"])
 def delete_msg(MessageID):
     found = find_msg(MessageID)
-    if isinstance(found, int):
+    if found is not False:
         database.pop(found)
         return "", 200
     return "MessageID not found in database", 404
@@ -50,7 +50,7 @@ def delete_msg(MessageID):
 @app.route("/messages/<MessageID>/read/<UserId>", methods=["POST"])
 def read_msg(MessageID, UserId):
     found = find_msg(MessageID)
-    if isinstance(found, int):
+    if found is not False:
         database[find_msg(MessageID)]['readBy'].append(UserId)
         return "", 200
     return "MessageID not found in database", 404
