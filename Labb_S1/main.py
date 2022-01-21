@@ -22,6 +22,8 @@ def find_msg(MessageID):
 def messages():
     if request.method == "POST":
         msg = request.json['message']
+        if len(msg) > 140:
+            return "Message can not be larger than 140 characters", 400
         generated_id = str(uuid.uuid4())
         id_dict = {'id': generated_id}
         database.append(id_dict | {'message': msg, 'readBy': []})
@@ -30,21 +32,19 @@ def messages():
         return jsonify(database), 200
 
 
-@app.route("/messages/<MessageID>", methods=["GET"])
+@app.route("/messages/<MessageID>", methods=["GET", "DELETE"])
 def get_msg(MessageID):
-    found = find_msg(MessageID)
-    if found is not False:
-        return jsonify(database[found]), 200
-    return "MessageID not found in database", 404
-
-
-@app.route("/messages/<MessageID>", methods=["DELETE"])
-def delete_msg(MessageID):
-    found = find_msg(MessageID)
-    if found is not False:
-        database.pop(found)
-        return "", 200
-    return "MessageID not found in database", 404
+    if request.method == "GET":
+        found = find_msg(MessageID)
+        if found is not False:
+            return jsonify(database[found]), 200
+        return "MessageID not found in database", 404
+    elif request.method == "DELETE":
+        found = find_msg(MessageID)
+        if found is not False:
+            database.pop(found)
+            return "", 200
+        return "MessageID not found in database", 404
 
 
 @app.route("/messages/<MessageID>/read/<UserId>", methods=["POST"])
