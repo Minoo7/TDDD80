@@ -42,7 +42,7 @@ def add_with_post():
 
 @app.route("/get/<user>")
 def get_emails(user):
-    if user in emails:
+    if user pp.run(port=5080)in emails:
         return jsonify(emails[user]), 200
     else:
         return '{response:"No such user"}', 404
@@ -52,6 +52,6 @@ def get_emails(user):
 if __name__ == '__main__':
     # print_hi('PyCharm')
     app.debug = True
-    app.run(port=5080)
+    a
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
