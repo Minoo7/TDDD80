@@ -1,11 +1,8 @@
-**1. Vad skiljer ett ramverk (framework) från ett bibliotek (library)?**
+**Vad erbjuder Alchemy för fördelar när man arbetar med databaser?**
+Vid skapande av databaser med koppling till python så kan en object relational mapper användas (ORM). Alchemy är en ORM skriven i python som ger ett enkelt interface för SQL i python. Med Alchemy kan python kod användas för att skapa och exekvera sql databaskod. Detta underlättar om man inte är bekant med sql kod och man slipper installera andra verktyg för att jobba med sql databaser om man inte använde Alchemy.
 
-Skillnaden är att ett ramverk bestämmer hela strukturen för koden och koden skrivs för ramverket istället för att ramverket skrivs eller används för själva koden. Ett ramverk kan inte användas i ett projekt som redan finns utan används från början när projektet skapas. Ett bibliotek innehåller istället ett flertal funktioner som är till för att användas utav annan kod/program och kan importeras när som helst i koden. En tydlig jämförelse mellan ramverk och bibliotek som kan göras är att du kallar på koden från biblioteket och resultatet returneras medans ramverket kallar på din kod.
+**Vad innebär modulär kod-struktur när det gäller Flask-kod? Hur kan cirkulära importer ställa till det? Har ni hittat någon bra lösning?**
+Modulär kod-struktur är ett design system för kod där funktioner/funktionalitet tydligt separeras i olika utbytbara moduler (filer). När det gäller Flask-kod kan modulär kod-struktur användas m.h.a Flasks inbyggda funktion "Blueprints" 
+databas kan också vara lagrad i annan fil...
 
-**2. Vilka fördelar erbjuder ramverk, och specifikt Flask, vid utveckling av server-kod jämfört med ren python?**
-
-Ett ramverk har redan byggt upp ett system som vi vill använda så då slipper vi skriva detta system från grunden, fler personer har också redan använt detta system så det finns tillgång till mer support/felsökning av kod. När det kommer specifikt till Flask så har Flask t.ex en inbyggd debuggare och många redan förskriven funktionalitet som inte vi behöver sitta och tänka över. Flask har också bättre säkerhet jämfört om vi hade skrivit kod för en server i python själva.
-
-**3. Vad är en session i server-sammanhang? Och hur fungerar en 'session' i Flask?**
-
-En session iserver sammanhang är ett samman-kopplat serie av skickad kod, i detta fall t.ex webbläsar requests där denna serie kommer från en och samma klient. Det behövs på grund av att HTTP är en "stateless" protocol, vilket innebär att utan extern hjälp så har inte själva HTTP protocolet information om tidigare gjorde requests. I en session kan hänvisningar till tidigare requests tillexempel göras, det finns alltså en sorts historik där data lagras i sessionen. Inom webbprogrammering används ofta antingen klient sessions eller server sessions. Klient sessions lagrar datan/historiken som cookies hos webbläsaren medans server sessions lagrar datan på själva servern och kopplar den till rätt klient m.h.a någon identifier, detta används till exempel vid inloggningar på hemsidor där data behöver nås även på olika webbläsare. I Flask så används klient session systemet. En webbläsare som kopplas till en flask server lagrar alltså datan som cookies på webbläsaren och datan kan enkelt tas bort. Det finns flertal fördelar och nackdelar med både klient sessioner och server sessioner.
+**Vad finns det för problem (och sätt att lösa det) med att uppdatera _strukturen_ på en databas som redan innehåller data? Vad kommer ni att ha för strategi i denna fråga för er app-utveckling?**
