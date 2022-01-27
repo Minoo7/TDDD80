@@ -42,7 +42,7 @@ def add_with_post():
 
 @app.route("/get/<user>")
 def get_emails(user):
-    if user pp.run(port=5080)in emails:
+    if user in emails:
         return jsonify(emails[user]), 200
     else:
         return '{response:"No such user"}', 404
