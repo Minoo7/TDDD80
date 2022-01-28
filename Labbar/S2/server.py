@@ -16,7 +16,7 @@ class User(db.Model):
     messages_read = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
 
     def to_dict(self):
-        return jsonify({'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]})
+        return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
 
 
 class Message(db.Model):
