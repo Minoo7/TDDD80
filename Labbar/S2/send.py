@@ -45,10 +45,11 @@ def reset():
 
 
 if __name__ == "__main__":
-    user_id = add_user("VInc")['userId']
+    user_id = add_user("VInc")['id']
     print(user_id)
     print(send_msg({"message": "this is a message"}).json())
     print(read_msg(1, user_id))
+    print(get_msgs())
 
 
     # print(add_user("test"))

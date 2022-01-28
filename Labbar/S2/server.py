@@ -1,8 +1,6 @@
 from flask import Flask, jsonify, request, Response
 from flask_sqlalchemy import SQLAlchemy
 
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
 db = SQLAlchemy(app)
@@ -12,12 +10,7 @@ read_messages = db.Table('read_messages', db.Model.metadata,
                          db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
 
 
-def generate_uuid():
-    return str(uuid.uuid4())
-
-
 class User(db.Model):
-    # uuid = db.Column(db.String, primary_key=True, default=generate_uuid)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
     messages_read = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
@@ -37,13 +30,13 @@ class Message(db.Model):
 @app.route("/messages", methods=["GET", "POST"])
 def messages():
     if request.method == "POST":
-        received_message = request.json["message"]
-        if received_message is not None:
-            msg = Message(message=received_message)
+        received = request.json
+        if received is not None:
+            msg = Message(message=received['message'])
             db.session.add(msg)
             db.session.commit()
             return jsonify({'id': msg.id}), 200
-        return jsonify({"response": "No message provided"}), 400
+        return jsonify({"response": "No message provided"}), 404
     elif request.method == "GET":
         return jsonify([msg.to_dict() for msg in Message.query.all()]), 200
 
@@ -54,14 +47,14 @@ def get_msg(message_id):
         message = Message.query.filter_by(id=int(message_id)).first()
         if message is not None:
             return jsonify(message.to_dict()), 200
-        return jsonify({'response': 'Message id not found in database'}), 404
+        return 'Message id not found in database', 404
     elif request.method == "DELETE":
         message = Message.query.filter_by(id=int(message_id)).first()
         if message is not None:
-            db.session.delete(message) # Message.query.filter_by(id=int(message_id)).delete()
+            db.session.delete(message)  # .commit()
             db.session.commit()
             return "", 200
-        return jsonify({'response': 'Message id not found in database'}), 404
+        return 'Message id not found in database', 404
 
 
 @app.route("/user/<name>", methods=["POST"])
@@ -70,12 +63,12 @@ def add_user(name):
         user = User(name=name)
         db.session.add(user)
         db.session.commit()
-        return jsonify({'userId': user.id}), 200
-    # return Response("The response body goes here", status=400)
+        return jsonify({'id': user.id}), 200
+    return "Wrong method", 404
 
 
 @app.route("/messages/<message_id>/read/<user_id>", methods=["POST"])
-def read_msg(message_id, user_id):  # User id doesnt exist = 404 or 400??
+def read_msg(message_id, user_id):
     message = Message.query.filter_by(id=int(message_id)).first()
     if message is None:
         return jsonify({'response': 'Message id not found in database'}), 404

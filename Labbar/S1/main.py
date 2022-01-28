@@ -26,7 +26,7 @@ def messages():
             return "Message can not be larger than 140 characters", 400
         generated_id = str(uuid.uuid4())
         id_dict = {'id': generated_id}
-        database.append(id_dict | {'message': msg, 'readBy': []})
+        database.append({'id': id_dict['id'], 'message': msg, 'readBy': []})
         return jsonify(id_dict), 200
     else:  # method is GET
         return jsonify(database), 200
