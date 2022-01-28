@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request, Response
 from flask_sqlalchemy import SQLAlchemy
 
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
 db = SQLAlchemy(app)
@@ -10,7 +12,12 @@ read_messages = db.Table('read_messages', db.Model.metadata,
                          db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
 
 
+def generate_uuid():
+    return str(uuid.uuid4())
+
+
 class User(db.Model):
+    # uuid = db.Column(db.String, primary_key=True, default=generate_uuid)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
     messages_read = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)

@@ -16,7 +16,8 @@ def get_msgs():
 
 
 def send_msg(msg):
-    return check_json(requests.post(root + "messages", json=msg))
+    #return check_json(requests.post(root + "messages", json=msg))
+    return requests.post(root + "messages", json=msg)
 
 
 def get_msg(msg_id):
@@ -44,41 +45,10 @@ def reset():
 
 
 if __name__ == "__main__":
-
-    # Send message
-    first_message = 'Hello this is a message!'
-    first_message_id = send_msg({'message': first_message})['id']
-
-    # Get message by id
-    response_get = get_msg(first_message_id)
-    assert response_get  # It exists
-    print("Get message by id: ", response_get)
-    assert response_get['message'] == first_message
-
-    # Read message by id
-    # ...sending new message:
-    message_to_read = {"message": "This message should be read!"}
-    message_to_read_id = int(send_msg(message_to_read)['id'])
-    read_msg(message_to_read_id, 'Vincent')
-    print(get_msg(message_to_read_id))
-    assert get_msg(message_to_read_id)['readBy'] == ['Vincent']
-
-    # Get all unread messages by user id
-    unread_msgs = get_unread_msgs('Vincent')
-    # ...should only be 'message' since 'message_to_read' is read
-    assert unread_msgs[0]['message'] == first_message
-
-    # Delete message by id
-    # ...deleting both msgs
-    assert get_msgs()  # amount of messages in database > 0
-    delete_msg(first_message_id)  # delete first message
-    assert first_message_id not in get_msgs()  # confirm the deletion was successful
-    assert len(get_msgs()) == 1  # amount of messages should be 1
-
-    # ...delete second message:
-    delete_msg(message_to_read_id)
-    assert not get_msgs()  # list of messages should be empty
-
+    user_id = add_user("VInc")['userId']
+    print(user_id)
+    print(send_msg({"message": "this is a message"}).json())
+    print(read_msg(1, user_id))
 
 
     # print(add_user("test"))
@@ -90,7 +60,7 @@ if __name__ == "__main__":
     # print(add_user("Alex"))
     # print(send_msg({"message": "another msg"}).json())
     # print(get_msgs())
-    # print(read_msg(1, 1))
+    # v
     # print(read_msg(2, 2))
     # print(read_msg(2, 1))
     # print(get_msgs())
