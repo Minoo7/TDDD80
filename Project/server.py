@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -10,13 +10,97 @@ read_messages = db.Table('read_messages', db.Model.metadata,
                          db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
 
 
-class User(db.Model):
+class User(db.Model):  # User abstract class
+    __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), nullable=False)
-    messages_read = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
+    username = db.Column(db.String(32), nullable=False)
+    password = db.Column(db.String(32), nullable=False)
+    first_name = db.Column(db.Text(32))
+    last_name = db.Column(db.Text(32))
+    email = db.Column(db.String(150), nullable=False)
+    gender = db.Column(db.Enum)
+    # Relations:
+    # rel = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
 
     def to_dict(self):
         return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
+
+
+class Administrator(User):
+    permission_group = db.Column(db.Enum, nullable=False)
+
+
+class Customer(User):
+    # id = db.Column(db.Integer, primary_key=True)
+    customer_number = db.Column(db.String(32), nullable=False)
+    phone_number = db.Column(db.String(20), nullable=False)
+    business_type = db.Column(db.Enum)
+    organization_number = db.Column(db.String(11), nullable=False)
+
+    # Relations:
+    # address_id
+    # business_address_id
+
+
+class Address(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    address_type = db.Column(db.Enum, nullable=False)  # Home, Billing, Both
+    street = db.Column(db.String(95), nullable=False)
+    city = db.Column(db.String(35), nullable=False)
+    zip_code = db.Column(db.String(11), nullable=False)
+
+    # Optional:
+    apartment_number = db.Column(db.String(20))
+    other_info = db.Column(db.String(255))
+
+    # Relation:
+    # customer_id
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # FK customer_id
+
+    # Either content or image needs to exist:
+    content = db.Column(db.String(255))
+    # Relation image_id = db.Column(db.Integer)
+
+    type = db.Column(db.Enum, nullable=False)
+
+    created_at = db.Column(db.DateTime(), nullable=False)
+    updated_at = db.Column(db.DateTime())
+
+    # total likes
+    # total comments
+
+
+class Feed(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # customer_id #FK
+    # post_id #FK (list: multiple)
+
+
+class Follower(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    # FK customer_id
+    # FK customer_follower_id
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # FK post_id
+    # FK customer_id
+    created_at = db.Column(db.DateTime(), nullable=False)
+
+
+class Like(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # FK post_id
+    # FK user_id
+
+
+# class Image()
 
 
 class Message(db.Model):
