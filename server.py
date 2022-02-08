@@ -5,9 +5,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
 db = SQLAlchemy(app)
 
-read_messages = db.Table('read_messages', db.Model.metadata,
-                         db.Column('messages_id', db.Integer, db.ForeignKey('message.id')),
-                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
+#read_messages = db.Table('read_messages', db.Model.metadata,
+#                         db.Column('messages_id', db.Integer, db.ForeignKey('message.id')),
+#                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
 
 
 class User(db.Model):  # User abstract class
