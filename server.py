@@ -111,6 +111,11 @@ class Message(db.Model):
         return {'id': self.id, 'message': self.message, 'readBy': [f"{usr.name} ({usr.id})" for usr in self.readBy]}
 
 
+@app.route("/")
+def hello_world():
+    return "This i hello"
+
+
 @app.route("/messages", methods=["GET", "POST"])
 def messages():
     if request.method == "POST":
