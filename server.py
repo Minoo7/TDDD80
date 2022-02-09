@@ -4,8 +4,8 @@ import os
 
 app = Flask(__name__)
 db_uri = 'sqlite:///./our.db'
-if 'DATABASE_URL' in os.environ:
-    db_uri = os.environ['DATABASE_URL']
+if 'DATABASE_URL_TRUE' in os.environ:
+    db_uri = os.environ['DATABASE_URL_TRUE']
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
