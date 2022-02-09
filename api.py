@@ -1,6 +1,6 @@
 from flask import request, jsonify, Response
 
-from server import app
+from server import app, db
 from main import *
 from constants import *
 

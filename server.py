@@ -6,6 +6,7 @@ app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
 # from api import *
+from models import *
 
 
 def reset_db():
