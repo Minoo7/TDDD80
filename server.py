@@ -1,8 +1,12 @@
 from flask import Flask, jsonify, request, Response
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
+db_uri = 'sqlite:///./our.db'
+if 'DATABASE_URI' in os.environ:
+    db_uri = os.environ['DATABASE_URI']
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
 #read_messages = db.Table('read_messages', db.Model.metadata,
