@@ -3,9 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 
 app = Flask(__name__)
-db_uri = 'sqlite:///./our.db'
-if 'DATABASE_URL_TRUE' in os.environ:
+if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
     db_uri = os.environ['DATABASE_URL_TRUE']
+    debug_flag = False
+else: # when running locally: use sqlite
+    db_path = os.path.join(os.path.dirname(__file__), 'our.db')
+    db_uri = 'sqlite:///{}'.format(db_path)
+    debug_flag = True
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 
