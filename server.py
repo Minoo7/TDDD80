@@ -22,7 +22,7 @@ class User(db.Model):  # User abstract class
     first_name = db.Column(db.Text(32))
     last_name = db.Column(db.Text(32))
     email = db.Column(db.String(150), nullable=False)
-    gender = db.Column(db.Enum('test'), name='genders')
+    gender = db.Column(db.Enum('test', name='genders'))
     # Relations:
     # rel = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
 
@@ -69,7 +69,7 @@ class Post(db.Model):
     content = db.Column(db.String(255))
     # Relation image_id = db.Column(db.Integer)
 
-    type = db.Column(db.Enum, nullable=False)
+    type = db.Column(db.Enum("front", name='post_types'), nullable=False)
 
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime())
