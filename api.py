@@ -1,30 +1,13 @@
-"""from flask import Flask, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
+from flask import request, jsonify, Response
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
-db = SQLAlchemy(app)
-
-read_messages = db.Table('read_messages', db.Model.metadata,
-                         db.Column('messages_id', db.Integer, db.ForeignKey('message.id')),
-                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
+# from server import app
+from main import *
+from constants import *
 
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), nullable=False)
-    messages_read = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
-
-    def to_dict(self):
-        return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
-
-
-class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(140))
-
-    def to_dict(self):
-        return {'id': self.id, 'message': self.message, 'readBy': [f"{usr.name} ({usr.id})" for usr in self.readBy]}
+@app.route("/")
+def hello_world():
+    return "This i hello"
 
 
 @app.route("/messages", methods=["GET", "POST"])
@@ -32,13 +15,10 @@ def messages():
     if request.method == "POST":
         received = request.json
         if received is not None:
-            msg = Message(message=received['message'])
-            db.session.add(msg)
-            db.session.commit()
-            return jsonify({'id': msg.id}), 200
-        return jsonify({"response": "No message provided"}), 404
+            return jsonify(add_message(received['message'], "Sender")), OK
+        return jsonify({"response": "No message provided"}), NOT_FOUND
     elif request.method == "GET":
-        return jsonify([msg.to_dict() for msg in Message.query.all()]), 200
+        return jsonify(get_messages()), OK
 
 
 @app.route("/messages/<message_id>", methods=["GET", "DELETE"])
@@ -46,8 +26,8 @@ def get_msg(message_id):
     if request.method == "GET":
         message = Message.query.filter_by(id=int(message_id)).first()
         if message is not None:
-            return jsonify(message.to_dict()), 200
-        return 'Message id not found in database', 404
+            return jsonify(message.to_dict()), OK
+        return 'Message id not found in database', NOT_FOUND
     elif request.method == "DELETE":
         message = Message.query.filter_by(id=int(message_id)).first()
         if message is not None:
@@ -94,11 +74,3 @@ def reset():
     db.drop_all()
     db.create_all()
     return "", 200
-
-
-reset()
-if __name__ == "__main__":
-    reset()
-    app.debug = True
-    app.run(port=5080)
-"""
