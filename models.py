@@ -1,6 +1,6 @@
 from sqlalchemy.dialects import postgresql
 
-from server import *
+from server import db
 from sqlalchemy.types import Enum as SQLAlchemyEnumType
 # import json
 
