@@ -35,8 +35,8 @@ class User(db.Model):  # User abstract class
 	# Relations:
 	# rel = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
 
-	def to_dict(self):
-		return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
+	#def to_dict(self):
+	#	return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
 
 
 class Administrator(User):
@@ -209,10 +209,11 @@ class Like(db.Model):
 # class Image()
 
 
-class Message(db.Model):
+"""class Message(db.Model):
 	__tablename__ = "messages"
 	id = db.Column(db.Integer, primary_key=True)
 	message = db.Column(db.String(140))
 
 	def to_dict(self):
 		return {'id': self.id, 'message': self.message, 'readBy': [f"{usr.name} ({usr.id})" for usr in self.readBy]}
+"""
