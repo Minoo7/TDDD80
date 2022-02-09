@@ -19,8 +19,8 @@ class User(db.Model):  # User abstract class
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), nullable=False)
     password = db.Column(db.String(32), nullable=False)
-    first_name = db.Column(db.Text(32))
-    last_name = db.Column(db.Text(32))
+    first_name = db.Column(db.String(32))
+    last_name = db.Column(db.String(32))
     email = db.Column(db.String(150), nullable=False)
     gender = db.Column(db.Enum('test', name='genders'))
     # Relations:
