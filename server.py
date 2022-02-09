@@ -22,7 +22,7 @@ class User(db.Model):  # User abstract class
     first_name = db.Column(db.Text(32))
     last_name = db.Column(db.Text(32))
     email = db.Column(db.String(150), nullable=False)
-    gender = db.Column(db.Enum)
+    gender = db.Column(db.Enum('test'), name='genders')
     # Relations:
     # rel = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
 
@@ -31,14 +31,14 @@ class User(db.Model):  # User abstract class
 
 
 class Administrator(User):
-    permission_group = db.Column(db.Enum, nullable=False)
+    permission_group = db.Column(db.Enum('group1', name='permission_groups'), nullable=False)
 
 
 class Customer(User):
     # id = db.Column(db.Integer, primary_key=True)
     customer_number = db.Column(db.String(32), nullable=False)
     phone_number = db.Column(db.String(20), nullable=False)
-    business_type = db.Column(db.Enum)
+    business_type = db.Column(db.Enum('restaurant', name='business_types'))
     organization_number = db.Column(db.String(11), nullable=False)
 
     # Relations:
@@ -48,7 +48,7 @@ class Customer(User):
 
 class Address(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    address_type = db.Column(db.Enum, nullable=False)  # Home, Billing, Both
+    address_type = db.Column(db.Enum('home', name='address_types'), nullable=False)  # Home, Billing, Both
     street = db.Column(db.String(95), nullable=False)
     city = db.Column(db.String(35), nullable=False)
     zip_code = db.Column(db.String(11), nullable=False)
