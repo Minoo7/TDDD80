@@ -15,13 +15,13 @@ from enum import Enum
 
 class User(db.Model):  # User abstract class
 	"""
-    username
-    password
-    first_name
-    last_name
-    email
-    gender
-    """
+	username
+	password
+	first_name
+	last_name
+	email
+	gender
+	"""
 	__tablename__ = "users"
 	__abstract__ = True
 	id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +31,7 @@ class User(db.Model):  # User abstract class
 	last_name = db.Column(db.String(32))
 	email = db.Column(db.String(150), nullable=False)
 	gender = db.Column(db.Enum('test', name='genders'))
+
 
 # Relations:
 # rel = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
@@ -42,6 +43,9 @@ class User(db.Model):  # User abstract class
 class Administrator(User):
 	__tablename__ = "administrators"
 	permission_group = db.Column(db.Enum('group1', name='permission_groups'), nullable=False)
+
+
+BusinessTypes = Enum('BusinessTypes', 'restaurant cafe shop supermarket')
 
 
 class Customer(User):
@@ -66,13 +70,11 @@ class Customer(User):
 
 	customer_number = db.Column(db.String(32), nullable=False)
 	phone_number = db.Column(db.String(20), nullable=False)
-	# business_type2 = db.Column(postgresql.ENUM('restaurant'), name='business_types', nullable=False)
-	# business_type = db.Column(Enum(MyEnum), nullable=False)
-	# type = db.Column(db.Enum('g'))
+	business_type = db.Column(db.Enum(BusinessTypes), nullable=False)
 	organization_number = db.Column(db.String(11), nullable=False)
 
 
-class BusinessTypes(Enum):
+class BusinessTypes2(Enum):
 	abstract = 1
 	proper = 2
 	concrete = 3
@@ -97,7 +99,7 @@ class Nouns(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.Text())
 	runame = db.Column(db.Text())
-	variety = db.Column("variety", ENUM(BusinessTypes, name='variety_enum'))
+	variety = db.Column("variety", ENUM(BusinessTypes2, name='variety_enum'))
 
 
 class Address(db.Model):
