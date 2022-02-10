@@ -73,9 +73,15 @@ class Customer(User):
 	business_type = db.Column(db.Enum(BusinessTypes), nullable=False)
 	organization_number = db.Column(db.String(11), nullable=False)
 
-	# address_id = db.relationship("Address", back_populates="customer", uselist=False)
+# address_id = db.relationship("Address", back_populates="customer", uselist=False)
 
-	address = db.relationship("Address", back_populates="customer", uselist=False)
+# address = db.relationship("Address", back_populates="customer", uselist=False)
+
+# business_address = db.relationship("Address", back_populates="customer", uselist=False)
+
+
+# dest_address = db.relationship('Address', backref='orders_dest_address')
+# from_address = db.relationship('Address', backref='orders_from_address')
 
 
 class BusinessTypes2(Enum):
@@ -139,7 +145,7 @@ class Address(db.Model):
     """
 	__tablename__ = "addresses"
 	id = db.Column(db.Integer, primary_key=True)
-	address_type = db.Column(db.Enum('home', name='address_types'), nullable=False)  # Home, Billing, Both
+	address_type = db.Column(db.Enum('home', name='address_types'), unique=True, nullable=False)  # Home, Billing, Both
 	street = db.Column(db.String(95), nullable=False)
 	city = db.Column(db.String(35), nullable=False)
 	zip_code = db.Column(db.String(11), nullable=False)
@@ -152,8 +158,30 @@ class Address(db.Model):
 
 	customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
 
-	# many-to-one side remains, see tip below
-	customer = db.relationship("Customer", back_populates="address")
+
+# many-to-one side remains, see tip below
+# customer = db.relationship("Customer", back_populates="address")
+
+
+class Customera(db.Model):
+	__tablename__ = 'customer'
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String)
+
+	billing_address_id = db.Column(db.Integer, db.ForeignKey("address.id"))
+	shipping_address_id = db.Column(db.Integer, db.ForeignKey("address.id"))
+
+	billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id])
+	shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id])
+
+
+class Addressa(db.Model):
+	__tablename__ = 'address'
+	id = db.Column(db.Integer, primary_key=True)
+	street = db.Column(db.String)
+	city = db.Column(db.String)
+	state = db.Column(db.String)
+	zip = db.Column(db.String)
 
 
 class Post(db.Model):
