@@ -73,6 +73,10 @@ class Customer(User):
 	business_type = db.Column(db.Enum(BusinessTypes), nullable=False)
 	organization_number = db.Column(db.String(11), nullable=False)
 
+	# address_id = db.relationship("Address", back_populates="customer", uselist=False)
+
+	address = db.relationship("Address", back_populates="customer", uselist=False)
+
 
 class BusinessTypes2(Enum):
 	abstract = 1
@@ -102,6 +106,24 @@ class Nouns(db.Model):
 	variety = db.Column("variety", ENUM(BusinessTypes2, name='variety_enum'))
 
 
+class Parent(db.Model):
+	__tablename__ = 'parent'
+	id = db.Column(db.Integer, primary_key=True)
+
+	# previously one-to-many Parent.children is now
+	# one-to-one Parent.child
+	child = db.relationship("Child", back_populates="parent", uselist=False)
+
+
+class Child(db.Model):
+	__tablename__ = 'child'
+	id = db.Column(db.Integer, primary_key=True)
+	parent_id = db.Column(db.Integer, db.ForeignKey('parent.id'), nullable=False)
+
+	# many-to-one side remains, see tip below
+	parent = db.relationship("Parent", back_populates="child")
+
+
 class Address(db.Model):
 	"""
     PK  id
@@ -124,6 +146,14 @@ class Address(db.Model):
 
 	apartment_number = db.Column(db.String(20))
 	other_info = db.Column(db.String(255))
+
+	# customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
+	# customer = db.relationship("Customer", back_populates="address")
+
+	customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+
+	# many-to-one side remains, see tip below
+	customer = db.relationship("Customer", back_populates="address")
 
 
 class Post(db.Model):
@@ -152,6 +182,9 @@ class Post(db.Model):
 
 # total likes
 # total comments
+
+class Bajs(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
 
 
 class Feed(db.Model):
