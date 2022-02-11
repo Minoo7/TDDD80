@@ -1,3 +1,3 @@
-web: gunicorn server:app
-init: python server.py 
+web: gunicorn server_redo:app
+init: python server_redo.py
 
