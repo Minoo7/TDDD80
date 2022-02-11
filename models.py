@@ -211,8 +211,8 @@ class Post(db.Model):
 # total likes
 # total comments
 
-class Bajs(db.Model):
-	id = db.Column(db.Integer, primary_key=True)
+#class Bajs(db.Model):
+#	id = db.Column(db.Integer, primary_key=True)
 
 
 class Feed(db.Model):
