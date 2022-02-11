@@ -1,6 +1,6 @@
 import os
 
-if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
+if 'DATABASE_URL_TRUE' in os.environ:
     db_uri = os.environ['DATABASE_URL_TRUE']
     debug_flag = False
 else: # when running locally: use sqlite
