@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
+app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
 read_messages = db.Table('read_messages', db.Model.metadata,
