@@ -96,7 +96,7 @@ def get_unread_msg(user_id):
 
 @app.route("/reset")
 def reset():
-    # db.drop_all()
+    db.drop_all()
     db.create_all()
     return "", 200
 

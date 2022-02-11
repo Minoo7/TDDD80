@@ -3,10 +3,10 @@
 Heroku är ett verktyg för att skriva applikationer enkelt i "molnet".
 Heroku är ett moln baserat platform as a service (PaaS).
 Tjänsten stödjer flertal programmeringsspråk och används främst i syfte att skapa, hantera och
-köra appar. Heroku kombinerar flera programmeringsspråk för att möjliggöra detta.
+köra appar. Heroku kombinerar flera programmeringsspråk för att möjliggöra detta. kan skala appar utan att behöva.. 
 
 **2, Varför rekommenderas ni köra en annan typ av databas än SQLite, dvs. vad finns det för fördelar med att köra PostgreSQL istället för SQLite på Heroku?**
-
+'bättre för appar som har lokal storage'
 PostgreSQL erbjuder flera datatyper och är bättre på att hantera användare och dess rättigheter. SQLite är en enklare version med mindre funktioner som fungerar bäst på lokal nivå men eftersom vi ska arbeta med server databaser som ska nås överallt så är PostgreSQL ett bättre val. PostgreSQL har inbyggd säkerhet som användaren slipper implementera, vilket är något som är viktigt för databaser med användar uppgifter som vi kommer t.ex att ha.
 
 **3. Att genomföra under/efter laborationeör något begrepp/problem som ni har behövt googla på under arbetet med labb3 (inkludera länk(ar) till de svar som ni tyckte var mest informativa).**
