@@ -31,13 +31,13 @@ BusinessTypes = Enum('BusinessTypes', 'restaurant cafe shop supermarket')
 
 address_1 = Addressa(street="sreetHome", city="city", state="state", zip="192")
 address_2 = Addressa(street="sreetWork", city="city", state="state", zip="192")
-
 db.session.add(address_1)
 db.session.add(address_2)
 db.session.commit()
 
-#cua = Customera(billing_address_id=address_1.id, shipping_address_id=address_2.id)
-#db.session.add(cua)
+cua = Customera(billing_address_id=address_1.id)
+db.session.add(cua)
 db.session.commit()
-
-db.session.commit()
+from sqlalchemy import inspect
+print(inspect(address_1.cid).attrs.keys())
+print("yo: ", address_1.cid)

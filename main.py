@@ -1,7 +1,9 @@
 from models import *
-# from server import db
+#from server import *
+from models import *
 
-def add_message(new_message, sender):
+
+"""def add_message(new_message, sender):
     message = Message(message=new_message)
     db.session.add(message)
     db.session.commit()
@@ -10,4 +12,8 @@ def add_message(new_message, sender):
 
 def get_messages():
     return [msg.to_dict() for msg in Message.query.all()]
+"""
 
+
+def add_customer():
+    pass

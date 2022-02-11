@@ -8,5 +8,7 @@ else: # when running locally: use sqlite
     db_uri = 'sqlite:///{}'.format(db_path)
     debug_flag = True
 
+print("Database url: ", db_uri)
+
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_TRACK_MODIFICATIONS = False

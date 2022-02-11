@@ -156,7 +156,8 @@ class Address(db.Model):
 	# customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 	# customer = db.relationship("Customer", back_populates="address")
 
-	customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+	#customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
+	#customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
 
 
 # many-to-one side remains, see tip below
@@ -164,24 +165,25 @@ class Address(db.Model):
 
 
 class Customera(db.Model):
-	__tablename__ = 'customer'
+	__tablename__ = 'customera'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String)
 
-	billing_address_id = db.Column(db.Integer, db.ForeignKey("address.id"))
-	shipping_address_id = db.Column(db.Integer, db.ForeignKey("address.id"))
+	billing_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
+	shipping_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
 
-	billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id])
-	shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id])
+	billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id], backref="cid")
+	#shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id], backref="cid")
 
 
 class Addressa(db.Model):
-	__tablename__ = 'address'
+	__tablename__ = 'addressa'
 	id = db.Column(db.Integer, primary_key=True)
 	street = db.Column(db.String)
 	city = db.Column(db.String)
 	state = db.Column(db.String)
 	zip = db.Column(db.String)
+	#customer_id = db.Column(db.Integer, db.ForeignKey('customera.id'), nullable=False)
 
 
 class Post(db.Model):
@@ -208,11 +210,8 @@ class Post(db.Model):
 	updated_at = db.Column(db.DateTime())
 
 
-# total likes
-# total comments
-
-#class Bajs(db.Model):
-#	id = db.Column(db.Integer, primary_key=True)
+	# total likes
+	# total comments
 
 
 class Feed(db.Model):
