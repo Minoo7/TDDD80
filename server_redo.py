@@ -97,7 +97,8 @@ def get_unread_msg(user_id):
 
 def init_db():
     try:
-        db.drop_all()
+        pass
+        # db.drop_all()
     except psycopg2.errors.UndefinedTable as ut:
         print("Table does not exist")
     db.create_all()
