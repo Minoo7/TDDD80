@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import psycopg2
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -94,15 +95,26 @@ def get_unread_msg(user_id):
     return jsonify([msg.to_dict() for msg in Message.query.filter(~Message.readBy.any(id=user_id))]), 200
 
 
+def init_db():
+    try:
+        db.drop_all()
+    except psycopg2.errors.UndefinedTable as ut:
+        print("Table does not exist")
+    db.create_all()
+    meta = db.metadata
+    for table in reversed(meta.sorted_tables):
+        db.session.execute(table.delete())
+
+
 @app.route("/reset")
 def reset():
     db.drop_all()
-    db.create_all()
     return "", 200
 
 
 reset()
 if __name__ == "__main__":
-    reset()
+    init_db()
+    db.drop_all()
     app.debug = True
     app.run(port=5080)

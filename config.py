@@ -8,9 +8,5 @@ else: # when running locally: use sqlite
     db_uri = 'sqlite:///{}'.format(db_path)
     debug_flag = True
 
-print("Database url: ", db_uri)
-print("namespace: ", os.environ)
-#print("namespace 2: ", os.environ['NAMESPACE'])
-
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -1,13 +1,16 @@
 **1. Vad är Heroku för typ av tjänst?**
 
 Heroku är ett verktyg för att skriva applikationer enkelt i "molnet".
-Heroku är ett moln baserat platform as a service (PaaS).
-Tjänsten stödjer flertal programmeringsspråk och används främst i syfte att skapa, hantera och
-köra appar. Heroku kombinerar flera programmeringsspråk för att möjliggöra detta. kan skala appar utan att behöva.. 
+Heroku är en moln baserat platform as a service (PaaS). Tjänsten stödjer flertal programmeringsspråk och används främst i syfte att skapa, hantera och
+köra appar. Heroku kombinerar flera programmeringsspråk för att möjliggöra detta. Heroku är väldigt lämpad för att skala appar då applikationen kan utvecklas utan att appens server behöver "startas om" vid ny kod till exempel.
+Grundtanken för Heroku är att utvecklaren ska kunna fokusera på att skapa och utveckla sin app och slippa tänka på infrastrukturen runt om kring appen (servern, hårdvara, management, databas) etc.
+I heroku lägger du enkelt ut inställningarna/ramen för hur applikation ska struktureras när det kommer till data lagring t.ex och sedan löser Heroku resten.
 
-**2, Varför rekommenderas ni köra en annan typ av databas än SQLite, dvs. vad finns det för fördelar med att köra PostgreSQL istället för SQLite på Heroku?**
-'bättre för appar som har lokal storage'
+
+**2. Varför rekommenderas ni köra en annan typ av databas än SQLite, dvs. vad finns det för fördelar med att köra PostgreSQL istället för SQLite på Heroku?**
+
 PostgreSQL erbjuder flera datatyper och är bättre på att hantera användare och dess rättigheter. SQLite är en enklare version med mindre funktioner som fungerar bäst på lokal nivå men eftersom vi ska arbeta med server databaser som ska nås överallt så är PostgreSQL ett bättre val. PostgreSQL har inbyggd säkerhet som användaren slipper implementera, vilket är något som är viktigt för databaser med användar uppgifter som vi kommer t.ex att ha.
+SQLite har mer lämpliga användningsområden där lokal lagring behövs. Till exempel en mobil som ska hålla koll på filer som ligger lokalt så kan SQLite vara ett bättre val än PostgreSQL både eftersom det lokala inte ska vara kopplat till någon server och eftersom SQlite är snabbare.
 
 **3. Att genomföra under/efter laborationeör något begrepp/problem som ni har behövt googla på under arbetet med labb3 (inkludera länk(ar) till de svar som ni tyckte var mest informativa).**
 
