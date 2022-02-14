@@ -1,6 +1,6 @@
+import psycopg2
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import psycopg2
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -104,6 +104,7 @@ def init_db():
     meta = db.metadata
     for table in reversed(meta.sorted_tables):
         db.session.execute(table.delete())
+    db.session.close()
 
 
 @app.route("/reset")
@@ -112,9 +113,8 @@ def reset():
     return "", 200
 
 
-reset()
+# reset()
 if __name__ == "__main__":
     init_db()
-    db.drop_all()
     app.debug = True
-    app.run(port=5080)
+    app.run(port=5081)
