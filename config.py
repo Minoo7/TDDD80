@@ -1,8 +1,7 @@
 import os
 
 if 'DATABASE_URL_TRUE' in os.environ:
-    # db_uri = os.environ['DATABASE_URL_TRUE']
-    db_uri = os.environ['HEROKU_POSTGRESQL_AQUA_URL']
+    db_uri = os.environ['DATABASE_URL_TRUE']
     debug_flag = False
 else: # when running locally: use sqlite
     db_path = os.path.join(os.path.dirname(__file__), 'our.db')
