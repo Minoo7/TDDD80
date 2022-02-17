@@ -1,4 +1,7 @@
 import os
+from datetime import timedelta
+
+ACCESS_EXPIRES = timedelta(hours=1)
 
 if 'DATABASE_URL_TRUE' in os.environ:
     db_uri = os.environ['DATABASE_URL_TRUE']
@@ -10,3 +13,5 @@ else: # when running locally: use sqlite
 
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+JWT_SECRET_KEY = 'dsyr'
+JWT_ACCESS_TOKEN_EXPIRES = ACCESS_EXPIRES
