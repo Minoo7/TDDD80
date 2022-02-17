@@ -146,7 +146,9 @@ def login():
 			if name is None or password is None:
 				return jsonify({"response": "name or password missing"}), 404
 			existing_user = User.query.filter_by(name=name).first()
-			if existing_user is not None and bcrypt.check_password_hash(existing_user.password, password):
+			if existing_user is None:
+				return jsonify(response="Wrong username or password"), 400
+			if bcrypt.check_password_hash(existing_user.password, password):
 				return jsonify({'token': create_access_token(identity=existing_user.name)}), 200
 			return jsonify(response="Wrong username or password"), 400
 	return "Wrong method", 404
