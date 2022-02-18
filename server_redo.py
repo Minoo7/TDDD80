@@ -161,7 +161,8 @@ def read_msg(message_id, user_id):
 	if message is None:
 		return jsonify({'response': 'Message id not found in database'}), 404
 
-	# user = User.query.filter_by(id=int(user_id)).first()
+	# Jag tyckte det var lämpligt att användaren som är inloggad är den som faktiskt blir den som läser meddelandet
+	# istället för user_id som skickas med i url eftersom andra användare inte ska kunna ändra varandras 'data'.
 	username = get_jwt_identity()
 	user = User.query.filter_by(name=username).first()
 	if user is None:
@@ -175,6 +176,8 @@ def read_msg(message_id, user_id):
 @app.route("/messages/unread/<user_id>", methods=["GET"])
 @jwt_required
 def get_unread_msg(user_id):
+	# Jag tyckte det var lämpligt att användaren som är inloggad är den som faktiskt blir den som läser meddelandet
+	# istället för user_id som skickas med i url eftersom andra användare inte ska kunna få varandras 'data'.
 	if not User.query.filter_by(name=get_jwt_identity()).first():
 		return jsonify({'response': 'User id does not exist'}), 404
 	return jsonify([msg.to_dict() for msg in Message.query.filter(~Message.readBy.any(id=user_id))]), 200
