@@ -73,6 +73,9 @@ class Customer(User):
 	business_type = db.Column(db.Enum(BusinessTypes), nullable=False)
 	organization_number = db.Column(db.String(11), nullable=False)
 
+	address = db.relationship("Address", primaryjoin="and_(Customera.id==Addressa.customera_id, ""Addressa.type=='home')", uselist=False)
+	business_address = db.relationship("Address",  primaryjoin="and_(Customera.id==Addressa.customera_id, ""Addressa.type=='work')", overlaps="billing_address", uselist=False)
+
 # address_id = db.relationship("Address", back_populates="customer", uselist=False)
 
 # address = db.relationship("Address", back_populates="customer", uselist=False)
@@ -175,6 +178,12 @@ class Customera(db.Model):
 	billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id], backref="cid")
 	#shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id], backref="cid")
 
+	#billing_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
+	#shipping_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
+
+	#billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id], backref="cid")
+	#shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id], backref="cid")
+
 
 class Addressa(db.Model):
 	__tablename__ = 'addressa'
@@ -184,6 +193,9 @@ class Addressa(db.Model):
 	state = db.Column(db.String)
 	zip = db.Column(db.String)
 	#customer_id = db.Column(db.Integer, db.ForeignKey('customera.id'), nullable=False)
+
+	def get_customer_id(self):
+		return self.customer_id.id or self.customer_ship_id.id
 
 
 class Post(db.Model):
