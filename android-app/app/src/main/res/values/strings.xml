@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">My Application</string>
-    <string name="button_text">Knapp</string>
-
-    <string name="text_name">Text:</string>
-    <string name="add_button_text">Lägg till</string>
-</resources>

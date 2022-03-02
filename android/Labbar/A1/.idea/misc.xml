@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout-land/activity_le2.xml" value="0.1453125" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout-land/activity_le2backup.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout-land/activity_main.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout/activity_a1.xml" value="0.14722222222222223" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout/activity_le2.xml" value="0.33" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout/activity_main.xml" value="0.14566929133858267" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout/activity_main2.xml" value="0.2563405797101449" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout/fragment_info.xml" value="0.25277777777777777" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android-app/app/src/main/res/layout/fragment_main.xml" value="0.25" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout-land/activity_main_a2.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout/activity_a1.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout/activity_main_a2.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout/activity_second_activity.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout/fragment_info.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A1/app/src/main/res/layout/fragment_main.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
