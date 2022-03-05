@@ -39,34 +39,31 @@ public class InnerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        // Old way:
-        /**
-        model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-        model.getSelectedItem().observe(getViewLifecycleOwner(), data -> {
-            header.setText(data);
-        });
-        */
-
-        View view = inflater.inflate(R.layout.fragment_inner, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_inner, container, false);
     }
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        final NavController navController = Navigation.findNavController(view);
         header = view.findViewById(R.id.headerTextView);
-        String topicText = InnerFragmentArgs.fromBundle(getArguments()).getTopic();
-        header.setText(topicText);
-        view.findViewById(R.id.backBtn).setOnClickListener((View) -> goBack(view));
+        if (((ViewGroup) getView().getParent()).findViewById(R.id.placeholder) != null) { // phone
+            String topicText = InnerFragmentArgs.fromBundle(getArguments()).getTopic();
+            header.setText(topicText);
+            view.findViewById(R.id.backBtn).setOnClickListener((View) -> goBack(view));
+        }
+        else { // tablet
+            model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
+            model.getSelectedItem().observe(getViewLifecycleOwner(), data -> header.setText(data));
+        }
     }
 
 
 
     private void goBack(View view) {
-        //getParentFragmentManager().popBackStackImmediate();
         Navigation.findNavController(view).navigate(R.id.navigateBackToListFragment);
+
+        /* Old:
+        getParentFragmentManager().popBackStackImmediate();*/
     }
 }

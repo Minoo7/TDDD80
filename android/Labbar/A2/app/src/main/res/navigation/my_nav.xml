@@ -3,29 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/groupsFragment">
+    app:startDestination="@id/itemFragment">
 
-    <fragment
-        android:id="@+id/groupsFragment"
-        android:name="com.vinga129.a2.GroupsFragment"
-        android:label="fragment_groups"
-        tools:layout="@layout/fragment_groups" >
-        <action
-            android:id="@+id/navigateToInfoFragment"
-            app:destination="@id/innerFragment" />
-    </fragment>
     <fragment
         android:id="@+id/innerFragment"
         android:name="com.vinga129.a2.InnerFragment"
         android:label="fragment_inner"
         tools:layout="@layout/fragment_inner" >
-        <action
-            android:id="@+id/navigateBackToListFragment"
-            app:destination="@id/groupsFragment" />
         <argument
             android:name="topic"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null"/>
+            app:argType="string" />
+        <argument
+            android:name="details"
+            app:argType="string" />
+        <action
+            android:id="@+id/navigateBackToListFragment"
+            app:destination="@id/itemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemFragment"
+        android:name="com.vinga129.a2.ItemFragment"
+        android:label="fragment_item_list"
+        tools:layout="@layout/fragment_item_list" >
+        <action
+            android:id="@+id/navigateToInfoFragment"
+            app:destination="@id/innerFragment" />
     </fragment>
 </navigation>
