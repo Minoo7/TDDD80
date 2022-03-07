@@ -72,6 +72,9 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
             }
             recyclerView.setAdapter(new MyAdapter(items, this));
         }
+        if (!isTablet) {
+            navController = Navigation.findNavController(view);
+        }
     }
 
     @Override
