@@ -10,15 +10,12 @@
         android:name="com.vinga129.a2.InnerFragment"
         android:label="fragment_inner"
         tools:layout="@layout/fragment_inner" >
-        <argument
-            android:name="topic"
-            app:argType="string" />
-        <argument
-            android:name="details"
-            app:argType="string" />
         <action
             android:id="@+id/navigateBackToListFragment"
             app:destination="@id/itemFragment" />
+        <argument
+            android:name="item"
+            app:argType="com.vinga129.a2.GroupsContent$GroupItem" />
     </fragment>
     <fragment
         android:id="@+id/itemFragment"

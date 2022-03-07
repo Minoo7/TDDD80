@@ -5,22 +5,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class InfoViewModel extends ViewModel {
-    private final MutableLiveData<String> selectedItem = new MutableLiveData<>();
-    private final MutableLiveData<String> itemDetails = new MutableLiveData<>();
+    private final MutableLiveData<GroupsContent.GroupItem> selectedItem = new MutableLiveData<>();
 
-    public void setItem(String item) {
+    public void setItem(GroupsContent.GroupItem item) {
         selectedItem.setValue(item);
     }
 
-    public void setItemDetails(String details) {
-        itemDetails.setValue(details);
-    }
-
-    public MutableLiveData<String> getItemDetails() {
-        return itemDetails;
-    }
-
-    public LiveData<String> getSelectedItem() {
+    public LiveData<GroupsContent.GroupItem> getSelectedItem() {
         return selectedItem;
     }
 }

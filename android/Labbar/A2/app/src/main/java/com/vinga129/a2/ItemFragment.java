@@ -7,30 +7,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
     private boolean isTablet;
-    private static final String TAG = "logmsg";
-    private int mColumnCount = 1;
+    private boolean isLandscape;
+    private Consumer<GroupsContent.GroupItem> onClickSend;
     private InfoViewModel model;
-    private NavController navController;
     private List<GroupsContent.GroupItem> items;
-    private RecyclerView recyclerView;
-    private GroupsContent groupsContent;
+    private int mColumnCount;
 
     public ItemFragment() {
     }
@@ -54,17 +50,33 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        isTablet = view.getResources().getBoolean(R.bool.isTablet);
-        groupsContent = new GroupsContent(getActivity().getResources());
+        adapt(view);
+        GroupsContent groupsContent = new GroupsContent(getActivity().getResources());
         items = groupsContent.getItems();
         initRecyclerView(view);
+    }
+
+    private void adapt(View view) {
+        isTablet = view.getResources().getBoolean(R.bool.isTablet);
+        isLandscape = view.getResources().getBoolean(R.bool.isLandscape);
+        if (isTablet || isLandscape) {
+            mColumnCount = 2;
+            model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
+            onClickSend = model::setItem;
+        }
+        else {
+            mColumnCount = 1;
+            onClickSend = (item) -> {
+                Navigation.findNavController(view).navigate(ItemFragmentDirections.navigateToInfoFragment(item));
+            };
+        }
     }
 
     private void initRecyclerView(View view) {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -72,21 +84,12 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
             }
             recyclerView.setAdapter(new MyAdapter(items, this));
         }
-        if (!isTablet) {
-            navController = Navigation.findNavController(view);
-        }
     }
 
     @Override
     public void onItemClick(int pos) {
         GroupsContent.GroupItem item = items.get(pos);
-        if (isTablet) {
-            model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-            model.setItem(item.getContent());
-            model.setItemDetails(item.getDetails());
-        } else {
-            navController.navigate(ItemFragmentDirections.navigateToInfoFragment(item.getContent(), item.getDetails()));
-        }
+        onClickSend.accept(item);
     }
 
     /*Previous:

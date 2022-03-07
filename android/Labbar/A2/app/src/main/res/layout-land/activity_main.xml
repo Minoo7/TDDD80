@@ -15,7 +15,7 @@
         tools:layout="@layout/fragment_item_list" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/placeholder"
+        android:id="@+id/innerNoSaved"
         android:name="com.vinga129.a2.InnerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

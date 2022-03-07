@@ -2,6 +2,7 @@ package com.vinga129.a2;
 
 import android.content.res.Resources;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class GroupsContent {
     }*/
 
 
-    public static class GroupItem {
+    public static class GroupItem implements Serializable {
         public final String id;
         public final String content;
         public final String details;

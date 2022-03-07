@@ -4,11 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavHostController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private OnBackListener onBackListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +29,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
 
-        getSupportFragmentManager().popBackStack();
+        if (onBackListener != null)
+            onBackListener.onBackPress();
+
+        //getSupportFragmentManager().popBackStack();
+    }
+
+    public void setOnBackListener(OnBackListener onBackListener) {
+        this.onBackListener = onBackListener;
+    }
+
+    @FunctionalInterface
+    public interface OnBackListener {
+        void onBackPress();
     }
 
     /**

@@ -1,6 +1,6 @@
 **1. När kan man behöva använda/ärva från AppCompatActivity itsf Activity?**
 
-AppCompatActivity är ett bibliotek som möjliggör användning av nyare versioners kod/funktioner i äldre versioner av Android. M.h.a AppCompatActivity kan då android kod som är för gammal för att använda nyare funktioner, använda dessa funktioner. AppCompatActivity stödjer alla versioner från och med Android version 2.1.
+AppCompatActivity är ett bibliotek som möjliggör användning av nyare versioners kod/funktioner i äldre versioner av Android. M.h.a AppCompatActivity kan då android kod som är för gammal för att använda nyare funktioner, använda dessa funktioner. AppCompatActivity stödjer alla versioner från och med Android version 2.1. AppCompatActivity till mestadels används för att nya versioner av kod i en android app ska fungera på äldre enheter. 
 
 
 **2. Vad är det för skillnad i funktionalitet mellan Activity, Fragment, och View?**
