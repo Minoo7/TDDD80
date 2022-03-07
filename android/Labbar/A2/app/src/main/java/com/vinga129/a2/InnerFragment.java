@@ -6,10 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,8 @@ import android.widget.TextView;
 
 
 public class InnerFragment extends Fragment {
-    InfoViewModel model;
-    TextView header;
+    private boolean isTablet;
+
     public InnerFragment() {
         // Required empty public constructor
     }
@@ -31,7 +29,6 @@ public class InnerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -46,19 +43,21 @@ public class InnerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        header = view.findViewById(R.id.headerTextView);
-        if (((ViewGroup) getView().getParent()).findViewById(R.id.placeholder) != null) { // phone
-            String topicText = InnerFragmentArgs.fromBundle(getArguments()).getTopic();
-            header.setText(topicText);
+        isTablet = view.getResources().getBoolean(R.bool.isTablet);
+        TextView content = view.findViewById(R.id.contentText);
+        TextView details = view.findViewById(R.id.detailsText);
+        if (isTablet) {
+            InfoViewModel model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
+            model.getSelectedItem().observe(getViewLifecycleOwner(), content::setText);
+            model.getItemDetails().observe(getViewLifecycleOwner(), details::setText);
+        }
+        else {
+            InnerFragmentArgs args = InnerFragmentArgs.fromBundle(getArguments());
+            content.setText(args.getTopic());
+            details.setText(args.getDetails());
             view.findViewById(R.id.backBtn).setOnClickListener((View) -> goBack(view));
         }
-        else { // tablet
-            model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-            model.getSelectedItem().observe(getViewLifecycleOwner(), data -> header.setText(data));
-        }
     }
-
-
 
     private void goBack(View view) {
         Navigation.findNavController(view).navigate(R.id.navigateBackToListFragment);

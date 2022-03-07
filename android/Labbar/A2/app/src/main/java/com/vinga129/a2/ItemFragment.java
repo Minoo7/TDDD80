@@ -13,15 +13,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ItemFragment extends Fragment {
+import java.util.List;
+
+public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private boolean isTablet;
+    private static final String TAG = "logmsg";
     private int mColumnCount = 1;
     private InfoViewModel model;
+    private NavController navController;
+    private List<GroupsContent.GroupItem> items;
     private RecyclerView recyclerView;
     private GroupsContent groupsContent;
 
@@ -47,7 +54,9 @@ public class ItemFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        isTablet = view.getResources().getBoolean(R.bool.isTablet);
         groupsContent = new GroupsContent(getActivity().getResources());
+        items = groupsContent.getItems();
         initRecyclerView(view);
     }
 
@@ -61,18 +70,19 @@ public class ItemFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyAdapter(this, groupsContent.getItems()));
+            recyclerView.setAdapter(new MyAdapter(items, this));
         }
     }
 
-    public void setOnCLick(final View view) {
-        int itemPosition = recyclerView.getChildLayoutPosition(view);
-        GroupsContent.GroupItem item = groupsContent.getItems().get(itemPosition);
-        if (((ViewGroup) getView().getParent()).findViewById(R.id.placeholder) != null) { // phone
-            Navigation.findNavController(view).navigate(ItemFragmentDirections.navigateToInfoFragment(item.getContent(), item.getDetails()));
-        } else { // tablet
+    @Override
+    public void onItemClick(int pos) {
+        GroupsContent.GroupItem item = items.get(pos);
+        if (isTablet) {
             model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
             model.setItem(item.getContent());
+            model.setItemDetails(item.getDetails());
+        } else {
+            navController.navigate(ItemFragmentDirections.navigateToInfoFragment(item.getContent(), item.getDetails()));
         }
     }
 

@@ -8,7 +8,7 @@
     tools:context=".InnerFragment" >
 
     <TextView
-        android:id="@+id/headerTextView"
+        android:id="@+id/contentText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -17,9 +17,10 @@
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/infoTextView"
+        android:id="@+id/detailsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:text="Medlemmar i gruppen: 5"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/black"
@@ -29,5 +30,6 @@
         android:id="@+id/backBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:text="Tillbaka" />
 </LinearLayout>
