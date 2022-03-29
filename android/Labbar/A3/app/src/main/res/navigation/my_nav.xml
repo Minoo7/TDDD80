@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/innerFragment"
-        android:name="com.vinga129.a2.InnerFragment"
+        android:name="com.vinga129.a3.InnerFragment"
         android:label="fragment_inner"
         tools:layout="@layout/fragment_inner" >
         <action
@@ -15,11 +15,11 @@
             app:destination="@id/itemFragment" />
         <argument
             android:name="item"
-            app:argType="com.vinga129.a2.GroupsContent$GroupItem" />
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/itemFragment"
-        android:name="com.vinga129.a2.ItemFragment"
+        android:name="com.vinga129.a3.ItemFragment"
         android:label="fragment_item_list"
         tools:layout="@layout/fragment_item_list" >
         <action
