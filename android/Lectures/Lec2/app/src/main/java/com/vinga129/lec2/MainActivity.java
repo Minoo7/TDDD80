@@ -9,6 +9,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
     MainFragment mf;
     InfoFragment info;
@@ -18,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         View placeHolder = findViewById(R.id.placeholder);
-        //System.out.println(placeHolder);
-        //Log.v("Test", placeHolder.toString());
         if (placeHolder != null) { // if in portrait
             if (mf == null)
                 mf = MainFragment.newInstance();
@@ -35,14 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.placeholder, info).commit();
                 }
             });
-
-            //else {
-            //    System.out.println("yoooo");
-            //}
-            findViewById(R.id.switchAct2Btn).setOnClickListener((View) -> {
-                // start new activity
-                doSwap();
-            });
+            findViewById(R.id.switchAct2Btn).setOnClickListener((View) -> doSwap());
         }
     }
 
