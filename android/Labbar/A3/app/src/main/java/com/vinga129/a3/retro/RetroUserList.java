@@ -17,7 +17,7 @@ public class RetroUserList {
     }
 
 
-    public class RetroUser {
+    public static class RetroUser {
         @SerializedName("namn")
         private String name;
         @SerializedName("epost")
@@ -37,16 +37,16 @@ public class RetroUserList {
             return email;
         }
 
-        public void setEmail(String email) {
+        /*public void setEmail(String email) {
             this.email = email;
-        }
+        }*/
 
         public String getAnswered() {
             return answered;
         }
 
-        public void setAnswered(String answered) {
+        /*public void setAnswered(String answered) {
             this.answered = answered;
-        }
+        }*/
     }
 }

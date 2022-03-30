@@ -20,5 +20,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        tools:layout="@layout/fragment_inner" />
+        tools:layout="@layout/fragment_inner_list" />
 </LinearLayout>

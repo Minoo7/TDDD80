@@ -2,6 +2,7 @@ package com.vinga129.a3;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,13 +67,16 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
 
         UserService service = RetrofitClient.getRetrofitInstance().create(UserService.class);
         Call<RetroGroup> listCall = service.getGroups();
+        ItemFragment self = this;
         listCall.enqueue(new Callback<RetroGroup>() {
+
             @Override
             public void onResponse(Call<RetroGroup> call, Response<RetroGroup> response) {
                 RetroGroup body = response.body();
+                Log.d(TAG, "" + body);
                 if (body != null) {
                     items = Arrays.asList(body.getGroups());
-                    initRecyclerView(view);
+                    Methods.initRecyclerView(view, mColumnCount, new MyAdapter(items, self));
                 }
             }
 
@@ -98,80 +102,9 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
         }
     }
 
-    private void initRecyclerView(View view) {
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyAdapter(items, this));
-        }
-    }
-
     @Override
     public void onItemClick(int pos) {
-       //GroupsContent.GroupItem item = items.get(pos);
         onClickSend.accept(items.get(pos));
     }
-
-    /*Previous:
-
-        @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        groupsContent = new GroupsContent(getActivity().getResources());
-        initRecyclerView(view);
-        model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-        Consumer<TextView> method = (((ViewGroup) getView().getParent()).findViewById(R.id.placeholder) == null) ? (textView) -> viewDetails(textView) : (textView) -> viewDetailsNav(view, textView);
-        String itemsTagName = view.getResources().getString(R.string.itemsTag);
-        ArrayList<TextView> items = listBuilder(view.findViewById(R.id.itemsLinearLayout), itemsTagName);
-        items.forEach(item -> item.setOnClickListener((View) -> method.accept(item)));
-    }
-
-
-
-    // for phone size
-    private void viewDetailsNav(View view, TextView textView) {
-        final NavController navController = Navigation.findNavController(view);
-        //String s = getResources().getString(R.string.tv);
-        //GroupsFragmentDirections.NavigateToInfoFragment action = GroupsFragmentDirections.navigateToInfoFragment();
-        //action.setTopic(textView.getText().toString());
-        //action.setDetails()
-        List list = new ArrayList<>();
-        //getResources().getString(R.string.finland);
-        //list.add(getResources().getString(getResources().getIdentifier(ntpServers[i][0], "string", getPackageName())));
-        //navController.navigate(action);
-    }
-
-    private ArrayList<TextView> listBuilder(ViewGroup parent, String tagName) {
-        ArrayList<TextView> items = new ArrayList<>();
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            View child = parent.getChildAt(i);
-            if (child.getTag() != null && child.getTag().toString().equals(tagName)) {
-                items.add(((TextView) child));
-            }
-        }
-        return items;
-    }
-
-    /*
-     * Old
-     * */
-    /*
-    item.setOnClickListener((View) -> enterView(item));
-    model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-
-        private void enterView(TextView textView) { // Old way
-        String data = textView.getText().toString();
-        Bundle result = new Bundle();
-        result.putString("data", "");
-        getParentFragmentManager().setFragmentResult("infoFromMain", result);
-        model.setItem(data);
-    }
-     */
 }
 

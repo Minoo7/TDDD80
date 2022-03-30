@@ -2,6 +2,9 @@
     <string name="app_name">a3</string>
     <string name="itemsTag" translatable="false">itemsTag</string>
     <string name="element_text" translatable="false">hej</string>
+    <string name="nameTextHeader">Name:\ </string>
+    <string name="emailTextHeader">Email:\ </string>
+    <string name="answeredTextHeader">Answered:\ </string>
     <string-array name="content">
         <item>Sweden</item>
         <item>Finland</item>

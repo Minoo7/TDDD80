@@ -1,12 +1,10 @@
 package com.vinga129.a3;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,12 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import com.vinga129.a3.retro.RetroGroup;
 import com.vinga129.a3.retro.RetroUserList;
 import com.vinga129.a3.retro.RetrofitClient;
 import com.vinga129.a3.retro.UserService;
-
-import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,49 +22,42 @@ import retrofit2.Response;
 
 
 public class InnerFragment extends Fragment {
+    private View view;
     private boolean isTablet;
     private boolean isLandscape;
-    private final String CONTENT_TEXT = "contentText";
-    private final String DETAILS_TEXT = "detailsText";
-    private TextView content;
-    private TextView details;
+    private final String SAVED_GROUP = "savedGroup";
+    private String group = "";
     private Button backBtn;
     private Bundle saved;
-    private boolean empty;
+    private boolean activated = false;
+    private final int mColumnCount = 1;
 
     private Runnable changeId;
 
-    private static final String TAG = "InnerFragment";
+    private static final String TAG = "logger";
 
     public InnerFragment() {
         // Required empty public constructor
     }
 
-    public static InnerFragment newInstance() {
-        InnerFragment fragment = new InnerFragment();
-        return fragment;
-    }
+    /*public static InnerFragment newInstance() {
+        return new InnerFragment();
+    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null && savedInstanceState.getString(CONTENT_TEXT) != null && savedInstanceState.getString(DETAILS_TEXT) != null) {
+        if (savedInstanceState != null && savedInstanceState.getString(SAVED_GROUP) != null)
             saved = savedInstanceState;
-        }
     }
 
-    private void setText(String contentText, String detailsText) {
-        content.setText(contentText);
-        details.setText(detailsText);
-    }
-
-    private void init(View view) {
-        content = view.findViewById(R.id.contentText);
-        details = view.findViewById(R.id.detailsText);
+    private void init() {
         backBtn = view.findViewById(R.id.backBtn);
-        if (saved != null)
-            setText(saved.getString(CONTENT_TEXT), saved.getString(DETAILS_TEXT));
+        if (saved != null) {
+            group = saved.getString(SAVED_GROUP);
+            activated = true;
+        }
     }
 
     @Override
@@ -77,55 +65,71 @@ public class InnerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.fragment_inner, container, false);
+        return inflater.inflate(R.layout.fragment_inner_list, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(view);
-        adapt(view);
+        this.view = view;
+        init();
+        adapt();
     }
 
-    private void adapt(View view) {
-        isTablet = view.getResources().getBoolean(R.bool.isTablet);
+    private void deActivate() {
+        activated = false;
+        // do reset text on inner list items..
+    }
+
+    private void activate(RetroUserList items) {
+        activated = true;
+        Methods.initRecyclerView(view.findViewById(R.id.innerlist), mColumnCount, new InnerListAdapter(items));
+    }
+
+    private void adapt() {
+        isTablet = getResources().getBoolean(R.bool.isTablet);
         isLandscape = view.getResources().getBoolean(R.bool.isLandscape);
 
         if (isTablet || isLandscape) {
             if (saved == null) {
                 InfoViewModel model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-                //model.getSelectedItem().observe(getViewLifecycleOwner(), (item) -> setText(item.getContent(), item.getDetails()));
+                model.getSelectedItem().observe(getViewLifecycleOwner(), (item) -> {
+                    group = item;
+                    getInfoWithNetworkCall();
+                });
             }
-            setOnBackListener(() -> setText("", ""));
+            setOnBackListener(this::deActivate);
         } else {
             if (getArguments() != null) {
-                //GroupsContent.GroupItem item = InnerFragmentArgs.fromBundle(getArguments()).getItem();
-                String clicked = InnerFragmentArgs.fromBundle(getArguments()).getItem();
+                group = InnerFragmentArgs.fromBundle(getArguments()).getItem();
                 if (backBtn.getVisibility() == View.INVISIBLE)
                     backBtn.setVisibility(View.VISIBLE);
-                UserService service = RetrofitClient.getRetrofitInstance().create(UserService.class);
-                Log.d(TAG, "adapt: " + clicked);
-                Call<RetroUserList> listCall = service.getMembers("/medlemmar/" + clicked);
-                listCall.enqueue(new Callback<RetroUserList>() {
-                    @Override
-                    public void onResponse(Call<RetroUserList> call, Response<RetroUserList> response) {
-                        RetroUserList body = response.body();
-                        if (body != null)
-                            if (!body.getItems().isEmpty())
-                                setText(body.getItems().get(0).getName(), "d");
-                    }
-
-                    @Override
-                    public void onFailure(Call<RetroUserList> call, Throwable t) {
-
-                    }
-                });
                 //setText(item.getContent(), item.getDetails());
+                getInfoWithNetworkCall();
                 Runnable goBack = () -> Navigation.findNavController(view).navigate(R.id.navigateBackToListFragment);
                 backBtn.setOnClickListener((View) -> goBack.run());
                 setOnBackListener(goBack);
             }
         }
+    }
+
+    private void getInfoWithNetworkCall() {
+        UserService service = RetrofitClient.getRetrofitInstance().create(UserService.class);
+        Call<RetroUserList> listCall = service.getMembers(group);
+        listCall.enqueue(new Callback<RetroUserList>() {
+            @Override
+            public void onResponse(Call<RetroUserList> call, Response<RetroUserList> response) {
+                RetroUserList body = response.body();
+                if (body != null)
+                    if (!body.getItems().isEmpty())
+                        activate(body);
+            }
+
+            @Override
+            public void onFailure(Call<RetroUserList> call, Throwable t) {
+
+            }
+        });
     }
 
     private void setOnBackListener(Runnable runnable) {
@@ -139,31 +143,14 @@ public class InnerFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's current state
-        if (content != null && content.getText() != null && content.getText() != "") {
-            savedInstanceState.putString(CONTENT_TEXT, content.getText().toString());
-            savedInstanceState.putString(DETAILS_TEXT, details.getText().toString());
+        //if (content != null && content.getText() != null && content.getText() != "") {
+        if (activated) {
+            savedInstanceState.putString(SAVED_GROUP, group);
 
             // Always call the superclass so it can save the view hierarchy state
             super.onSaveInstanceState(savedInstanceState);
         }
     }
-
-    //@Override
-    //onBackPress = () -> s
-    /*public void onBackPress() {
-        Log.d("logmsg", "onBackPress: ");
-        content.setText("");
-        details.setText("");
-    }*/
-
-    /*private void goBack() {
-        if (!(isTablet || isLandscape))
-
-
-        /* Old:
-        getParentFragmentManager().popBackStackImmediate();*/
-    //}*/
-
     /**
      * Supplier       ()    -> x
      * Consumer       x     -> ()

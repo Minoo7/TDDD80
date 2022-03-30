@@ -9,7 +9,7 @@
         android:id="@+id/innerFragment"
         android:name="com.vinga129.a3.InnerFragment"
         android:label="fragment_inner"
-        tools:layout="@layout/fragment_inner" >
+        tools:layout="@layout/fragment_inner_list" >
         <action
             android:id="@+id/navigateBackToListFragment"
             app:destination="@id/itemFragment" />
