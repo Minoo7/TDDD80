@@ -10,14 +10,9 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.vinga129.a3.retro.RetroGroup;
-import com.vinga129.a3.retro.RetroUserList;
 import com.vinga129.a3.retro.RetrofitClient;
 import com.vinga129.a3.retro.UserService;
 
@@ -30,16 +25,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
+public class ItemFragment extends Fragment implements MyAdapter.OnItemListener, NetworkReceiver {
 
+    private View view;
     private boolean isTablet;
     private boolean isLandscape;
     private Consumer<String> onClickSend;
-    private InfoViewModel model;
     private List<String> items;
     private int mColumnCount;
-
-    private static final String TAG = "logger";
+    private MainActivity mainActivity;
 
     public ItemFragment() {
     }
@@ -63,28 +57,11 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.view = view;
+        mainActivity = ((MainActivity) requireActivity());
         adapt(view);
 
-        UserService service = RetrofitClient.getRetrofitInstance().create(UserService.class);
-        Call<RetroGroup> listCall = service.getGroups();
-        ItemFragment self = this;
-        listCall.enqueue(new Callback<RetroGroup>() {
-
-            @Override
-            public void onResponse(Call<RetroGroup> call, Response<RetroGroup> response) {
-                RetroGroup body = response.body();
-                Log.d(TAG, "" + body);
-                if (body != null) {
-                    items = Arrays.asList(body.getGroups());
-                    Methods.initRecyclerView(view, mColumnCount, new MyAdapter(items, self));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RetroGroup> call, Throwable t) {
-
-            }
-        });
+        mainActivity.doNetworkCall(this, mainActivity.service.getGroups());
     }
 
     private void adapt(View view) {
@@ -92,19 +69,30 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
         isLandscape = view.getResources().getBoolean(R.bool.isLandscape);
         if (isTablet || isLandscape) {
             mColumnCount = 2;
-            model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-            onClickSend = model::setItem;
+            onClickSend = this::setModelItem;
         } else {
             mColumnCount = 1;
             onClickSend = (item) -> {
-                Navigation.findNavController(view).navigate(ItemFragmentDirections.navigateToInfoFragment(item));
+                setModelItem(item);
+                Navigation.findNavController(view).navigate(ItemFragmentDirections.navigateToInfoFragment());
             };
         }
+    }
+
+    private void setModelItem(String item) {
+        mainActivity.dataViewModel.setItem(item);
     }
 
     @Override
     public void onItemClick(int pos) {
         onClickSend.accept(items.get(pos));
+    }
+
+    @Override
+    public <T> void onNetworkReceived(T body) {
+        RetroGroup retroGroup = (RetroGroup) body;
+        items = Arrays.asList((String[]) retroGroup.getGroups());
+        Methods.initRecyclerView(view, mColumnCount, new MyAdapter(items, this));
     }
 }
 

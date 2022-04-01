@@ -1,5 +1,6 @@
 package com.vinga129.a2;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,10 +28,11 @@ public class InnerFragment extends Fragment {
     private Button backBtn;
     private Bundle saved;
     private boolean empty;
+    private InfoViewModel model;
 
     private Runnable changeId;
 
-    private static final String TAG = "InnerFragment";
+    private static final String TAG = "logger";
 
     public InnerFragment() {
         // Required empty public constructor
@@ -50,19 +52,6 @@ public class InnerFragment extends Fragment {
         }
     }
 
-    private void setText(String contentText, String detailsText) {
-        content.setText(contentText);
-        details.setText(detailsText);
-    }
-
-    private void init(View view) {
-        content = view.findViewById(R.id.contentText);
-        details = view.findViewById(R.id.detailsText);
-        backBtn = view.findViewById(R.id.backBtn);
-        if (saved != null)
-            setText(saved.getString(CONTENT_TEXT), saved.getString(DETAILS_TEXT));
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,8 +63,12 @@ public class InnerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        model = ((MainActivity) requireActivity()).dataViewModel;
         init(view);
         adapt(view);
+        if (saved != null)
+            setText(saved.getString(CONTENT_TEXT), saved.getString(DETAILS_TEXT));
+        Log.d(TAG, "Get: " + content.getText());
     }
 
     private void adapt(View view) {
@@ -83,11 +76,13 @@ public class InnerFragment extends Fragment {
         isLandscape = view.getResources().getBoolean(R.bool.isLandscape);
 
         if (isTablet || isLandscape) {
-            if (saved == null) {
-                InfoViewModel model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-                model.getSelectedItem().observe(getViewLifecycleOwner(), (item) -> setText(item.getContent(), item.getDetails()));
+            model.getSelectedItem().observe(getViewLifecycleOwner(), (item) -> setText(item.getContent(), item.getDetails()));
+            //}
+            if (saved != null) {
+                setText(saved.getString(CONTENT_TEXT), saved.getString(DETAILS_TEXT));
+                //saved = null;
             }
-            setOnBackListener(() -> setText("", ""));
+            //setOnBackListener(() -> setText("", ""));
         } else {
             if (getArguments() != null) {
                 GroupsContent.GroupItem item = InnerFragmentArgs.fromBundle(getArguments()).getItem();
@@ -101,6 +96,19 @@ public class InnerFragment extends Fragment {
         }
     }
 
+    private void setText(String contentText, String detailsText) {
+        content.setText(contentText);
+        details.setText(detailsText);
+    }
+
+    private void init(View view) {
+        content = view.findViewById(R.id.contentText);
+        details = view.findViewById(R.id.detailsText);
+        backBtn = view.findViewById(R.id.backBtn);
+        if (saved != null)
+            setText(saved.getString(CONTENT_TEXT), saved.getString(DETAILS_TEXT));
+    }
+
     private void setOnBackListener(Runnable runnable) {
         MainActivity mainActivity = ((MainActivity) getActivity());
         ((MainActivity) getActivity()).setOnBackListener(() -> {
@@ -111,6 +119,8 @@ public class InnerFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "Saving: " );
+
         // Save the user's current state
         if (content != null && content.getText() != null && content.getText() != "") {
             savedInstanceState.putString(CONTENT_TEXT, content.getText().toString());

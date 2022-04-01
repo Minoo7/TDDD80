@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vinga129.a3.databinding.FragmentInnerItemBinding;
@@ -24,6 +25,7 @@ public class InnerListAdapter extends RecyclerView.Adapter<InnerListAdapter.View
         mValues = items.getItems();
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_item_list, parent, false);
@@ -35,12 +37,10 @@ public class InnerListAdapter extends RecyclerView.Adapter<InnerListAdapter.View
         RetroUserList.RetroUser item = holder.mItem = mValues.get(position);
         holder.mNameView.append(item.getName());
         holder.mEmailView.append(item.getEmail());
-        Log.d("logger", "ohh" + item.getAnswered());
         if (item.getAnswered() != null)
             holder.mAnsweredView.append(item.getAnswered());
-        else {
+        else
             holder.mAnsweredView.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -48,7 +48,13 @@ public class InnerListAdapter extends RecyclerView.Adapter<InnerListAdapter.View
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void clearItems() {
+        // only works once?*
+        mValues.clear();
+        notifyDataSetChanged();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView mNameView;
         public final TextView mEmailView;
         public final TextView mAnsweredView;

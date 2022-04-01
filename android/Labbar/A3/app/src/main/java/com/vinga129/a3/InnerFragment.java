@@ -1,6 +1,7 @@
 package com.vinga129.a3;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,43 +22,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class InnerFragment extends Fragment {
+public class InnerFragment extends Fragment implements NetworkReceiver {
     private View view;
+    private MainActivity mainActivity;
+    private InfoViewModel model;
+    private InnerListAdapter adapter;
+    private Button backBtn;
     private boolean isTablet;
     private boolean isLandscape;
-    private final String SAVED_GROUP = "savedGroup";
-    private String group = "";
-    private Button backBtn;
-    private Bundle saved;
-    private boolean activated = false;
-    private final int mColumnCount = 1;
-
-    private Runnable changeId;
-
-    private static final String TAG = "logger";
 
     public InnerFragment() {
         // Required empty public constructor
     }
 
-    /*public static InnerFragment newInstance() {
-        return new InnerFragment();
-    }*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null && savedInstanceState.getString(SAVED_GROUP) != null)
-            saved = savedInstanceState;
-    }
-
-    private void init() {
-        backBtn = view.findViewById(R.id.backBtn);
-        if (saved != null) {
-            group = saved.getString(SAVED_GROUP);
-            activated = true;
-        }
     }
 
     @Override
@@ -74,81 +54,41 @@ public class InnerFragment extends Fragment {
         this.view = view;
         init();
         adapt();
+
+        model.getSelectedItem().observe(getViewLifecycleOwner(), (item) ->
+                mainActivity.doNetworkCall(this, mainActivity.service.getMembers(item)));
     }
 
-    private void deActivate() {
-        activated = false;
-        // do reset text on inner list items..
-    }
-
-    private void activate(RetroUserList items) {
-        activated = true;
-        Methods.initRecyclerView(view.findViewById(R.id.innerlist), mColumnCount, new InnerListAdapter(items));
+    private void init() {
+        mainActivity = ((MainActivity) requireActivity());
+        model = mainActivity.dataViewModel;
+        backBtn = view.findViewById(R.id.backBtn);
     }
 
     private void adapt() {
         isTablet = getResources().getBoolean(R.bool.isTablet);
         isLandscape = view.getResources().getBoolean(R.bool.isLandscape);
 
-        if (isTablet || isLandscape) {
-            if (saved == null) {
-                InfoViewModel model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
-                model.getSelectedItem().observe(getViewLifecycleOwner(), (item) -> {
-                    group = item;
-                    getInfoWithNetworkCall();
-                });
-            }
-            setOnBackListener(this::deActivate);
-        } else {
-            if (getArguments() != null) {
-                group = InnerFragmentArgs.fromBundle(getArguments()).getItem();
-                if (backBtn.getVisibility() == View.INVISIBLE)
-                    backBtn.setVisibility(View.VISIBLE);
-                //setText(item.getContent(), item.getDetails());
-                getInfoWithNetworkCall();
-                Runnable goBack = () -> Navigation.findNavController(view).navigate(R.id.navigateBackToListFragment);
-                backBtn.setOnClickListener((View) -> goBack.run());
-                setOnBackListener(goBack);
-            }
+        if (isTablet || isLandscape)
+            mainActivity.setOnBackListener(() -> adapter.clearItems());
+        else {
+            if (backBtn.getVisibility() == View.GONE)
+                backBtn.setVisibility(View.VISIBLE);
+            Runnable goBack = () -> Navigation.findNavController(view).navigate(R.id.navigateBackToListFragment);
+            backBtn.setOnClickListener((View) -> goBack.run());
+            mainActivity.setOnBackListener(() -> {
+                goBack.run();
+                mainActivity.setOnBackListener(null);
+            });
         }
     }
 
-    private void getInfoWithNetworkCall() {
-        UserService service = RetrofitClient.getRetrofitInstance().create(UserService.class);
-        Call<RetroUserList> listCall = service.getMembers(group);
-        listCall.enqueue(new Callback<RetroUserList>() {
-            @Override
-            public void onResponse(Call<RetroUserList> call, Response<RetroUserList> response) {
-                RetroUserList body = response.body();
-                if (body != null)
-                    if (!body.getItems().isEmpty())
-                        activate(body);
-            }
-
-            @Override
-            public void onFailure(Call<RetroUserList> call, Throwable t) {
-
-            }
-        });
-    }
-
-    private void setOnBackListener(Runnable runnable) {
-        MainActivity mainActivity = ((MainActivity) getActivity());
-        ((MainActivity) getActivity()).setOnBackListener(() -> {
-            runnable.run();
-            mainActivity.setOnBackListener(null);
-        });
-    }
-
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current state
-        //if (content != null && content.getText() != null && content.getText() != "") {
-        if (activated) {
-            savedInstanceState.putString(SAVED_GROUP, group);
-
-            // Always call the superclass so it can save the view hierarchy state
-            super.onSaveInstanceState(savedInstanceState);
+    public <T> void onNetworkReceived(T body) {
+        RetroUserList retroUserList = (RetroUserList) body;
+        if (!retroUserList.getItems().isEmpty()) {
+            adapter = new InnerListAdapter(retroUserList);
+            Methods.initRecyclerView(view.findViewById(R.id.innerlist), 1, adapter);
         }
     }
     /**

@@ -13,9 +13,6 @@
         <action
             android:id="@+id/navigateBackToListFragment"
             app:destination="@id/itemFragment" />
-        <argument
-            android:name="item"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/itemFragment"

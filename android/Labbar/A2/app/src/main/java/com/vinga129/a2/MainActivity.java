@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
@@ -20,11 +22,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private OnBackListener onBackListener;
+    public InfoViewModel dataViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dataViewModel = new ViewModelProvider(this).get(InfoViewModel.class);
     }
 
     @Override

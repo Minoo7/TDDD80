@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
@@ -27,6 +29,8 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
     private InfoViewModel model;
     private List<GroupsContent.GroupItem> items;
     private int mColumnCount;
+
+    private static final String TAG = "logger";
 
     public ItemFragment() {
     }
@@ -51,7 +55,7 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         adapt(view);
-        GroupsContent groupsContent = new GroupsContent(getActivity().getResources());
+        GroupsContent groupsContent = new GroupsContent(requireActivity().getResources());
         items = groupsContent.getItems();
         initRecyclerView(view);
     }
@@ -61,7 +65,7 @@ public class ItemFragment extends Fragment implements MyAdapter.OnItemListener {
         isLandscape = view.getResources().getBoolean(R.bool.isLandscape);
         if (isTablet || isLandscape) {
             mColumnCount = 2;
-            model = new ViewModelProvider(requireActivity()).get(InfoViewModel.class);
+            model = ((MainActivity) requireActivity()).dataViewModel;
             onClickSend = model::setItem;
         }
         else {
