@@ -1,0 +1,8 @@
+**1. Vad kan det uppstå för bekymmer när man försöker bestämma storlek på en ImageView (för att skala en bild)? Hur har ni löst problemet?**
+Problem kan uppstå då bildens bildförhållande (aspect ratio) skiljer sig åt mycket med ImageViewe:n som ska visa bilden. Beroende på vad man tycker i viktigast i visning av bilden t.ex att all innehåll ska visas eller om det är viktigast att bilden fyller hela imageViewe:n så kan man bestämma detta med hjälp av imageViewe fältet scaleType där man kan välja till exempel fitXY om det ska fylla hela imageViewe:n eller om innehållet är viktigare: använda sig av *center*.
+
+**2. Vad är det för skillnad mellan att använda IntentService jämfört med AsyncTask när man ska avkoda koordinater till adress?**
+IntentService är en extension av Android service class och behöver därmed registreras i manifest filen. IntentService används för att utföra schemalagda "tasks" som i bakgrunden körs oberoende av någon activity. AsyncTask kör en task asynkront och kan användas för korta repetitiva uppgifter som är bundna till en activity. AsyncTask kan därmed vara bättre för användning då vi avkoda koordinater till address då uppgiften är repetitiv samt att vi inte vet exakt när vi ska göra avkodningen.
+
+**3. Vad är den viktigaste, mest centrala frågan, som ni har behövt Googla på under laborationens gång?**
+Det jag behövde Googla på under laborationen var hur man skulle använda sig av CameraX samt hur avkodning av address skulle utföras.

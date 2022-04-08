@@ -6,8 +6,10 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/drawable/customborder.xml" value="0.2115" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/drawable/ic_launcher_background.xml" value="0.121" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/layout/activity_camera.xml" value="0.14351851851851852" />
-        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/layout/activity_mainTUT.xml" value="0.20416666666666666" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/layout/fragment_camera.xml" value="0.36666666666666664" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Labbar/A4/app/src/main/res/layout/fragment_image_viewer.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
