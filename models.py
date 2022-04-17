@@ -1,19 +1,32 @@
+import datetime
+from enum import Enum
+import marshmallow_sqlalchemy
+from sqlalchemy import *
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import *
 
-from server import db
+# from marshmallow_sqlalchemy import ModelConversionError, SQLAlchemyAutoSchema
+
+import Enums
+from server import *
+Model = db.Model
 from sqlalchemy.types import Enum as SQLAlchemyEnumType
 # import json
 
 from sqlalchemy.dialects.postgresql import ENUM
-from enum import Enum
+from sqlalchemy.orm import relationship, sessionmaker
 
 
-# read_messages = db.Table('read_messages', db.Model.metadata,
-#                         db.Column('messages_id', db.Integer, db.ForeignKey('message.id')),
-#                         db.Column('user_id', db.Integer, db.ForeignKey('user.id')))
+# read_messages = db.Table('read_messages', Model.metadata,
+#                         Column('messages_id', Integer, ForeignKey('message.id')),
+#                         Column('user_id', Integer, ForeignKey('user.id')))
+# image_ids = db.Table('image_ids', Model.metadata, Column('image_id'), Integer, ForeignKey('image_id'))
 
 
-class User(db.Model):  # User abstract class
+# session = scoped_session(sessionmaker(bind=engine))
+
+
+class User(Model):  # User abstract class
 	"""
 	username
 	password
@@ -24,17 +37,41 @@ class User(db.Model):  # User abstract class
 	"""
 	__tablename__ = "users"
 	__abstract__ = True
-	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(32), nullable=False)
-	password = db.Column(db.String(32), nullable=False)
-	first_name = db.Column(db.String(32))
-	last_name = db.Column(db.String(32))
-	email = db.Column(db.String(150), nullable=False)
-	gender = db.Column(db.Enum('test', name='genders'))
+	id = Column(Integer, primary_key=True)
+	username = Column(String(32), nullable=False)
+	password = Column(String(32), nullable=False)
+	first_name = Column(String(32))
+	last_name = Column(String(32))
+	email = Column(String(150), nullable=False)
+	gender = Column(ENUM(Enums.Genders))
+
+
+#class TestBase(Model):
+#	id = Column(Integer, primary_key=True)
+
+
+# mapper_registry = registry()
+#Base = mapper_registry.generate_base()
+# Base = declarative_base()
+# Base = db.make_declarative_base()
+"""Base = declarative_base()
+metadata = Base.metadata
+metadata.bind = db.get_engine()
+Session = sessionmaker(bind=db.get_engine(), autoflush=True)
+session = Session()"""
+
+
+class Author(Model):
+	__tablename__ = "authors"
+	id = Column(Integer, primary_key=True)
+	name = Column(String)
+
+	def __repr__(self):
+		return "<Author(name={self.name!r})>".format(self=self)
 
 
 # Relations:
-# rel = db.relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
+# rel = relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
 
 # def to_dict(self):
 #	return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
@@ -42,10 +79,7 @@ class User(db.Model):  # User abstract class
 
 class Administrator(User):
 	__tablename__ = "administrators"
-	permission_group = db.Column(db.Enum('group1', name='permission_groups'), nullable=False)
-
-
-BusinessTypes = Enum('BusinessTypes', 'restaurant cafe shop supermarket')
+	permission_group = Column(db.Enum('group1', name='permission_groups'), nullable=False)
 
 
 class Customer(User):
@@ -68,72 +102,43 @@ class Customer(User):
 	"""
 	__tablename__ = "customers"
 
-	customer_number = db.Column(db.String(32), nullable=False)
-	phone_number = db.Column(db.String(20), nullable=False)
-	business_type = db.Column(db.Enum(BusinessTypes), nullable=False)
-	organization_number = db.Column(db.String(11), nullable=False)
+	# customer_number = Column(String(32), CheckConstraint('char_length(customer_number) IS 6'), nullable=False)
+	customer_number = Column(String(32), nullable=False)
+	phone_number = Column(String(20), nullable=False)
+	business_type = Column(ENUM(Enums.BusinessTypes), nullable=False)
+	organization_number = Column(String(11), nullable=False)
 
-	address = db.relationship("Address", primaryjoin="and_(Customera.id==Addressa.customera_id, ""Addressa.type=='home')", uselist=False)
-	business_address = db.relationship("Address",  primaryjoin="and_(Customera.id==Addressa.customera_id, ""Addressa.type=='work')", overlaps="billing_address", uselist=False)
+	address = relationship("Address",
+	                       primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='home')",
+	                       post_update=True, uselist=False)
+	business_address = relationship("Address",
+	                                primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='work')",
+	                                post_update=True, overlaps="address", uselist=False)
 
-# address_id = db.relationship("Address", back_populates="customer", uselist=False)
+	following = relationship(
+		'Customer', lambda: follower_table,
+		primaryjoin=lambda: Customer.id == follower_table.c.user_id,
+		secondaryjoin=lambda: Customer.id == follower_table.c.following_id,
+		backref='followers'
+	)
 
-# address = db.relationship("Address", back_populates="customer", uselist=False)
+	""""@validates('customer_number')
+	def validate_customer_number(self, key, value):
+		assert value.length == 6
+		return value"""
 
-# business_address = db.relationship("Address", back_populates="customer", uselist=False)
-
-
-# dest_address = db.relationship('Address', backref='orders_dest_address')
-# from_address = db.relationship('Address', backref='orders_from_address')
-
-
-class BusinessTypes2(Enum):
-	abstract = 1
-	proper = 2
-	concrete = 3
-	collective = 4,
-	compound = 5
-
-
-Animal = Enum('Animal', 'ant bee cat dog')
-
-Animal.ant  # returns <Animal.ant: 1>
-Animal['ant']  # returns <Animal.ant: 1> (string lookup)
-Animal.ant.name  # returns 'ant' (inverse lookup)
+	def __repr__(self):
+		return '<Customer %r>' % self.customer_number
 
 
-class Test(db.Model):
-	id = db.Column(db.Integer, primary_key=True)
-	pyth = db.Column(db.Enum(Animal), nullable=False)
+follower_table = Table(
+	'user_following', Model.metadata,
+	Column('user_id', Integer, ForeignKey('customers.id'), primary_key=True),
+	Column('following_id', Integer, ForeignKey('customers.id'), primary_key=True)
+)
 
 
-class Nouns(db.Model):
-	__tablename__ = 'nouns'
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.Text())
-	runame = db.Column(db.Text())
-	variety = db.Column("variety", ENUM(BusinessTypes2, name='variety_enum'))
-
-
-class Parent(db.Model):
-	__tablename__ = 'parent'
-	id = db.Column(db.Integer, primary_key=True)
-
-	# previously one-to-many Parent.children is now
-	# one-to-one Parent.child
-	child = db.relationship("Child", back_populates="parent", uselist=False)
-
-
-class Child(db.Model):
-	__tablename__ = 'child'
-	id = db.Column(db.Integer, primary_key=True)
-	parent_id = db.Column(db.Integer, db.ForeignKey('parent.id'), nullable=False)
-
-	# many-to-one side remains, see tip below
-	parent = db.relationship("Parent", back_populates="child")
-
-
-class Address(db.Model):
+class Address(Model):
 	"""
     PK  id
         address_type *
@@ -147,58 +152,35 @@ class Address(db.Model):
         customer_id
     """
 	__tablename__ = "addresses"
-	id = db.Column(db.Integer, primary_key=True)
-	address_type = db.Column(db.Enum('home', name='address_types'), unique=True, nullable=False)  # Home, Billing, Both
-	street = db.Column(db.String(95), nullable=False)
-	city = db.Column(db.String(35), nullable=False)
-	zip_code = db.Column(db.String(11), nullable=False)
+	id = Column(Integer, primary_key=True)
+	address_type = Column(db.Enum('home', 'work', name='address_types'), nullable=False)  # Home, Billing, Both
+	street = Column(String(95), nullable=False)
+	city = Column(String(35), nullable=False)
+	zip_code = Column(String(11), nullable=False)
 
-	apartment_number = db.Column(db.String(20))
-	other_info = db.Column(db.String(255))
+	apartment_number = Column(String(20))
+	other_info = Column(String(255))
 
-	# customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
-	# customer = db.relationship("Customer", back_populates="address")
-
-	#customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
-	#customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=False)
+	customer_id = Column(Integer, ForeignKey('customers.id'))
+	customer = relationship("Customer", foreign_keys=customer_id, post_update=True,
+	                        overlaps="address,business_address")
 
 
-# many-to-one side remains, see tip below
-# customer = db.relationship("Customer", back_populates="address")
+class Comment(Model):
+	"""
+    PK  id
+    FK  post_id
+    FK  customer_id
+    """
+	__tablename__ = "comments"
+	id = Column(Integer, primary_key=True)
+	content = Column(String(120), nullable=False)
+	post_id = Column(Integer, ForeignKey('posts.id'))
+	user_id = Column(Integer, ForeignKey('customers.id'))
+	created_at = Column(DateTime(), default=datetime.datetime.now(), nullable=False)
 
 
-class Customera(db.Model):
-	__tablename__ = 'customera'
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String)
-
-	billing_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
-	shipping_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
-
-	billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id], backref="cid")
-	#shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id], backref="cid")
-
-	#billing_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
-	#shipping_address_id = db.Column(db.Integer, db.ForeignKey("addressa.id"))
-
-	#billing_address = db.relationship("Addressa", foreign_keys=[billing_address_id], backref="cid")
-	#shipping_address = db.relationship("Addressa", foreign_keys=[shipping_address_id], backref="cid")
-
-
-class Addressa(db.Model):
-	__tablename__ = 'addressa'
-	id = db.Column(db.Integer, primary_key=True)
-	street = db.Column(db.String)
-	city = db.Column(db.String)
-	state = db.Column(db.String)
-	zip = db.Column(db.String)
-	#customer_id = db.Column(db.Integer, db.ForeignKey('customera.id'), nullable=False)
-
-	def get_customer_id(self):
-		return self.customer_id.id or self.customer_ship_id.id
-
-
-class Post(db.Model):
+class Post(Model):
 	"""
     PK  id
     FK  customer_id
@@ -213,82 +195,145 @@ class Post(db.Model):
         total comments
     """
 	__tablename__ = "posts"
-	id = db.Column(db.Integer, primary_key=True)
-	# FK customer_id
-	content = db.Column(db.String(255))
-	# Relation image_id = db.Column(db.Integer)
-	type = db.Column(db.Enum("front", name='post_types'), nullable=False)
-	created_at = db.Column(db.DateTime(), nullable=False)
-	updated_at = db.Column(db.DateTime())
+	__table_args__ = (CheckConstraint('NOT(content IS NULL AND image_id IS NULL)'),)
+	id = Column(Integer, primary_key=True)
+	user_id = Column(Integer, ForeignKey('customers.id'))
+	content = Column(String(255))
+	image_id = Column(Integer, ForeignKey('images.id'))
+	type = Column(ENUM(Enums.PostTypes), nullable=False)
+	created_at = Column(DateTime(), default=datetime.datetime.now(), nullable=False)
+	updated_at = Column(DateTime())
+	likes = relationship("Like", backref="post", uselist=True)
+	comments = relationship("Comment", backref="post", uselist=True)
 
 
-	# total likes
-	# total comments
+class Like(Model):
+	"""
+	PK	id
+	FK	post_id
+	FK	customer_id
+	"""
+	__tablename__ = "likes"
+	id = Column(Integer, primary_key=True)
+	post_id = Column(Integer, ForeignKey('posts.id'))
+	user_id = Column(Integer, ForeignKey('customers.id'))
 
 
-class Feed(db.Model):
+# class BaseOpts(SQLAlchemyAutoSchemaOpts):
+
+"""class BaseOpts(ma_sqla.SQLAlchemyAutoSchemaOpts):
+	def __init__(self, meta, ordered=False):
+		if not hasattr(meta, "sqla_session"):
+			meta.sqla_session = Session
+		meta.include_fk = True
+		meta.load_instance = True
+		super(BaseOpts, self).__init__(meta, ordered=ordered)"""
+
+
+"""class BaseSchema(ma.SQLAlchemyAutoSchema):
+	OPTIONS_CLASS = BaseOpts"""
+
+
+# class LikeSchema(BaseSchema):
+#	class Meta:
+#		model = Like
+
+
+class ImageReference(Model):
+	"""
+	PK	id
+		path
+	"""
+	__tablename__ = "images"
+	id = Column(Integer, primary_key=True)
+	path = Column(String(120), nullable=False)
+
+
+class Feed(Model):
 	"""
     PK  id
     FK  customer_id
     FK  post_id (multiple)
     """
 	__tablename__ = "feeds"
-	id = db.Column(db.Integer, primary_key=True)
+	id = Column(Integer, primary_key=True)
+	customer_id = Column(Integer, ForeignKey('customers.id'))
 
 
-# customer_id #FK
-# post_id #FK (list: multiple)
+def setup_schema(Base=Model, session=db.session):
+	# Create a function which incorporates the Base and session information
+	def setup_schema_fn():
+		# for class_ in models:
+		for class_ in [x.class_ for x in Model.registry.mappers]:
+			if hasattr(class_, "__tablename__"):
+				if class_.__name__.endswith("Schema"):
+					raise ma.sql.ModelConversionError(
+						"For safety, setup_schema can not be used when a"
+						"Model class ends with 'Schema'"
+					)
+
+				class Meta(object):
+					model = class_
+					sqla_session = session
+					include_fk = True
+					load_instance = True
+					# transient = True
+
+				class Opts(ma_sqla.SQLAlchemyAutoSchemaOpts):
+					def __init__(self, meta, ordered=False):
+						# if not hasattr(meta, "sqla_session"):
+						# 	meta.sqla_session = Session
+						meta.model = class_
+						meta.sqla_session = session
+						meta.include_fk = True
+						meta.load_instance = True
+						super().__init__(meta, ordered=ordered)
+				Opts.__name__ = class_.__name__ + "Opts"
+
+				schema_class_name = "%sSchema" % class_.__name__
+
+				schema_class = type(
+					schema_class_name, (ma.SQLAlchemyAutoSchema,), {"Meta": Meta}
+				)
+
+				setattr(class_, "__opts__", Opts)
+				setattr(class_, "__marshmallow__", schema_class)
+
+	return setup_schema_fn
 
 
-class Follower(db.Model):
-	"""
-    PK  id
-    Fk  customer_id
-    FK  customer_follower_id
-    """
-	__tablename__ = "followers"
-	id = db.Column(db.Integer, primary_key=True)
+setup_schema(Model, db.session)()
 
 
-# FK customer_id
-# FK customer_follower_id
-
-
-class Comment(db.Model):
-	"""
-    PK  id
-    FK  post_id
-    FK  customer_id
-    """
-	__tablename__ = "comments"
-	id = db.Column(db.Integer, primary_key=True)
-	# FK post_id
-	# FK customer_id
-	created_at = db.Column(db.DateTime(), nullable=False)
-
-
-class Like(db.Model):
-	"""
-    PK  id
-    FK  post_id
-    FK  user_id
-    """
-	__tablename__ = "likes"
-	id = db.Column(db.Integer, primary_key=True)
-
-
-# FK post_id
-# FK user_id
+# posts = relationship("Post")
 
 
 # class Image()
 
 
-"""class Message(db.Model):
+"""class Message(Model):
 	__tablename__ = "messages"
-	id = db.Column(db.Integer, primary_key=True)
-	message = db.Column(db.String(140))
+	id = Column(Integer, primary_key=True)
+	message = Column(String(140))
 
 	def to_dict(self):
 		return {'id': self.id, 'message': self.message, 'readBy': [f"{usr.name} ({usr.id})" for usr in self.readBy]}
 """
+
+"""
+class Parent(Model):
+	__tablename__ = 'parent'
+	id = Column(Integer, primary_key=True)
+
+	# previously one-to-many Parent.children is now
+	# one-to-one Parent.child
+	child = relationship("Child", back_populates="parent", uselist=False)
+
+
+class Child(Model):
+	__tablename__ = 'child'
+	id = Column(Integer, primary_key=True)
+	parent_id = Column(Integer, ForeignKey('parent.id'), nullable=False)
+
+	# many-to-one side remains, see tip below
+	parent = relationship("Parent", back_populates="child")"""

@@ -1,8 +1,11 @@
-from flask import request, jsonify, Response
+from flask import request, jsonify, Response, redirect, render_template
 
 from server import app, db
 from main import *
 from constants import *
+from flask_wtf import FlaskForm
+from wtforms import StringField, Form, EmailField, validators
+from wtforms.validators import DataRequired
 
 
 @app.route("/")
@@ -10,7 +13,22 @@ def hello_world():
     return "This i hello"
 
 
-@app.route("/messages", methods=["GET", "POST"])
+@app.route("/add/customer", methods=["POST"])
+def add_customer():
+    if request.method == "POST":
+        received = request.json
+        if received is not None:
+            try:
+                username    = received['username']
+                password    = received['password']
+                first_name  = received['first_name']
+                last_name   = received['']
+                #main.add_customer()
+            except InputNotValidError:
+                pass
+
+
+"""@app.route("/messages", methods=["GET", "POST"])
 def messages():
     if request.method == "POST":
         received = request.json
@@ -73,4 +91,4 @@ def get_unread_msg(user_id):
 def reset():
     db.drop_all()
     db.create_all()
-    return "", 200
+    return "", 200"""
