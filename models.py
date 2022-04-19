@@ -1,29 +1,29 @@
 import datetime
-from enum import Enum
-import marshmallow_sqlalchemy
-from sqlalchemy import *
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import *
 
-# from marshmallow_sqlalchemy import ModelConversionError, SQLAlchemyAutoSchema
+from flask_marshmallow import Marshmallow, sqla as ma_sqla
+from sqlalchemy import *
+# from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import sessionmaker, relationship
 
 import Enums
-from server import *
-Model = db.Model
-from sqlalchemy.types import Enum as SQLAlchemyEnumType
-# import json
-
+# from server import ma, ma_sqla
 from sqlalchemy.dialects.postgresql import ENUM
-from sqlalchemy.orm import relationship, sessionmaker
+from flask_sqlalchemy import SQLAlchemy
+from server import db
+
+# SQLAlchemyAutoSchemaOpts = ma_sqla.SQLAlchemyAutoSchemaOpts
+import server
+
+#db = SQLAlchemy(server.app)
+#ma = Marshmallow(server.app)
+#
+Model = db.Model
 
 
 # read_messages = db.Table('read_messages', Model.metadata,
 #                         Column('messages_id', Integer, ForeignKey('message.id')),
 #                         Column('user_id', Integer, ForeignKey('user.id')))
 # image_ids = db.Table('image_ids', Model.metadata, Column('image_id'), Integer, ForeignKey('image_id'))
-
-
-# session = scoped_session(sessionmaker(bind=engine))
 
 
 class User(Model):  # User abstract class
@@ -46,21 +46,6 @@ class User(Model):  # User abstract class
 	gender = Column(ENUM(Enums.Genders))
 
 
-#class TestBase(Model):
-#	id = Column(Integer, primary_key=True)
-
-
-# mapper_registry = registry()
-#Base = mapper_registry.generate_base()
-# Base = declarative_base()
-# Base = db.make_declarative_base()
-"""Base = declarative_base()
-metadata = Base.metadata
-metadata.bind = db.get_engine()
-Session = sessionmaker(bind=db.get_engine(), autoflush=True)
-session = Session()"""
-
-
 class Author(Model):
 	__tablename__ = "authors"
 	id = Column(Integer, primary_key=True)
@@ -77,9 +62,10 @@ class Author(Model):
 #	return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
 
 
-class Administrator(User):
+"""class Administrator(User):
 	__tablename__ = "administrators"
 	permission_group = Column(db.Enum('group1', name='permission_groups'), nullable=False)
+	"""
 
 
 class Customer(User):
@@ -103,7 +89,7 @@ class Customer(User):
 	__tablename__ = "customers"
 
 	# customer_number = Column(String(32), CheckConstraint('char_length(customer_number) IS 6'), nullable=False)
-	customer_number = Column(String(32), nullable=False)
+	customer_number = Column(String(10), nullable=False)
 	phone_number = Column(String(20), nullable=False)
 	business_type = Column(ENUM(Enums.BusinessTypes), nullable=False)
 	organization_number = Column(String(11), nullable=False)
@@ -153,7 +139,7 @@ class Address(Model):
     """
 	__tablename__ = "addresses"
 	id = Column(Integer, primary_key=True)
-	address_type = Column(db.Enum('home', 'work', name='address_types'), nullable=False)  # Home, Billing, Both
+	address_type = Column(Enum('home', 'work', name='address_types'), nullable=False)  # Home, Billing, Both
 	street = Column(String(95), nullable=False)
 	city = Column(String(35), nullable=False)
 	zip_code = Column(String(11), nullable=False)
@@ -229,7 +215,6 @@ class Like(Model):
 		meta.load_instance = True
 		super(BaseOpts, self).__init__(meta, ordered=ordered)"""
 
-
 """class BaseSchema(ma.SQLAlchemyAutoSchema):
 	OPTIONS_CLASS = BaseOpts"""
 
@@ -260,40 +245,42 @@ class Feed(Model):
 	customer_id = Column(Integer, ForeignKey('customers.id'))
 
 
-def setup_schema(Base=Model, session=db.session):
+def setup_schema():
 	# Create a function which incorporates the Base and session information
 	def setup_schema_fn():
 		# for class_ in models:
 		for class_ in [x.class_ for x in Model.registry.mappers]:
 			if hasattr(class_, "__tablename__"):
 				if class_.__name__.endswith("Schema"):
-					raise ma.sql.ModelConversionError(
+					raise server.ma.sql.ModelConversionError(
 						"For safety, setup_schema can not be used when a"
 						"Model class ends with 'Schema'"
 					)
 
 				class Meta(object):
 					model = class_
-					sqla_session = session
+					sqla_session = server.db.session
 					include_fk = True
 					load_instance = True
-					# transient = True
+				# transient = True
 
 				class Opts(ma_sqla.SQLAlchemyAutoSchemaOpts):
 					def __init__(self, meta, ordered=False):
 						# if not hasattr(meta, "sqla_session"):
 						# 	meta.sqla_session = Session
-						meta.model = class_
+						"""meta.model = class_
 						meta.sqla_session = session
 						meta.include_fk = True
-						meta.load_instance = True
+						meta.load_instance = True"""
+						meta = Meta
 						super().__init__(meta, ordered=ordered)
+
 				Opts.__name__ = class_.__name__ + "Opts"
 
 				schema_class_name = "%sSchema" % class_.__name__
 
 				schema_class = type(
-					schema_class_name, (ma.SQLAlchemyAutoSchema,), {"Meta": Meta}
+					schema_class_name, (server.ma.SQLAlchemyAutoSchema,), {"Meta": Meta}
 				)
 
 				setattr(class_, "__opts__", Opts)
@@ -302,8 +289,7 @@ def setup_schema(Base=Model, session=db.session):
 	return setup_schema_fn
 
 
-setup_schema(Model, db.session)()
-
+setup_schema()()
 
 # posts = relationship("Post")
 
