@@ -3,34 +3,16 @@ import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 # from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import relationship
-from flask_marshmallow import sqla as ma_sqla, Marshmallow
+from sqlalchemy.orm import relationship, sessionmaker
 
-# db = SQLAlchemy(app)
-db = SQLAlchemy()
-# from views import init_views
-
-
-def create_app():
-    # ma.init_app(app)
-    # db.init_app(app)
-    # from views import init_views
-    # init_views(app)
-    Session = sessionmaker(bind=db.get_engine(app=app), autoflush=True)
-    db.session = Session()
-    return app
-
-create_app()
-session = db.session
-
-import Enums
-from MyProject.server import ma
+from MyProject.server import app, groups
 from sqlalchemy.dialects.postgresql import ENUM
-from MyProject.server import db
-from MyProject import server
 
+db = SQLAlchemy(app)
+# db.session = sessionmaker(bind=db.get_engine(app=app), autoflush=True)()
 db.Model.id = Column(Integer, primary_key=True)
 Model = db.Model
+session = db.session
 
 # read_messages = db.Table('read_messages', Model.metadata,
 #                         Column('messages_id', Integer, ForeignKey('message.id')),
@@ -54,7 +36,7 @@ class User(Model):  # User abstract class
 	first_name = Column(String(32))
 	last_name = Column(String(32))
 	email = Column(String(150), unique=True, nullable=False)
-	gender = Column(ENUM(Enums.Genders))
+	gender = Column(ENUM(groups.Genders))
 
 # Relations:
 # rel = relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
@@ -90,7 +72,7 @@ class Customer(User):
 	__tablename__ = "customers"
 	customer_number = Column(String(6), unique=True)
 	phone_number = Column(String(20), unique=True, nullable=False)
-	business_type = Column(ENUM(Enums.BusinessTypes), nullable=False)
+	business_type = Column(ENUM(groups.BusinessTypes), nullable=False)
 	organization_number = Column(String(11), unique=True, nullable=False)
 
 	address = relationship("Address",
@@ -131,7 +113,7 @@ class Address(Model):
         customer_id
     """
 	__tablename__ = "addresses"
-	address_type = Column(ENUM(Enums.AddressTypes), nullable=False)  # Home, Billing, Both
+	address_type = Column(ENUM(groups.AddressTypes), nullable=False)  # Home, Billing, Both
 	street = Column(String(95), nullable=False)
 	city = Column(String(35), nullable=False)
 	zip_code = Column(String(11), nullable=False)
@@ -175,7 +157,7 @@ class Post(Model):
 	user_id = Column(Integer, ForeignKey('customers.id'))
 	image_id = Column(Integer, ForeignKey('images.id'))
 	content = Column(String(255))
-	type = Column(ENUM(Enums.PostTypes), nullable=False)
+	type = Column(ENUM(groups.PostTypes), nullable=False)
 	created_at = Column(DateTime(), default=datetime.datetime.now(), nullable=False)
 	updated_at = Column(DateTime())
 	likes = relationship("Like", backref="post", uselist=True)

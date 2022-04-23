@@ -3,18 +3,17 @@ import re
 import string
 
 import pytz as pytz
+from marshmallow_enum import EnumField
 from password_validator import PasswordValidator
-import custom_fields
-from custom_fields import ValidationError, fields
-from models import *
-from marshmallow import validates as validator, validate, validates_schema, post_load
+from . import groups, app, custom_fields, ma_sqla, ValidationError
+from .models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
+from .phoneformat import format_phone_number
+from flask_marshmallow import Marshmallow
+from marshmallow import validates as validator, validate, validates_schema, post_load, fields
 from usernames import is_safe_username
 from datetime import datetime
 
-# from MyProject.my_package.phoneformat import format_phone_number
-
-# ma = Marshmallow(app)
-ma = Marshmallow()
+ma = Marshmallow(app)
 
 USERNAME_LENGTH_MIN = 5
 NAME_LENGTH_MIN = 3
@@ -22,7 +21,6 @@ NAME_LENGTH_MAX = 32
 
 # --- Nice imports ---
 SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
-
 
 
 def setup_schema():
@@ -39,9 +37,10 @@ def setup_schema():
 
 				class Meta(object):
 					model = class_
-					sqla_session = server.db.session
+					sqla_session = session
 					include_fk = True
 					load_instance = True
+
 				# transient = True
 
 				class Opts(ma_sqla.SQLAlchemyAutoSchemaOpts):
@@ -71,9 +70,10 @@ def setup_schema():
 
 setup_schema()()
 
+
 def already_exists(class_, attribute, value):
 	filters = {attribute: value}
-	return session.query(class_).filter_by(**filters).first() is not None
+	return db.session.query(class_).filter_by(**filters).first() is not None
 
 
 def id_generator(size, chars):
@@ -92,9 +92,13 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 	first_name = fields.Method(deserialize="capitalize", required=True)
 	last_name = fields.Method(deserialize="capitalize", required=True)
 	email = fields.Email(required=True)
-	gender = custom_fields.FieldEnum(Enums.Genders)
+	# gender = custom_fields.FieldEnum(groups.Genders)
+	# gender = EnumField(groups.Genders)
+	# wrong with postgresql maybe use string maybe use this (session needs to be changed back to sessionmaker for old enum syste mto work..)
+	gender = fields.Str(required=True)
 	phone_number = fields.Method(deserialize="remove_unnecessary_chars", required=True)
-	business_type = custom_fields.FieldEnum(Enums.BusinessTypes)
+	business_type = fields.Str()
+	# business_type = EnumField(groups.BusinessTypes)
 	organization_number = fields.Int(required=True)  # should be length not max
 
 	@staticmethod
@@ -141,7 +145,7 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 
 	@validator('organization_number')
 	def validate_organization_number(self, value):
-		if not len(str(value)) == 11:
+		if len(str(value)) != 11:
 			raise ValidationError("Organization number must be 11 digits")
 		if already_exists(Customer, 'organization_number', value):
 			raise ValidationError("Customer with this organization_number already exists")
@@ -170,7 +174,7 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 class AddressSchema(SQLAlchemyAutoSchema):
 	Meta = Address.__marshmallow__().Meta
 
-	address_type = custom_fields.FieldEnum(Enums.AddressTypes)
+	address_type = custom_fields.FieldEnum(groups.AddressTypes)
 	street = fields.Str(required=True)
 	city = fields.Str(required=True)
 	zip_code = fields.Str(required=True)
@@ -218,7 +222,7 @@ class PostSchema(SQLAlchemyAutoSchema):
 	user_id = custom_fields.customer_id()
 	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
 	content = fields.Str(validate=validate.Length(max=120))
-	type = custom_fields.FieldEnum(Enums.PostTypes)
+	type = custom_fields.FieldEnum(groups.PostTypes)
 
 	@validates_schema
 	def validate_schema(self, data, **kwargs):

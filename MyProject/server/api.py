@@ -1,6 +1,6 @@
 from flask import request
 
-from MyProject.server import app
+from runserver import app
 
 
 @app.route("/")

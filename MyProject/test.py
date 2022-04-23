@@ -6,8 +6,9 @@
 	db.session.add(page)
 	#request.dbsession.add(page)
 """
-from models import *
-from validate import CustomerSchema, AddressSchema, CommentSchema, PostSchema
+from server import groups
+from server.models import session
+from server .validate import CustomerSchema, AddressSchema, CommentSchema, PostSchema
 
 """espresso = Customer(username='ESP123', password='pass123', first_name='Elsa', last_name='Fredriksson',
                     email="elsa123@espresso.se", gender=Enums.Genders.Woman, customer_number='KDB1245',
@@ -53,24 +54,23 @@ print(Customer.__marshmallow__().dump(espresso))
 # {'username': 'ESP123', 'email': 'elsa123@espresso.se', 'gender': <Genders.Woman: 2>, 'id': 33, 'customer_number': 'KDB1245', 'organization_number': '11043554', 'last_name': 'Fredriksson', 'password': 'pass123', 'business_type': <BusinessTypes.Cafe: 2>, 'phone_number': '0769471214', 'first_name': 'Elsa'}
 """
 
-server.counter = + 1
-dct = {'username': 'vincent122345', 'email': 'loaded@email.com', 'gender': Enums.Genders.Woman,
+dct = {'username': 'vincent122345', 'email': 'loaded@email.com', 'gender': 'Man',
        'organization_number': 11043554910, 'last_name': 'Fredriksson',
-       'password': 'pass123', 'business_type': Enums.BusinessTypes.Cafe, 'phone_number': '+46769471214',
+       'password': 'pass123', 'business_type': 'Cafe', 'phone_number': '+46769471214',
        'first_name': 'Elsa'}
 # add_customer(dct)
 usr = CustomerSchema().load(dct)
-db.session.add(usr)
-db.session.commit()
+session.add(usr)
+session.commit()
 
 testUser = {'username': 'vincent12345', 'password': 'apelsin12345', 'first_name': 'Vincent', 'last_name': 'Garbrant',
-            'email': 'rafeb@gmail.com', 'gender': Enums.Genders.Man, 'customer_number': 'ABC123',
-            'phone_number': '+46769471213', 'business_type': Enums.BusinessTypes.Cafe,
+            'email': 'rafeb@gmail.com', 'gender': 'Man', 'customer_number': 'ABC123',
+            'phone_number': '+46769471213', 'business_type': 'Cafe',
             'organization_number': 12345678911}
 
 d = CustomerSchema().load(testUser)
-db.session.add(d)
-db.session.commit()
+# session.add(d)
+# session.commit()
 
 # cus = CustomerSchema().load(dct)
 # print(server.counter)

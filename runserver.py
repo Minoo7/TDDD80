@@ -1,5 +1,6 @@
+# from MyProject.server import app
 from MyProject.server.models import db
-from MyProject.server.views import app
+from MyProject.server.views import *
 
 
 def reset_db():

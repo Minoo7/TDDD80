@@ -3,7 +3,8 @@ from functools import wraps
 
 from flask import request, jsonify, abort
 
-from . import app
+from MyProject.server import app, models
+from MyProject.server.models import Customer, session
 
 
 def require_method_params(*outer_args, **outer_kwargs):
@@ -35,21 +36,16 @@ def require_method_params(*outer_args, **outer_kwargs):
 	return decorator
 
 
+# def init_views(app):
+
 @app.route("/", methods=["GET"])
 def home():
 	return "Hello World", 200
 
 
-"""def init_views(appd):
-
-	@app.route("/", methods=["GET"])
-	def home():
-		return "Hello World", 200
-
-	@app.route("/customers", methods=["GET"])
-	@require_method_params(GET=[])
-	def get_customers():
-		if request.method == "GET":
-			pass
-			# return jsonify(session.query(Customer).all()), 200
-			# return jsonify([msg.to_dict() for msg in Message.query.all()]), 200"""
+@app.route("/customers", methods=["GET"])
+@require_method_params(GET=[])
+def get_customers():
+	if request.method == "GET":
+		return session.query(Customer).first().username, 200
+# return jsonify([msg.to_dict() for msg in Message.query.all()]), 200"""

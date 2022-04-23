@@ -1,7 +1,7 @@
 import random
 import string
 
-import Enums
+import groups
 from models import *
 # from server import *
 from flask_wtf import FlaskForm
