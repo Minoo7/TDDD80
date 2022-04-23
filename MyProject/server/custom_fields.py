@@ -20,23 +20,14 @@ class FieldId(fields.Integer):
 
 
 class FieldExistingId(fields.Integer):
-	def __init__(self, class_):
+	def __init__(self, class_, required=False):
 		self.class_ = class_
-		super().__init__(strict=True, required=True)
+		super().__init__(strict=True, allow_none=True, required=required)
 
 	def _validated(self, value):
 		if db.session.query(self.class_).filter_by(id=value).first():
 			return super()._validated(value)
 		raise ValidationError("Id was not found in database")
-
-
-"""class FieldFunction(fields.Function):
-	def __init__(self, func):
-		self.func = func
-		super().__init__(deserialize=func)
-
-	def _deserialize(self, value, attr, data, **kwargs):
-		return super()._deserialize(self, value, data=data)"""
 
 
 def customer_id():

@@ -1,11 +1,6 @@
-from flask import request, jsonify, Response, redirect, render_template
+from flask import request
 
-from server import app, db
-from main import *
-from constants import *
-from flask_wtf import FlaskForm
-from wtforms import StringField, Form, EmailField, validators
-from wtforms.validators import DataRequired
+from MyProject.server import app
 
 
 @app.route("/")
