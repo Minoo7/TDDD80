@@ -1,8 +1,8 @@
 import typing
 from marshmallow import fields
 
-from .models import session, Customer, Post
-from . import ma_sqla, ValidationError
+from MyProject.server.models import session, Customer, Post
+from MyProject.server import ma_sqla, ValidationError
 
 
 class FieldId(fields.Integer):
@@ -35,7 +35,7 @@ def post_id():
 	return FieldExistingId(class_=Post)
 
 
-class FieldEnum(fields.Field):
+"""class FieldEnum2(fields.Field):
 	def __init__(self, group):
 		self.group = group
 		super().__init__(required=True)
@@ -55,5 +55,5 @@ class FieldEnum(fields.Field):
 			print(self.group)
 			print("gg")
 			print(self.group(str(value)))
-			# print(self.group.values())
-			# raise ValidationError(str(value) + " is not a valid " + re.search("(?!')\w*(?=')", str(self.group)).group(0))
+	# print(self.group.values())
+	# raise ValidationError(str(value) + " is not a valid " + re.search("(?!')\w*(?=')", str(self.group)).group(0))"""

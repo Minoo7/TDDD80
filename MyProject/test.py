@@ -6,9 +6,8 @@
 	db.session.add(page)
 	#request.dbsession.add(page)
 """
-from server import groups
 from server.models import session
-from server .validate import CustomerSchema, AddressSchema, CommentSchema, PostSchema
+from MyProject.server.validation.schemas import CustomerSchema
 
 """espresso = Customer(username='ESP123', password='pass123', first_name='Elsa', last_name='Fredriksson',
                     email="elsa123@espresso.se", gender=Enums.Genders.Woman, customer_number='KDB1245',

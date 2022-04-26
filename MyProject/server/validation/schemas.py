@@ -1,17 +1,17 @@
-import random
 import re
 import string
 
-import pytz as pytz
 from marshmallow_enum import EnumField
 from password_validator import PasswordValidator
-from . import groups, app, custom_fields, ma_sqla, ValidationError
-from .models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
-from .phoneformat import format_phone_number
+from MyProject.server import groups, app, ma_sqla, ValidationError
+from MyProject.server.validation import custom_fields
+from MyProject.server.models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
+from MyProject.server.validation.phoneformat import format_phone_number
 from flask_marshmallow import Marshmallow
 from marshmallow import validates as validator, validate, validates_schema, post_load, fields
 from usernames import is_safe_username
-from datetime import datetime
+
+from MyProject.server.validation.validate import get_current_time, obj_with_attr_exists, id_generator
 
 ma = Marshmallow(app)
 
@@ -71,20 +71,13 @@ def setup_schema():
 setup_schema()()
 
 
-def already_exists(class_, attribute, value):
-	filters = {attribute: value}
-	return db.session.query(class_).filter_by(**filters).first() is not None
+class MySchema(SQLAlchemyAutoSchema):
+	def __init__(self, *args, **kwargs):
+		self.partial = False
+		super().__init__(*args, **kwargs)
 
 
-def id_generator(size, chars):
-	return ''.join(random.choice(chars) for _ in range(size))
-
-
-def get_current_time():
-	return datetime.now(pytz.timezone('utc'))
-
-
-class CustomerSchema(SQLAlchemyAutoSchema):
+class CustomerSchema(MySchema):
 	Meta = Customer.__marshmallow__().Meta
 
 	username = fields.Str(required=True)
@@ -92,14 +85,14 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 	first_name = fields.Method(deserialize="capitalize", required=True)
 	last_name = fields.Method(deserialize="capitalize", required=True)
 	email = fields.Email(required=True)
-	# gender = custom_fields.FieldEnum(groups.Genders)
-	# gender = EnumField(groups.Genders)
-	# wrong with postgresql maybe use string maybe use this (session needs to be changed back to sessionmaker for old enum syste mto work..)
-	gender = fields.Str(required=True)
+	gender = EnumField(groups.Genders)
 	phone_number = fields.Method(deserialize="remove_unnecessary_chars", required=True)
-	business_type = fields.Str()
-	# business_type = EnumField(groups.BusinessTypes)
+	business_type = EnumField(groups.BusinessTypes, required=True)
 	organization_number = fields.Int(required=True)  # should be length not max
+
+	def partial_load(self, json_input):
+		self.partial = True
+		self.load(json_input, partial=True)
 
 	@staticmethod
 	def capitalize(value):
@@ -114,7 +107,7 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 	def validate_username(self, value):
 		if not (USERNAME_LENGTH_MIN <= len(value) and is_safe_username(value, max_length=NAME_LENGTH_MAX)):
 			raise ValidationError('username was not a valid username')
-		if already_exists(Customer, 'username', value):
+		if obj_with_attr_exists(Customer, 'username', value):
 			raise ValidationError("Customer with this username already exists")
 
 	@validator('password')
@@ -140,33 +133,37 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 	def validate_phone_number(self, value):
 		if re.match('\+?(?:0{0,2}[46]*){1}7{1}[0-9]{8}', value) is None:
 			raise ValidationError('invalid phone number')
-		if already_exists(Customer, 'phone_number', value):
+		if obj_with_attr_exists(Customer, 'phone_number', value):
 			raise ValidationError("Customer with this phone number already exists")
 
 	@validator('organization_number')
 	def validate_organization_number(self, value):
 		if len(str(value)) != 11:
 			raise ValidationError("Organization number must be 11 digits")
-		if already_exists(Customer, 'organization_number', value):
+		if obj_with_attr_exists(Customer, 'organization_number', value):
 			raise ValidationError("Customer with this organization_number already exists")
 
+	# generate unique customer_number
 	@staticmethod
 	def unique_customer_number():
-		# generate unique customer_number
-		generator = lambda: id_generator(size=3, chars=string.ascii_uppercase) + id_generator(size=3,
-																							  chars=string.digits)
+		def generator():
+			return id_generator(size=3, chars=string.ascii_uppercase) + id_generator(size=3, chars=string.digits)
+
 		generated_id = generator()
-		while already_exists(Customer, 'customer_number', generated_id):
+		while obj_with_attr_exists(Customer, 'customer_number', generated_id):
 			generated_id = generator()
 		return generated_id
 
 	@post_load
 	def make_customer(self, data, **kwargs):
-		data['customer_number'] = self.unique_customer_number()
+		if self.partial:
+			return True
+		else:
+			data['customer_number'] = self.unique_customer_number()
 
-		# format phone number into swedish standard
-		data['phone_number'] = format_phone_number(data['phone_number'])
-		return data
+			# format phone number into swedish standard
+			data['phone_number'] = format_phone_number(data['phone_number'])
+			return data
 
 
 # --- Address ---
@@ -174,11 +171,13 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 class AddressSchema(SQLAlchemyAutoSchema):
 	Meta = Address.__marshmallow__().Meta
 
-	address_type = custom_fields.FieldEnum(groups.AddressTypes)
+	# fix enum later
+	address_type = EnumField(groups.AddressTypes, required=True)
 	street = fields.Str(required=True)
 	city = fields.Str(required=True)
 	zip_code = fields.Str(required=True)
 	other_info = fields.Str(allow_none=True, validate=validate.Length(max=255))
+	customer_id = custom_fields.customer_id()
 
 	@validator('street')
 	def validate_street(self, value):
@@ -200,7 +199,7 @@ class AddressSchema(SQLAlchemyAutoSchema):
 class CommentSchema(SQLAlchemyAutoSchema):
 	Meta = Comment.__marshmallow__().Meta
 
-	content = fields.Str(required=True, validate=validate.Length(max=120))
+	content = fields.Str(validate=validate.Length(max=120), required=True)
 	post_id = custom_fields.post_id()
 	user_id = custom_fields.customer_id()
 
@@ -222,7 +221,7 @@ class PostSchema(SQLAlchemyAutoSchema):
 	user_id = custom_fields.customer_id()
 	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
 	content = fields.Str(validate=validate.Length(max=120))
-	type = custom_fields.FieldEnum(groups.PostTypes)
+	type = EnumField(groups.PostTypes, required=True)
 
 	@validates_schema
 	def validate_schema(self, data, **kwargs):
