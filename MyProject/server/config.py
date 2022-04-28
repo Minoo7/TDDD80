@@ -13,5 +13,8 @@ else: # when running locally: use sqlite
 
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+# UPLOAD_FOLDER = '/path/to/the/uploads'
+UPLOAD_FOLDER = '/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 JWT_SECRET_KEY = 'dsyr'
 JWT_ACCESS_TOKEN_EXPIRES = ACCESS_EXPIRES

@@ -5,28 +5,21 @@ from .. import ValidationError
 from ..models import session
 
 
-class IdError(ValidationError):
+class IdError(Exception):
 	default_msg = " with this id does not exist"
 
-	def __init__(self, data, class_=None, message=default_msg):
-		self.message = message
+	def __init__(self, class_=None, id_=None, message=None):
 		self.class_ = class_
-		super().__init__(message=self.message, data=data)
+		self.id_ = id_
+		self.message = message
+		super().__init__()
 
 	def __str__(self):
-		return self.class_.__name__ + self.message if self.message == IdError.default_msg else self.message
-
-
-def parse_id(class_, id_value):
-	id_ = id_value
-	if isinstance(id_value, str):
-		try:
-			id_ = int(id_value)
-		except ValueError:
-			raise IdError(data=id_value, message="Id must be an Integer")
-	if not obj_with_attr_exists(class_, "id", id_):
-		raise IdError(id_value, class_)
-	return id_
+		if self.message:
+			return self.message
+		if self.class_ and self.id_:
+			return self.class_.__name__ + " with id: " + str(self.id_) + " does not exist"
+		return "id does not exist"
 
 
 def obj_with_attr_exists(class_, attribute, value):

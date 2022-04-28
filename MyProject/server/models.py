@@ -77,10 +77,10 @@ class Customer(User):
 
 	address = relationship("Address",
 	                       primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='home')",
-	                       post_update=True, uselist=False)
+	                       post_update=True, cascade="all,delete",  uselist=False)
 	business_address = relationship("Address",
 	                                primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='work')",
-	                                post_update=True, overlaps="address", uselist=False)
+	                                post_update=True, overlaps="address", cascade="all,delete", uselist=False)
 
 	following = relationship(
 		'Customer', lambda: follower_table,

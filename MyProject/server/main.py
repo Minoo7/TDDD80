@@ -1,4 +1,3 @@
-
 """def add_message(new_message, sender):
     message = Message(message=new_message)
     db.session.add(message)
@@ -9,3 +8,39 @@
 def get_messages():
     return [msg.to_dict() for msg in Message.query.all()]
 """
+
+from MyProject.server import ValidationError
+from MyProject.server.models import session
+from MyProject.server.validation.validate import IdError
+
+
+def query(class_, **attr):
+	return session.query(class_).filter_by(**attr)
+
+
+def find(class_, id_):
+	return session.query(class_).get(id_)
+
+
+def find_by(class_, **kwargs):
+	return query(class_, **kwargs).first()
+
+
+def find_by_all(class_, **kwargs):
+	return query(class_, **kwargs).all()
+
+
+def assert_id_exists(class_, id_):
+	if not find(class_, id_):
+		raise IdError(class_, id_)
+
+
+def edit_object(class_, id_, json_input):
+	schema = class_.__schema__
+	errors = schema().validate(json_input, partial=True)
+	if not bool(errors):  # no errors
+		obj = find(class_, id_)
+		for param in json_input:
+			setattr(obj, param, json_input[param])
+	else:
+		raise ValidationError(errors)

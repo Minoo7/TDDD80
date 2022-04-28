@@ -1,12 +1,13 @@
 import re
 import string
+import sys
 
 from marshmallow_enum import EnumField
 from password_validator import PasswordValidator
-from MyProject.server import groups, app, ma_sqla, ValidationError
-from MyProject.server.validation import custom_fields
-from MyProject.server.models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
-from MyProject.server.validation.phoneformat import format_phone_number
+from .. import groups, app, ma_sqla, ValidationError
+from . import custom_fields
+from ..models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
+from .phoneformat import format_phone_number
 from flask_marshmallow import Marshmallow
 from marshmallow import validates as validator, validate, validates_schema, post_load, fields
 from usernames import is_safe_username
@@ -27,42 +28,22 @@ def setup_schema():
 	# Create a function which incorporates the Base and session information
 	def setup_schema_fn():
 		# for class_ in models:
+		class Meta(object):
+			model = None
+			sqla_session = session
+			include_fk = True
+			load_instance = True
+
 		for class_ in [x.class_ for x in Model.registry.mappers]:
 			if hasattr(class_, "__tablename__"):
-				if class_.__name__.endswith("Schema"):
-					raise ma.sql.ModelConversionError(
-						"For safety, setup_schema can not be used when a"
-						"Model class ends with 'Schema'"
-					)
 
-				class Meta(object):
-					model = class_
-					sqla_session = session
-					include_fk = True
-					load_instance = True
-
-				# transient = True
-
-				class Opts(ma_sqla.SQLAlchemyAutoSchemaOpts):
-					def __init__(self, meta, ordered=False):
-						# if not hasattr(meta, "sqla_session"):
-						# 	meta.sqla_session = Session
-						"""meta.model = class_
-						meta.sqla_session = session
-						meta.include_fk = True
-						meta.load_instance = True"""
-						meta = Meta
-						super().__init__(meta, ordered=ordered)
-
-				Opts.__name__ = class_.__name__ + "Opts"
+				meta_class = type("Meta", (Meta,), {"model": class_})
 
 				schema_class_name = "%sSchema" % class_.__name__
-
 				schema_class = type(
-					schema_class_name, (ma.SQLAlchemyAutoSchema,), {"Meta": Meta}
+					schema_class_name, (ma.SQLAlchemyAutoSchema,), {"Meta": meta_class}
 				)
 
-				setattr(class_, "__opts__", Opts)
 				setattr(class_, "__marshmallow__", schema_class)
 
 	return setup_schema_fn
@@ -71,13 +52,7 @@ def setup_schema():
 setup_schema()()
 
 
-class MySchema(SQLAlchemyAutoSchema):
-	def __init__(self, *args, **kwargs):
-		self.partial = False
-		super().__init__(*args, **kwargs)
-
-
-class CustomerSchema(MySchema):
+class CustomerSchema(SQLAlchemyAutoSchema):
 	Meta = Customer.__marshmallow__().Meta
 
 	username = fields.Str(required=True)
@@ -88,11 +63,7 @@ class CustomerSchema(MySchema):
 	gender = EnumField(groups.Genders)
 	phone_number = fields.Method(deserialize="remove_unnecessary_chars", required=True)
 	business_type = EnumField(groups.BusinessTypes, required=True)
-	organization_number = fields.Int(required=True)  # should be length not max
-
-	def partial_load(self, json_input):
-		self.partial = True
-		self.load(json_input, partial=True)
+	organization_number = fields.Int(required=True)
 
 	@staticmethod
 	def capitalize(value):
@@ -156,14 +127,11 @@ class CustomerSchema(MySchema):
 
 	@post_load
 	def make_customer(self, data, **kwargs):
-		if self.partial:
-			return True
-		else:
-			data['customer_number'] = self.unique_customer_number()
+		data['customer_number'] = self.unique_customer_number()
 
-			# format phone number into swedish standard
-			data['phone_number'] = format_phone_number(data['phone_number'])
-			return data
+		# format phone number into swedish standard
+		data['phone_number'] = format_phone_number(data['phone_number'])
+		return data
 
 
 # --- Address ---
@@ -187,7 +155,7 @@ class AddressSchema(SQLAlchemyAutoSchema):
 
 	@validator('city')
 	def validate_city(self, value):
-		if not (len(value) <= 35 and value.isalpha()):
+		if not (2 <= len(value) <= 35 and value.isalpha()):
 			raise ValidationError("improper city")
 
 	@validator('zip_code')
@@ -258,3 +226,20 @@ class FeedSchema(SQLAlchemyAutoSchema):
 	Meta = Feed.__marshmallow__().Meta
 
 	customer_id = custom_fields.customer_id()
+
+
+def register_schemas():
+	"""
+	Adds a reference attribute to the corresponding schema for every model class.
+	Also adds the required fields used for json validation (used in views.py).
+	"""
+	for class_ in [x.class_ for x in Model.registry.mappers]:
+		schema = eval(str(class_.__name__) + "Schema")
+		setattr(class_, "__schema__", schema)
+	for class_ in [x.class_ for x in Model.registry.mappers]:
+		required_fields = []
+		schema_fields = class_.__schema__._declared_fields
+		for field in schema_fields:
+			if schema_fields[field].required:
+				required_fields.append(field)
+		setattr(class_, "__required_params__", required_fields)

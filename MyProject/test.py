@@ -6,8 +6,8 @@
 	db.session.add(page)
 	#request.dbsession.add(page)
 """
-from server.models import session
-from MyProject.server.validation.schemas import CustomerSchema
+from server.models import session, Address
+from MyProject.server.validation.schemas import CustomerSchema, AddressSchema
 
 """espresso = Customer(username='ESP123', password='pass123', first_name='Elsa', last_name='Fredriksson',
                     email="elsa123@espresso.se", gender=Enums.Genders.Woman, customer_number='KDB1245',
@@ -62,12 +62,15 @@ usr = CustomerSchema().load(dct)
 session.add(usr)
 session.commit()
 
-testUser = {'username': 'vincent12345', 'password': 'apelsin12345', 'first_name': 'Vincent', 'last_name': 'Garbrant',
-            'email': 'rafeb@gmail.com', 'gender': 'Man', 'customer_number': 'ABC123',
-            'phone_number': '+46769471213', 'business_type': 'Cafe',
-            'organization_number': 12345678911}
+print(CustomerSchema().dump(usr))
+address = AddressSchema().load({"address_type": "home", "street": "Landsvagen 13", "city": "Lund", "zip_code": "192 71"})
+session.add(address)
+session.commit()
+ad = session.query(Address).get(1)
+print(ad)
+print(AddressSchema().dump(ad))
 
-d = CustomerSchema().load(testUser)
+
 # session.add(d)
 # session.commit()
 
