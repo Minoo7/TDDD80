@@ -12,7 +12,7 @@ from MyProject.server import app, ValidationError, MYDIR
 from MyProject.server.config import ALLOWED_EXTENSIONS
 from MyProject.server.constants import GET, POST, DELETE, PUT
 from MyProject.server.main import edit_obj, find_by_all, find, assert_id_exists, create_obj, delete_obj
-from MyProject.server.models import Customer, session, Address, Post, ImageReference
+from MyProject.server.models import Customer, session, Address, Post, ImageReference, Like
 from MyProject.server.routes.helpers import require_method_params, require_id_exists, customer_params, address_params, \
 	post_params, require_ownership
 from MyProject.server.validation.validate import IdError
@@ -25,7 +25,6 @@ def home():
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 
 # CREATE own decorator which sets which methods need jwt_required, later..
@@ -61,7 +60,8 @@ def addresses(customer_id):
 		customer_address = find(Customer, customer_id).address
 		return jsonify(customer_address.street), 200
 	if request.method == POST:
-		create_obj(Address, request.json | {'customer_id': customer_id})
+		# create_obj(Address, request.json | {'customer_id': customer_id})
+		create_obj(Address, request.json | dict(customer_id=customer_id))
 		return jsonify(message="Successfully created address"), 201
 
 
@@ -78,54 +78,35 @@ def address(customer_id, address_id):
 		return jsonify(message="Successfully deleted address"), 200
 
 
-@app.route('/file-upload', methods=['POST'])
-def upload_file():
-	# check if the post request has the file part
-	if 'file' not in request.files:
-		return jsonify(message='No file part in the request'), 400
-	file = request.files['file']
-	if not file.filename:
-		return jsonify(message='No file selected for uploading'), 400
-	if file and allowed_file(file.filename):
-		filename = secure_filename(file.filename)
-		# file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		file_path = os.path.join(MYDIR + "" + app.config['UPLOAD_FOLDER'], filename)
-		file.save(file_path)
-		create_obj(ImageReference, {'path': file_path})
-		return jsonify(message='File successfully uploaded'), 201
-	else:
-		return jsonify(message='Allowed file types are png, jpg, jpeg'), 400
-
-
-@app.route("/customers/<int:customer_id>/images", methods=[GET, POST])
+@app.route("/customers/<int:customer_id>/images", methods=[POST])
 @require_id_exists()
 def images(customer_id):
-	if request.method == GET:
-		return jsonify([customer.images for customer in find_by_all(Customer)]), 200
 	if request.method == POST:
 		if 'file' not in request.files:
 			return jsonify(message='No file part in the request'), 400
+
 		file = request.files['file']
 		if not file.filename:
 			return jsonify(message='No file selected for uploading'), 400
+
+		upload_path = os.path.join(os.getcwd() + app.config['UPLOAD_FOLDER'])
+		user_folder = os.path.join(upload_path + str(customer_id))
+		if not os.path.isdir(user_folder):
+			os.mkdir(user_folder)
+
 		if file and allowed_file(file.filename):
-			upload_path = os.path.join(os.getcwd() + app.config['UPLOAD_FOLDER'])
-			personal_folder = os.path.join(upload_path + str(customer_id))
-			if not os.path.isdir():
-				os.mkdir(personal_folder)
-
-
-
-
 			filename = secure_filename(file.filename)
-			print(os.path.join(os.getcwd() + app.config['UPLOAD_FOLDER']))
-			file_path = os.path.join(MYDIR + app.config['UPLOAD_FOLDER'], filename)
+			file_path = os.path.join(user_folder, filename)
 			file.save(file_path)
 			create_obj(ImageReference, {'path': file_path})
 			return jsonify(message='File successfully uploaded'), 201
 		else:
 			return jsonify(message='Allowed file types are png, jpg, jpeg'), 400
 
+
+# https://www.moesif.com/blog/technical/api-design/REST-API-Design-Best-Practices-for-Sub-and-Nested-Resources/
+# Using security approach for images - not using user_id as parameter for images
+# or ?
 
 @app.route("/customers/<int:customer_id>/posts", methods=[GET, POST])
 @require_method_params(POST=post_params)
@@ -134,8 +115,7 @@ def posts(customer_id):
 	if request.method == GET:
 		return jsonify([customer.posts for customer in find_by_all(Customer)]), 200
 	if request.method == POST:
-		print(request.files)
-		create_obj(Post, request.json | {'user_id': customer_id})
+		create_obj(Post, request.json | dict(user_id=customer_id))
 		return jsonify(message="Successfully created post"), 201
 
 
@@ -150,6 +130,33 @@ def post(customer_id, post_id):
 	if request.method == DELETE:
 		delete_obj(Post, post_id)
 		return jsonify(message="Successfully deleted post"), 200
+
+
+@app.route("customers/<int:customer_id>/posts/<int:post_id>/likes", methods=[GET])
+@require_id_exists()
+def post_likes(customer_id, post_id):
+	if request.method == GET:
+		return jsonify([post_.likes for post_ in find(Post, post_id)]), 200
+
+
+@app.route("/customers/<int:customer_id>/likes", methods=[GET, POST])
+@require_method_params(POST=["post_id"])
+@require_id_exists()
+def likes(customer_id):
+	if request.method == GET:
+		return jsonify([customer.likes for customer in find(Customer, customer_id)]), 200
+	if request.method == POST:
+		create_obj(Like, request.json | dict(user_id=customer_id))
+		return jsonify(message="Successfully liked post"), 201
+
+
+@app.route("/customers/<int:customer_id>/likes/<int:like_id>", methods=[DELETE])
+@require_method_params()
+@require_ownership(customer_id=['like_id'])
+def like(customer_id, like_id):
+	if request.method:
+
+
 
 
 @app.errorhandler(IdError)
