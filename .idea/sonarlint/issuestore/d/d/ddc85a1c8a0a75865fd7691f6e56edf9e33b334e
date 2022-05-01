@@ -1,0 +1,16 @@
+
+bpython:S1192f"JDefine a constant instead of duplicating this literal "User id: " 3 times.(Î¤íž
+opython:S1192"RDefine a constant instead of duplicating this literal "this is a message" 3 times.(ÑÓ¿Ôøÿÿÿÿ
+hpython:S1192("KDefine a constant instead of duplicating this literal '/messages/' 7 times.(Ç—ªŸùÿÿÿÿ
+gpython:S1192"JDefine a constant instead of duplicating this literal '/messages' 9 times.(ßÐ¯¬øÿÿÿÿ
+opython:S1192"RDefine a constant instead of duplicating this literal 'application/json' 19 times.(ßÐ¯¬øÿÿÿÿ
+_python:S1192`"GDefine a constant instead of duplicating this literal '/user/' 3 times.(“Û¤ 
+;python:S125"Remove this commented out code.(Ãî“õþÿÿÿÿ
+Cpython:S1481T",Remove the unused local variable "message2".(Æºü`
+Mpython:S1481J"0Remove the unused local variable "get_msg_text".(Ýâ’´ûÿÿÿÿ
+Hpython:S1481I"+Remove the unused local variable "get_msg".(Ç—ªŸùÿÿÿÿ
+Cpython:S1481o",Remove the unused local variable "get_msgs".(õð´k
+Mpython:S1481n"0Remove the unused local variable "get_msg_text".(Ýâ’´ûÿÿÿÿ
+Ipython:S1481ˆ"+Remove the unused local variable "get_msg".(Ç—ªŸùÿÿÿÿ
+Hpython:S1481•"/Remove the unused local variable "message2_id".(Å¿Ï¥
+Npython:S1481‰"0Remove the unused local variable "get_msg_text".(Ýâ’´ûÿÿÿÿ

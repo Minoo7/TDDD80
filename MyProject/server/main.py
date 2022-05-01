@@ -35,12 +35,24 @@ def assert_id_exists(class_, id_):
 		raise IdError(class_, id_)
 
 
-def edit_object(class_, id_, json_input):
+def create_obj(class_, json_input):
+	obj = class_.__schema__().load(json_input)
+	session.add(obj)
+	session.commit()
+
+
+def edit_obj(class_, id_, json_input):
 	schema = class_.__schema__
 	errors = schema().validate(json_input, partial=True)
 	if not bool(errors):  # no errors
 		obj = find(class_, id_)
 		for param in json_input:
 			setattr(obj, param, json_input[param])
+		session.commit()
 	else:
 		raise ValidationError(errors)
+
+
+def delete_obj(class_, id_):
+	session.delete(find(class_, id_))
+	session.commit()

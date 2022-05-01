@@ -28,7 +28,7 @@ def obj_with_attr_exists(class_, attribute, value):
 
 
 def get_current_time():
-	return datetime.now(pytz.timezone('utc'))
+	return datetime.now()  # datetime.now(pytz.timezone('utc'))
 
 
 def id_generator(size, chars):

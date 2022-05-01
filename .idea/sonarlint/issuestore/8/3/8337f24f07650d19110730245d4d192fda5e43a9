@@ -1,0 +1,5 @@
+
+:python:S6396
+"#Remove this unnecessary quantifier.(€ÑÈN
+apython:S3358"IExtract this nested conditional expression into an independent statement.(á¤µµ
+npython:S117"WRename this parameter "phoneNumber" to match the regular expression ^[_a-z][a-z0-9_]*$.(¢«Œò

@@ -1,9 +1,7 @@
 import sqlalchemy.exc
 
 from MyProject.server import groups
+from MyProject.server.validation.schemas import PostSchema, CustomerSchema
 from server.models import Customer, session
 
-customer = session.query(Customer).filter_by(id=1).first()
-print(customer)
-print(customer.address)
-print(groups.Genders["Man"])
+print(session.query(Customer).get(1).customer_number)

@@ -1,6 +1,8 @@
+import json
 import re
 import string
 import sys
+from datetime import datetime
 
 from marshmallow_enum import EnumField
 from password_validator import PasswordValidator
@@ -9,7 +11,7 @@ from . import custom_fields
 from ..models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
 from .phoneformat import format_phone_number
 from flask_marshmallow import Marshmallow
-from marshmallow import validates as validator, validate, validates_schema, post_load, fields
+from marshmallow import validates as validator, validate, validates_schema, post_load, fields, pre_load
 from usernames import is_safe_username
 
 from MyProject.server.validation.validate import get_current_time, obj_with_attr_exists, id_generator
@@ -33,6 +35,7 @@ def setup_schema():
 			sqla_session = session
 			include_fk = True
 			load_instance = True
+			datetimeformat = '%Y-%m-%dT%H:%M:%S%z'
 
 		for class_ in [x.class_ for x in Model.registry.mappers]:
 			if hasattr(class_, "__tablename__"):
@@ -125,7 +128,7 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 			generated_id = generator()
 		return generated_id
 
-	@post_load
+	@pre_load
 	def make_customer(self, data, **kwargs):
 		data['customer_number'] = self.unique_customer_number()
 
@@ -171,7 +174,7 @@ class CommentSchema(SQLAlchemyAutoSchema):
 	post_id = custom_fields.post_id()
 	user_id = custom_fields.customer_id()
 
-	@post_load
+	@pre_load
 	def make_comment(self, data, **kwargs):
 		# generate created_at date:
 		data['created_at'] = get_current_time()
@@ -196,11 +199,7 @@ class PostSchema(SQLAlchemyAutoSchema):
 		if data['content'] is None and data['image_id'] is None:
 			raise ValidationError("Either content or an image is required")
 
-	@post_load
-	def make_post(self, data, **kwargs):
-		data['created_at'] = get_current_time()
-
-		return data
+	# fix update time generate not working from marshmallow curr
 
 
 class LikeSchema(SQLAlchemyAutoSchema):

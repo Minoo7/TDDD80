@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
@@ -124,6 +124,9 @@ class Address(Model):
 	customer = relationship("Customer", foreign_keys=customer_id, post_update=True,
 	                        overlaps="address,business_address")
 
+	def get_owner(self):
+		return self.customer_id
+
 
 class Comment(Model):
 	"""
@@ -135,7 +138,7 @@ class Comment(Model):
 	content = Column(String(120), nullable=False)
 	post_id = Column(Integer, ForeignKey('posts.id'))
 	user_id = Column(Integer, ForeignKey('customers.id'))
-	created_at = Column(DateTime(), default=datetime.datetime.now(), nullable=False)
+	created_at = Column(DateTime(), default=datetime.now(), nullable=False)
 
 
 class Post(Model):
@@ -154,14 +157,17 @@ class Post(Model):
     """
 	__tablename__ = "posts"
 	# __table_args__ = (CheckConstraint('NOT(content IS NULL AND image_id IS NULL)'),)
-	user_id = Column(Integer, ForeignKey('customers.id'))
+	user_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
 	image_id = Column(Integer, ForeignKey('images.id'))
 	content = Column(String(255))
 	type = Column(ENUM(groups.PostTypes), nullable=False)
-	created_at = Column(DateTime(), default=datetime.datetime.now(), nullable=False)
+	created_at = Column(DateTime(), default=datetime.now(), nullable=False)
 	updated_at = Column(DateTime())
 	likes = relationship("Like", backref="post", uselist=True)
 	comments = relationship("Comment", backref="post", uselist=True)
+
+	def get_owner(self):
+		return self.user_id
 
 
 class Like(Model):
