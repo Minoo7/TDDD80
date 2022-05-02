@@ -10,7 +10,7 @@ def get_messages():
 """
 
 from MyProject.server import ValidationError
-from MyProject.server.models import session
+from MyProject.server.models import session, Customer
 from MyProject.server.validation.validate import IdError
 
 
@@ -56,3 +56,8 @@ def edit_obj(class_, id_, json_input):
 def delete_obj(class_, id_):
 	session.delete(find(class_, id_))
 	session.commit()
+
+
+def find_possible_logins(login_method_name):
+	methods = {'username', 'customer_number', 'email', 'organization_number'}
+	return [users for method in methods for users in find_by_all(Customer, **{method: login_method_name})]

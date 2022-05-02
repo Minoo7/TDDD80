@@ -11,6 +11,7 @@ from sqlalchemy.dialects.postgresql import ENUM
 db = SQLAlchemy(app)
 # db.session = sessionmaker(bind=db.get_engine(app=app), autoflush=True)()
 db.Model.id = Column(Integer, primary_key=True)
+db.Model._validation = True
 Model = db.Model
 session = db.session
 
@@ -18,6 +19,13 @@ session = db.session
 #                         Column('messages_id', Integer, ForeignKey('message.id')),
 #                         Column('user_id', Integer, ForeignKey('user.id')))
 # image_ids = db.Table('image_ids', Model.metadata, Column('image_id'), Integer, ForeignKey('image_id'))
+
+
+class TokenBlocklist(Model):
+	id = Column(Integer, primary_key=True)
+	jti = Column(String(36), nullable=False)
+	created_at = Column(DateTime, nullable=False)
+TokenBlocklist._validation = False
 
 
 class User(Model):  # User abstract class
@@ -84,7 +92,7 @@ class Customer(User):
 
 	following = relationship(
 		'Customer', lambda: follower_table,
-		primaryjoin=lambda: Customer.id == follower_table.c.user_id,
+		primaryjoin=lambda: Customer.id == follower_table.c.customer_id,
 		secondaryjoin=lambda: Customer.id == follower_table.c.following_id,
 		backref='followers'
 	)
@@ -95,7 +103,7 @@ class Customer(User):
 
 follower_table = Table(
 	'user_following', Model.metadata,
-	Column('user_id', Integer, ForeignKey('customers.id'), primary_key=True),
+	Column('customer_id', Integer, ForeignKey('customers.id'), primary_key=True),
 	Column('following_id', Integer, ForeignKey('customers.id'), primary_key=True)
 )
 
@@ -124,9 +132,6 @@ class Address(Model):
 	customer = relationship("Customer", foreign_keys=customer_id, post_update=True,
 	                        overlaps="address,business_address")
 
-	def get_owner(self):
-		return self.customer_id
-
 
 class Comment(Model):
 	"""
@@ -136,8 +141,8 @@ class Comment(Model):
     """
 	__tablename__ = "comments"
 	content = Column(String(120), nullable=False)
-	post_id = Column(Integer, ForeignKey('posts.id'))
-	user_id = Column(Integer, ForeignKey('customers.id'))
+	post_id = Column(Integer, ForeignKey('posts.id'), nullable=False)
+	customer_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
 	created_at = Column(DateTime(), default=datetime.now(), nullable=False)
 
 
@@ -156,8 +161,7 @@ class Post(Model):
         total comments
     """
 	__tablename__ = "posts"
-	# __table_args__ = (CheckConstraint('NOT(content IS NULL AND image_id IS NULL)'),)
-	user_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
+	customer_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
 	image_id = Column(Integer, ForeignKey('images.id'))
 	content = Column(String(255))
 	type = Column(ENUM(groups.PostTypes), nullable=False)
@@ -165,9 +169,6 @@ class Post(Model):
 	updated_at = Column(DateTime())
 	likes = relationship("Like", backref="post", uselist=True)
 	comments = relationship("Comment", backref="post", uselist=True)
-
-	def get_owner(self):
-		return self.user_id
 
 
 class Like(Model):
@@ -178,7 +179,10 @@ class Like(Model):
 	"""
 	__tablename__ = "likes"
 	post_id = Column(Integer, ForeignKey('posts.id'))
-	user_id = Column(Integer, ForeignKey('customers.id'))
+	customer_id = Column(Integer, ForeignKey('customers.id'))
+
+	def get_parent(self):
+		return self.post_id
 
 
 class ImageReference(Model):

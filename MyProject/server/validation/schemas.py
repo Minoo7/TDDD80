@@ -4,6 +4,7 @@ import string
 import sys
 from datetime import datetime
 
+from flask_bcrypt import Bcrypt
 from marshmallow_enum import EnumField
 from password_validator import PasswordValidator
 from .. import groups, app, ma_sqla, ValidationError
@@ -13,14 +14,25 @@ from .phoneformat import format_phone_number
 from flask_marshmallow import Marshmallow
 from marshmallow import validates as validator, validate, validates_schema, post_load, fields, pre_load
 from usernames import is_safe_username
-
 from MyProject.server.validation.validate import get_current_time, obj_with_attr_exists, id_generator
+
+bcrypt = Bcrypt(app)
 
 ma = Marshmallow(app)
 
 USERNAME_LENGTH_MIN = 5
 NAME_LENGTH_MIN = 3
 NAME_LENGTH_MAX = 32
+
+my_password_validator = PasswordValidator()
+
+my_password_validator \
+	.min(8) \
+	.max(100) \
+	.has().uppercase() \
+	.has().lowercase() \
+	.has().digits() \
+	.has().no().spaces()
 
 # --- Nice imports ---
 SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
@@ -39,7 +51,6 @@ def setup_schema():
 
 		for class_ in [x.class_ for x in Model.registry.mappers]:
 			if hasattr(class_, "__tablename__"):
-
 				meta_class = type("Meta", (Meta,), {"model": class_})
 
 				schema_class_name = "%sSchema" % class_.__name__
@@ -86,7 +97,7 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 
 	@validator('password')
 	def validate_password(self, value):
-		if not PasswordValidator().validate(value):
+		if not my_password_validator.validate(value):
 			raise ValidationError('password was not a valid password')
 
 	@staticmethod
@@ -128,16 +139,16 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 			generated_id = generator()
 		return generated_id
 
-	@pre_load
-	def make_customer(self, data, **kwargs):
+	@post_load
+	def add_missing(self, data, **kwargs):
 		data['customer_number'] = self.unique_customer_number()
 
 		# format phone number into swedish standard
 		data['phone_number'] = format_phone_number(data['phone_number'])
+
+		data['password'] = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 		return data
 
-
-# --- Address ---
 
 class AddressSchema(SQLAlchemyAutoSchema):
 	Meta = Address.__marshmallow__().Meta
@@ -172,14 +183,7 @@ class CommentSchema(SQLAlchemyAutoSchema):
 
 	content = fields.Str(validate=validate.Length(max=120), required=True)
 	post_id = custom_fields.post_id()
-	user_id = custom_fields.customer_id()
-
-	@pre_load
-	def make_comment(self, data, **kwargs):
-		# generate created_at date:
-		data['created_at'] = get_current_time()
-
-		return data
+	customer_id = custom_fields.customer_id()
 
 
 # def get_days_since_created(self, obj):
@@ -189,24 +193,22 @@ class CommentSchema(SQLAlchemyAutoSchema):
 class PostSchema(SQLAlchemyAutoSchema):
 	Meta = Post.__marshmallow__().Meta
 
-	user_id = custom_fields.customer_id()
+	customer_id = custom_fields.customer_id()
 	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
 	content = fields.Str(validate=validate.Length(max=120))
 	type = EnumField(groups.PostTypes, required=True)
 
 	@validates_schema
 	def validate_schema(self, data, **kwargs):
-		if data['content'] is None and data['image_id'] is None:
+		if not ('content' in data or 'image_id' in data):
 			raise ValidationError("Either content or an image is required")
-
-	# fix update time generate not working from marshmallow curr
 
 
 class LikeSchema(SQLAlchemyAutoSchema):
 	Meta = Like.__marshmallow__().Meta
 
 	post_id = custom_fields.post_id()
-	user_id = custom_fields.customer_id()
+	customer_id = custom_fields.customer_id()
 
 
 class ImageReferenceSchema(SQLAlchemyAutoSchema):
@@ -233,9 +235,16 @@ def register_schemas():
 	Also adds the required fields used for json validation (used in views.py).
 	"""
 	for class_ in [x.class_ for x in Model.registry.mappers]:
+		txt = str(class_.__name__)
+		if txt == "TokenBlocklist":
+			continue
+		# found_class = eval(str(class_.__name__))
+		# print(found_class._validation)
 		schema = eval(str(class_.__name__) + "Schema")
 		setattr(class_, "__schema__", schema)
 	for class_ in [x.class_ for x in Model.registry.mappers]:
+		if class_.__name__ == "TokenBlocklist":
+			continue
 		required_fields = []
 		schema_fields = class_.__schema__._declared_fields
 		for field in schema_fields:

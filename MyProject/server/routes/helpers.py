@@ -1,10 +1,10 @@
-# --- Params ---
 from functools import wraps
 
 from flask import request, abort
+from flask_jwt_extended import get_jwt_identity
 
 from MyProject.server.main import assert_id_exists, find
-from MyProject.server.models import Customer, Address, Post
+from MyProject.server.models import Customer, Address, Post, Like, Comment
 from MyProject.server.validation.schemas import register_schemas
 
 register_schemas()
@@ -13,8 +13,10 @@ register_schemas()
 customer_params = Customer.__required_params__
 address_params = Address.__required_params__
 post_params = Post.__required_params__
+like_params = Like.__required_params__
+comment_params = Comment.__required_params__
 
-arg_class_map = {'customer_id': Customer, 'address_id': Address, 'post_id': Post}
+arg_class_map = {'customer_id': Customer, 'address_id': Address, 'post_id': Post, 'like_id': Like}
 
 
 def generate_decorator(outer_func):
@@ -28,9 +30,7 @@ def generate_decorator(outer_func):
 				return func(*args, **kwargs)
 
 			return wrapper
-
 		return decorator
-
 	return generator
 
 
@@ -58,35 +58,73 @@ def require_method_params(**outer_kwargs):
 	return generate_decorator(inner)(**outer_kwargs)
 
 
+def check_id_exists():
+	for request_arg in request.view_args:
+		if request_arg not in arg_class_map:
+			raise KeyError("improper argument name in route")
+		assert_id_exists(arg_class_map.get(request_arg), request.view_args[request_arg])
+
+
 def require_id_exists():
 	"""Decorator function to assert that object of given class type with given id exists in session"""
 
 	def inner():
-		for request_arg in request.view_args:
-			if request_arg not in arg_class_map:
-				raise KeyError("improper argument name in route")
-			assert_id_exists(arg_class_map.get(request_arg), request.view_args[request_arg])
+		check_id_exists()
 
 	return generate_decorator(inner)()
 
 
-def require_ownership(**outer_kwargs):
-	"""
-	Decorator function to assert that object trying to be edited/deleted is owned by given customer_id
-	syntax: owner=[*'item_id']
-	"""
-
-	def inner(**kwargs):
-		for owner in kwargs:
+"""def check_ownership(**kwargs):
+	for owner in kwargs:
+		if owner == "current":
+			owner_obj = find(Customer, get_jwt_identity())
+		else:
 			if owner not in request.view_args:
-				raise KeyError("owner keyword is not inside the route address arguments")
+				abort(400, "owner keyword is not inside the route address arguments")
 			if owner not in arg_class_map:
-				raise KeyError("improper owner name in given")
+				abort(400, "improper owner name in given")
 
 			owner_obj = find(arg_class_map.get(owner), request.view_args[owner])
-			for item in kwargs[owner]:
-				item_obj = find(arg_class_map.get(item), request.view_args[item])
-				if item_obj.get_owner() != owner_obj.id:
-					abort(403, f"Customer did not have permission/own to access the object")
+		for item in kwargs[owner]:
+			item_obj = find(arg_class_map.get(item), request.view_args[item])
+			getattr(item_obj, owner)
+			if item_obj.customer_id != owner_obj.id:
+				abort(403, f"Customer did not have permission/own to access the object")"""
 
+
+def require_hierarchy(**outer_kwargs):
+	return generate_decorator(require_hierarchy_func)(**outer_kwargs)
+
+
+def require_hierarchy_func(**kwargs):
+	for owner in kwargs:
+		if owner not in request.view_args and owner != "customer_id":
+			abort(400, "argument for owner is not inside the route address arguments")
+		if owner not in arg_class_map:
+			abort(400, "improper owner name in given")
+
+		if owner == "customer_id" and "customer_id" not in request.view_args:
+			owner_value = get_jwt_identity()
+		else:
+			owner_value = request.view_args[owner]
+
+		for item in kwargs[owner]:
+			item_obj = find(arg_class_map.get(item), request.view_args[item])
+			if getattr(item_obj, owner) != owner_value:
+				abort(403, f"Customer did not have permission/own to access the object")
+
+
+
+def require_ownership(**outer_kwargs):
+	"""Decorator function to assert that id's exist and assert that object trying to be edited/deleted is owned by given customer_id
+	syntax: owner=[*'item_id'] also checks that jwt identity equals to customer_id"""
+
+	def inner(**kwargs):
+		check_id_exists()
+		if 'customer_id' in request.view_args:
+			if get_jwt_identity() != request.view_args['customer_id']:
+				abort(400, "id in request not corresponding to logged in users id")
+		require_hierarchy_func(**kwargs)
 	return generate_decorator(inner)(**outer_kwargs)
+
+
