@@ -1,14 +1,3 @@
-"""def add_message(new_message, sender):
-    message = Message(message=new_message)
-    db.session.add(message)
-    db.session.commit()
-    return {'id': message.id}
-
-
-def get_messages():
-    return [msg.to_dict() for msg in Message.query.all()]
-"""
-
 from MyProject.server import ValidationError
 from MyProject.server.models import session, Customer
 from MyProject.server.validation.validate import IdError
@@ -51,6 +40,16 @@ def edit_obj(class_, id_, json_input):
 		session.commit()
 	else:
 		raise ValidationError(errors)
+
+
+def get_obj_as_json(class_, id_, *args):
+	schema = class_.__schema__
+	obj = find(class_, id_)
+	json = schema().dump(obj)
+	"""for arg in args:
+		json = json | {arg: getattr(obj, arg)}
+		# print(getattr(obj, arg))"""
+	return json
 
 
 def delete_obj(class_, id_):

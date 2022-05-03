@@ -2,14 +2,12 @@ from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
-# from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import relationship, sessionmaker, deferred
 
 from MyProject.server import app, groups
 from sqlalchemy.dialects.postgresql import ENUM
 
 db = SQLAlchemy(app)
-# db.session = sessionmaker(bind=db.get_engine(app=app), autoflush=True)()
 db.Model.id = Column(Integer, primary_key=True)
 db.Model._validation = True
 Model = db.Model
@@ -78,10 +76,11 @@ class Customer(User):
 		business_address_id
 	"""
 	__tablename__ = "customers"
-	customer_number = Column(String(6), unique=True)
+	customer_number = Column(String(6), unique=True, nullable=False)
 	phone_number = Column(String(20), unique=True, nullable=False)
 	business_type = Column(ENUM(groups.BusinessTypes), nullable=False)
 	organization_number = Column(String(11), unique=True, nullable=False)
+	business_name = Column(String(50), unique=True, nullable=False)
 
 	address = relationship("Address",
 	                       primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='home')",
@@ -89,6 +88,7 @@ class Customer(User):
 	business_address = relationship("Address",
 	                                primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='work')",
 	                                post_update=True, overlaps="address", cascade="all,delete", uselist=False)
+	posts = relationship("Post")
 
 	following = relationship(
 		'Customer', lambda: follower_table,
@@ -96,6 +96,11 @@ class Customer(User):
 		secondaryjoin=lambda: Customer.id == follower_table.c.following_id,
 		backref='followers'
 	)
+
+	def follow(self, follow_customer):
+		if follow_customer.id == self.id:
+			raise ValueError("can't follow self")
+		self.following.append(follow_customer)
 
 	def __repr__(self):
 		return '<Customer %r>' % self.customer_number
@@ -138,11 +143,13 @@ class Comment(Model):
     PK  id
     FK  post_id
     FK  customer_id
+    	content
+    	created_at
     """
 	__tablename__ = "comments"
-	content = Column(String(120), nullable=False)
 	post_id = Column(Integer, ForeignKey('posts.id'), nullable=False)
 	customer_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
+	content = Column(String(120), nullable=False)
 	created_at = Column(DateTime(), default=datetime.now(), nullable=False)
 
 

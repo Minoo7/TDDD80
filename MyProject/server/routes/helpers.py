@@ -74,6 +74,17 @@ def require_id_exists():
 	return generate_decorator(inner)()
 
 
+# write better later: (combining others)
+def require_json_id_exists(*outer_args):
+
+	def inner(*args):
+		for arg in args:
+			if arg not in arg_class_map:
+				raise KeyError("improper argument json name for mapping to class")
+			assert_id_exists(arg_class_map.get(arg), request.json[arg])
+
+	return generate_decorator(inner)(*outer_args)
+
 """def check_ownership(**kwargs):
 	for owner in kwargs:
 		if owner == "current":
@@ -112,7 +123,6 @@ def require_hierarchy_func(**kwargs):
 			item_obj = find(arg_class_map.get(item), request.view_args[item])
 			if getattr(item_obj, owner) != owner_value:
 				abort(403, f"Customer did not have permission/own to access the object")
-
 
 
 def require_ownership(**outer_kwargs):

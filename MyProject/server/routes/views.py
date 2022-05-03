@@ -16,10 +16,10 @@ from MyProject.server import app, ValidationError, MYDIR
 from MyProject.server.config import ALLOWED_EXTENSIONS
 from MyProject.server.constants import GET, POST, DELETE, PUT
 from MyProject.server.main import edit_obj, find_by_all, find, assert_id_exists, create_obj, delete_obj, \
-	find_possible_logins
+	find_possible_logins, get_obj_as_json
 from MyProject.server.models import Customer, session, Address, Post, ImageReference, Like, Comment, TokenBlocklist
 from MyProject.server.routes.helpers import require_method_params, require_id_exists, customer_params, address_params, \
-	post_params, require_ownership, like_params, comment_params, require_hierarchy
+	post_params, require_ownership, like_params, comment_params, require_hierarchy, require_json_id_exists
 from MyProject.server.validation.validate import IdError
 
 jwt = JWTManager(app)
@@ -87,11 +87,13 @@ def customers():
 		return jsonify(message="Successfully created customer"), 201
 
 
-@app.route("/customers/<int:customer_id>", methods=[PUT, DELETE])
+@app.route("/customers/<int:customer_id>", methods=[GET, PUT, DELETE])
 @require_method_params(PUT=set(customer_params))
 @jwt_required()
 @require_ownership()
 def update_customer(customer_id):
+	if request.method == GET:
+		return get_obj_as_json(Customer, customer_id), 200
 	if request.method == PUT:
 		edit_obj(Customer, customer_id, request.json)
 		return jsonify(message="Successfully edited Customer"), 200
@@ -167,6 +169,19 @@ def image(customer_id, image_id):
 # Using security approach for images - not using user_id as parameter for images
 # or ?
 
+
+@app.route("/customers/<int:customer_id>/following", methods=[POST])
+@require_method_params(POST=["customer_id"])
+@jwt_required()
+@require_ownership()
+@require_json_id_exists("customer_id")
+def follow(customer_id):
+	follow_id = request.json["customer_id"]
+	find(Customer, customer_id).follow(find(Customer, follow_id))
+	session.commit()
+	return jsonify(message=f"Successfully followed user: ({follow_id})"), 200
+
+
 @app.route("/posts", methods=[POST])
 @require_method_params(POST=post_params)
 @jwt_required()
@@ -216,6 +231,7 @@ def comments(post_id):
 
 
 @app.route("/posts/<int:post_id>/comments/<int:comment_id>", methods=[DELETE])
+@jwt_required()
 @require_ownership(customer_id=['comment_id'], post_id=['comment_id'])
 def comment(post_id, comment_id):
 	if request.method == DELETE:
@@ -225,7 +241,8 @@ def comment(post_id, comment_id):
 
 @app.route("/customers/<int:customer_id>/likes", methods=[GET])
 @require_method_params(POST=["post_id"])
-@require_id_exists()
+@jwt_required()
+@require_ownership()
 def customer_likes(customer_id):
 	if request.method == GET:
 		return jsonify([customer.likes for customer in find(Customer, customer_id)]), 200
@@ -262,6 +279,11 @@ return response"""
 
 @app.errorhandler(404)
 def resource_not_found(e):
+	return jsonify(error=str(e)), 404
+
+
+@app.errorhandler(ValueError)
+def handle_value_error(e):
 	return jsonify(error=str(e)), 404
 
 

@@ -12,7 +12,8 @@ from . import custom_fields
 from ..models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
 from .phoneformat import format_phone_number
 from flask_marshmallow import Marshmallow
-from marshmallow import validates as validator, validate, validates_schema, post_load, fields, pre_load
+from marshmallow import validates as validator, validate, validates_schema, post_load, fields, pre_load, post_dump, \
+	pre_dump
 from usernames import is_safe_username
 from MyProject.server.validation.validate import get_current_time, obj_with_attr_exists, id_generator
 
@@ -66,18 +67,33 @@ def setup_schema():
 setup_schema()()
 
 
-class CustomerSchema(SQLAlchemyAutoSchema):
+class BaseSchema(SQLAlchemyAutoSchema):
+	id = fields.Int()
+
+
+class CustomerSchema(BaseSchema):
 	Meta = Customer.__marshmallow__().Meta
 
 	username = fields.Str(required=True)
-	password = fields.Str(required=True)
-	first_name = fields.Method(deserialize="capitalize", required=True)
-	last_name = fields.Method(deserialize="capitalize", required=True)
-	email = fields.Email(required=True)
-	gender = EnumField(groups.Genders)
-	phone_number = fields.Method(deserialize="remove_unnecessary_chars", required=True)
+	password = fields.Str(required=True, load_only=True)
+	first_name = fields.Method(deserialize="capitalize", required=True, load_only=True)
+	last_name = fields.Method(deserialize="capitalize", required=True, load_only=True)
+	email = fields.Email(required=True, load_only=True)
+	gender = EnumField(groups.Genders, load_only=True)
+	phone_number = fields.Method(deserialize="remove_unnecessary_chars", required=True, load_only=True)
 	business_type = EnumField(groups.BusinessTypes, required=True)
-	organization_number = fields.Int(required=True)
+	business_name = fields.Str(required=True)
+	organization_number = fields.Int(required=True, load_only=True)
+	customer_number = fields.Str(load_only=True, load_default=lambda: CustomerSchema().unique_customer_number())
+
+	class FollowSchema(SQLAlchemyAutoSchema):
+		id = fields.Int()
+		username = fields.Str()
+
+	# relationships:
+	following = fields.Nested(FollowSchema, dump_only=True, many=True)
+	followers = fields.Nested(FollowSchema, dump_only=True, many=True)
+	posts = fields.Nested(lambda: PostSchema(), many=True)
 
 	@staticmethod
 	def capitalize(value):
@@ -141,12 +157,18 @@ class CustomerSchema(SQLAlchemyAutoSchema):
 
 	@post_load
 	def add_missing(self, data, **kwargs):
-		data['customer_number'] = self.unique_customer_number()
+		# data['customer_number'] = self.unique_customer_number()
 
 		# format phone number into swedish standard
 		data['phone_number'] = format_phone_number(data['phone_number'])
 
 		data['password'] = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+		return data
+
+	@post_dump
+	def remove_id(self, data, **kwargs):
+		data.pop('id', None)
+		data.pop('customer_number', None)
 		return data
 
 
@@ -163,7 +185,7 @@ class AddressSchema(SQLAlchemyAutoSchema):
 
 	@validator('street')
 	def validate_street(self, value):
-		d = re.match("^[A-Za-z]+ [0-9]+$", value)
+		d = re.match("^[åäöÅÄÖA-Za-z_]+ [0-9]+$", value)
 		if not (len(value) <= 95 and d):
 			raise ValidationError("improper address")
 

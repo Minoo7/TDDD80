@@ -1,9 +1,8 @@
 import typing
 from marshmallow import fields
 
-from MyProject.server.main import find, assert_id_exists
+from MyProject.server.main import assert_id_exists
 from MyProject.server.models import session, Customer, Post
-from MyProject.server.validation.validate import IdError
 
 
 class FieldExistingId(fields.Integer):
@@ -14,6 +13,11 @@ class FieldExistingId(fields.Integer):
 	def _validated(self, value):
 		assert_id_exists(self.class_, value)
 		return super()._validated(value)
+
+
+class PhoneNumber(fields.String):
+	pass
+
 
 
 def customer_id():
