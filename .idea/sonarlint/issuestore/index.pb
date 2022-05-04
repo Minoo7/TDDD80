@@ -1,12 +1,6 @@
 
 G
 MyProject/server/app.py,1\c\1c21f5135a5d6e34a917881458199d7eb3568ff7
-L
-MyProject/server/__init__.py,0\8\08b102a16d9c9dde0e14ba478c92ef5d77e799c6
-W
-'MyProject/server/validation/validate.py,9\8\98505bdc148453d385f9f5f691d0001f0016af96
-J
-MyProject/server/groups.py,3\d\3d0c76ad9b9059c4faccdc06fecab70ada5f98a4
 J
 MyProject/server/config.py,1\e\1e0ce5c3cb38a71e698535cb01d894cc54da8787
 <

@@ -16,7 +16,7 @@ post_params = Post.__required_params__
 like_params = Like.__required_params__
 comment_params = Comment.__required_params__
 
-arg_class_map = {'customer_id': Customer, 'address_id': Address, 'post_id': Post, 'like_id': Like}
+arg_class_map = {'customer_id': Customer, 'follow_id': Customer, 'address_id': Address, 'post_id': Post, 'like_id': Like}
 
 
 def generate_decorator(outer_func):

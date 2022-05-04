@@ -4,25 +4,21 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
 from sqlalchemy.orm import relationship, sessionmaker, deferred
 
-from MyProject.server import app, groups
+from MyProject.server import groups, Model
 from sqlalchemy.dialects.postgresql import ENUM
 
-db = SQLAlchemy(app)
-db.Model.id = Column(Integer, primary_key=True)
-db.Model._validation = True
-Model = db.Model
-session = db.session
 
-# read_messages = db.Table('read_messages', Model.metadata,
-#                         Column('messages_id', Integer, ForeignKey('message.id')),
-#                         Column('user_id', Integer, ForeignKey('user.id')))
-# image_ids = db.Table('image_ids', Model.metadata, Column('image_id'), Integer, ForeignKey('image_id'))
+# --- settings for model ---
+Model._validation = True
+Model.id = Column(Integer, primary_key=True)
 
 
 class TokenBlocklist(Model):
 	id = Column(Integer, primary_key=True)
 	jti = Column(String(36), nullable=False)
 	created_at = Column(DateTime, nullable=False)
+
+
 TokenBlocklist._validation = False
 
 
@@ -43,12 +39,6 @@ class User(Model):  # User abstract class
 	last_name = Column(String(32))
 	email = Column(String(150), unique=True, nullable=False)
 	gender = Column(ENUM(groups.Genders))
-
-# Relations:
-# rel = relationship("Message", secondary=read_messages, backref="readBy", lazy=True)
-
-# def to_dict(self):
-#	return {'id': self.id, 'Name': self.name, 'read': [read.message for read in self.messages_read]}
 
 
 """class Administrator(User):
@@ -83,11 +73,11 @@ class Customer(User):
 	business_name = Column(String(50), unique=True, nullable=False)
 
 	address = relationship("Address",
-	                       primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='home')",
-	                       post_update=True, cascade="all,delete",  uselist=False)
+						   primaryjoin="and_(Customer.id==Address.customer_id, Address.address_type=='home')",
+						   post_update=True, cascade="all, delete", uselist=False)
 	business_address = relationship("Address",
-	                                primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='work')",
-	                                post_update=True, overlaps="address", cascade="all,delete", uselist=False)
+									primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='work')",
+									post_update=True, overlaps="address", cascade="all, delete", uselist=False)
 	posts = relationship("Post")
 
 	following = relationship(
@@ -101,6 +91,23 @@ class Customer(User):
 		if follow_customer.id == self.id:
 			raise ValueError("can't follow self")
 		self.following.append(follow_customer)
+
+	def unfollow(self, follow_customer):
+		self.following.pop(follow_customer, None)
+
+	def has_address(self, address_type: groups.AddressTypes):
+		if address_type == groups.AddressTypes.home:
+			return self.address is not None
+		if address_type == groups.AddressTypes.work:
+			return self.business_address is not None
+
+	def get_profile(self):
+		return self.__schema__(
+			only=["username", "business_type", "business_name", "followers", "following", "posts"]).dump(self)
+
+	def get_feed(self):
+		return Post.__schema__(many=True).dump(Post.query.join(follower_table, (follower_table.c.following_id == Post.customer_id)).filter(
+							  follower_table.c.customer_id == self.id).order_by(Post.created_at).all())
 
 	def __repr__(self):
 		return '<Customer %r>' % self.customer_number
@@ -127,7 +134,7 @@ class Address(Model):
     """
 	__tablename__ = "addresses"
 	address_type = Column(ENUM(groups.AddressTypes), nullable=False)  # Home, Billing, Both
-	street = Column(String(95), nullable=False)
+	street = Column(String(95), unique=True, nullable=False)
 	city = Column(String(35), nullable=False)
 	zip_code = Column(String(11), nullable=False)
 
@@ -135,7 +142,7 @@ class Address(Model):
 
 	customer_id = Column(Integer, ForeignKey('customers.id'))
 	customer = relationship("Customer", foreign_keys=customer_id, post_update=True,
-	                        overlaps="address,business_address")
+							overlaps="address, business_address")
 
 
 class Comment(Model):
@@ -199,46 +206,3 @@ class ImageReference(Model):
 	"""
 	__tablename__ = "images"
 	path = Column(String(120), nullable=False)
-
-
-class Feed(Model):
-	"""
-    PK  id
-    FK  customer_id
-    FK  post_id (multiple)
-    """
-	__tablename__ = "feeds"
-	customer_id = Column(Integer, ForeignKey('customers.id'))
-
-# posts = relationship("Post")
-
-
-# class Image()
-
-
-"""class Message(Model):
-	__tablename__ = "messages"
-	id = Column(Integer, primary_key=True)
-	message = Column(String(140))
-
-	def to_dict(self):
-		return {'id': self.id, 'message': self.message, 'readBy': [f"{usr.name} ({usr.id})" for usr in self.readBy]}
-"""
-
-"""
-class Parent(Model):
-	__tablename__ = 'parent'
-	id = Column(Integer, primary_key=True)
-
-	# previously one-to-many Parent.children is now
-	# one-to-one Parent.child
-	child = relationship("Child", back_populates="parent", uselist=False)
-
-
-class Child(Model):
-	__tablename__ = 'child'
-	id = Column(Integer, primary_key=True)
-	parent_id = Column(Integer, ForeignKey('parent.id'), nullable=False)
-
-	# many-to-one side remains, see tip below
-	parent = relationship("Parent", back_populates="child")"""

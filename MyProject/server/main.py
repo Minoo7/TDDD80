@@ -1,5 +1,6 @@
-from MyProject.server import ValidationError
-from MyProject.server.models import session, Customer
+import MyProject
+from MyProject.server import ValidationError, session
+from MyProject.server.models import Customer
 from MyProject.server.validation.validate import IdError
 
 
@@ -21,7 +22,7 @@ def find_by_all(class_, **kwargs):
 
 def assert_id_exists(class_, id_):
 	if not find(class_, id_):
-		raise IdError(class_, id_)
+		raise MyProject.server.validation.validate.IdError(class_, id_)
 
 
 def create_obj(class_, json_input):
@@ -31,8 +32,8 @@ def create_obj(class_, json_input):
 
 
 def edit_obj(class_, id_, json_input):
-	schema = class_.__schema__
-	errors = schema().validate(json_input, partial=True)
+	schema = class_.__schema__()
+	errors = schema.validate(json_input, partial=True)
 	if not bool(errors):  # no errors
 		obj = find(class_, id_)
 		for param in json_input:
@@ -42,14 +43,17 @@ def edit_obj(class_, id_, json_input):
 		raise ValidationError(errors)
 
 
-def get_obj_as_json(class_, id_, *args):
-	schema = class_.__schema__
+def get_obj(class_, id_):
+	schema = class_.__schema__()
 	obj = find(class_, id_)
-	json = schema().dump(obj)
-	"""for arg in args:
-		json = json | {arg: getattr(obj, arg)}
-		# print(getattr(obj, arg))"""
+	json = schema.dump(obj)
 	return json
+
+
+def get_all(class_):
+	schema = class_.__schema__(many=True)
+	all_ = class_.query.all()
+	return schema.dump(all_)
 
 
 def delete_obj(class_, id_):

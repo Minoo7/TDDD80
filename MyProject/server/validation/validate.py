@@ -1,8 +1,11 @@
 import random
+import string
+
 import pytz  # as pytz
 from datetime import datetime
-from .. import ValidationError
-from ..models import session
+
+from ... import server
+from .. import session
 
 
 class IdError(Exception):
@@ -33,3 +36,14 @@ def get_current_time():
 
 def id_generator(size, chars):
 	return ''.join(random.choice(chars) for _ in range(size))
+
+
+# generate unique customer_number
+def unique_customer_number():
+	def generator():
+		return id_generator(size=3, chars=string.ascii_uppercase) + id_generator(size=3, chars=string.digits)
+
+	generated_id = generator()
+	while obj_with_attr_exists(server.models.Customer, 'customer_number', generated_id):
+		generated_id = generator()
+	return generated_id

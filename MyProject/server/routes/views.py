@@ -1,25 +1,22 @@
 # routes..
 import os
-import sys
 from datetime import datetime, timezone
-from functools import wraps
 
 import werkzeug
-from flask import request, jsonify, abort, json, flash, redirect, url_for
+from flask import request, jsonify, abort
 from flask_bcrypt import check_password_hash
-from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity, unset_jwt_cookies, \
-	get_jwt
+from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity, get_jwt
 from werkzeug.exceptions import HTTPException
 from werkzeug.utils import secure_filename
 
-from MyProject.server import app, ValidationError, MYDIR
+from MyProject.server import app, ValidationError, groups, session
 from MyProject.server.config import ALLOWED_EXTENSIONS
 from MyProject.server.constants import GET, POST, DELETE, PUT
-from MyProject.server.main import edit_obj, find_by_all, find, assert_id_exists, create_obj, delete_obj, \
-	find_possible_logins, get_obj_as_json
-from MyProject.server.models import Customer, session, Address, Post, ImageReference, Like, Comment, TokenBlocklist
+from MyProject.server.main import edit_obj, find, create_obj, delete_obj, \
+	get_obj, get_all, find_possible_logins
+from MyProject.server.models import Customer, Address, Post, ImageReference, Like, Comment, TokenBlocklist
 from MyProject.server.routes.helpers import require_method_params, require_id_exists, customer_params, address_params, \
-	post_params, require_ownership, like_params, comment_params, require_hierarchy, require_json_id_exists
+	post_params, require_ownership, comment_params, require_json_id_exists
 from MyProject.server.validation.validate import IdError
 
 jwt = JWTManager(app)
@@ -64,7 +61,8 @@ def login():
 				existing_customer = customer
 		if not existing_customer:
 			abort(400, "Wrong username or password")
-		return jsonify(message="Successfully logged in", id=existing_customer.id, token=create_access_token(identity=existing_customer.id)), 200
+		return jsonify(message="Successfully logged in", id=existing_customer.id,
+					   token=create_access_token(identity=existing_customer.id)), 200
 
 
 @app.route("/logout", methods=["POST"])
@@ -81,7 +79,7 @@ def modify_token():
 @require_method_params(POST=customer_params)
 def customers():
 	if request.method == GET:
-		return jsonify([customer.username for customer in find_by_all(Customer)]), 200
+		return jsonify(get_all(Customer)), 200
 	if request.method == POST:
 		create_obj(Customer, request.json)
 		return jsonify(message="Successfully created customer"), 201
@@ -91,9 +89,9 @@ def customers():
 @require_method_params(PUT=set(customer_params))
 @jwt_required()
 @require_ownership()
-def update_customer(customer_id):
+def update_customers(customer_id):
 	if request.method == GET:
-		return get_obj_as_json(Customer, customer_id), 200
+		return get_obj(Customer, customer_id), 200
 	if request.method == PUT:
 		edit_obj(Customer, customer_id, request.json)
 		return jsonify(message="Successfully edited Customer"), 200
@@ -111,7 +109,8 @@ def addresses(customer_id):
 		customer_address = find(Customer, customer_id).address
 		return jsonify(customer_address.street), 200
 	if request.method == POST:
-		# create_obj(Address, request.json | {'customer_id': customer_id})
+		if find(Customer, customer_id).has_address(groups.AddressTypes[request.json["address_type"]]):
+			return jsonify(message="Customer already has address with this type"), 400
 		create_obj(Address, request.json | dict(customer_id=customer_id))
 		return jsonify(message="Successfully created address"), 201
 
@@ -179,15 +178,44 @@ def follow(customer_id):
 	follow_id = request.json["customer_id"]
 	find(Customer, customer_id).follow(find(Customer, follow_id))
 	session.commit()
-	return jsonify(message=f"Successfully followed user: ({follow_id})"), 200
+	return jsonify(message=f"Successfully followed user: ({follow_id})"), 201
 
 
-@app.route("/posts", methods=[POST])
-@require_method_params(POST=post_params)
+@app.route("/customers/<int:customer_id>/following/<int:follow_id>", methods=[DELETE])
 @jwt_required()
+@require_ownership()
+@require_id_exists()
+def unfollow(customer_id, follow_id):
+	if request.method == DELETE:
+		Customer.query.get(customer_id).unfollow(Customer.query.get(follow_id))
+		# find(Customer, customer_id).unfollow(find(Customer, follow_id))
+		session.commit()
+		return jsonify(message=f"Successfully unfollowed user: ({follow_id})"), 200
+
+
+@app.route("/customers/<int:customer_id>/feed", methods=[GET])
+# @jwt_required()
+# @require_ownership()
+def feed(customer_id):
+	if request.method == GET:
+		return jsonify(find(Customer, customer_id).get_feed()), 200
+
+
+@app.route("/customers/profiles/<int:customer_id>", methods=[GET])
+@require_id_exists()
+def profile(customer_id):
+	if request.method == GET:
+		return jsonify(find(Customer, customer_id).get_profile()), 200
+
+
+@app.route("/posts", methods=[GET, POST])
+@require_method_params(POST=post_params)
+# @jwt_required()
 def posts():
+	if request.method == GET:
+		return jsonify(get_all(Post)), 200
 	if request.method == POST:
-		create_obj(Post, request.json | dict(customer_id=get_jwt_identity()))
+		create_obj(Post, request.json | dict(customer_id=2))  # get_jwt_identity()
 		return jsonify(message="Successfully created post"), 201
 
 
@@ -261,6 +289,7 @@ def handle_bad_validation(e):
 @app.errorhandler(werkzeug.exceptions.BadRequest)
 def handle_bad_request(e):
 	return jsonify(error=str(e)), 400
+
 
 """@app.errorhandler(HTTPException)
 def handle_exception(e):

@@ -1,21 +1,17 @@
-import json
 import re
-import string
-import sys
-from datetime import datetime
 
 from flask_bcrypt import Bcrypt
 from marshmallow_enum import EnumField
 from password_validator import PasswordValidator
-from .. import groups, app, ma_sqla, ValidationError
+
+from .validate import unique_customer_number, obj_with_attr_exists
+from .. import groups, app, ValidationError, session
 from . import custom_fields
-from ..models import Model, session, Customer, Address, Comment, Post, ImageReference, Like, Feed, db
+from ..models import Model, Customer, Address, Comment, Post, ImageReference, Like, Feed
 from .phoneformat import format_phone_number
 from flask_marshmallow import Marshmallow
-from marshmallow import validates as validator, validate, validates_schema, post_load, fields, pre_load, post_dump, \
-	pre_dump
+from marshmallow import validates as validator, validate, validates_schema, post_load, fields
 from usernames import is_safe_username
-from MyProject.server.validation.validate import get_current_time, obj_with_attr_exists, id_generator
 
 bcrypt = Bcrypt(app)
 
@@ -39,32 +35,41 @@ my_password_validator \
 SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
 
 
-def setup_schema():
-	# Create a function which incorporates the Base and session information
-	def setup_schema_fn():
-		# for class_ in models:
-		class Meta(object):
-			model = None
-			sqla_session = session
-			include_fk = True
-			load_instance = True
-			datetimeformat = '%Y-%m-%dT%H:%M:%S%z'
-
-		for class_ in [x.class_ for x in Model.registry.mappers]:
-			if hasattr(class_, "__tablename__"):
-				meta_class = type("Meta", (Meta,), {"model": class_})
-
-				schema_class_name = "%sSchema" % class_.__name__
-				schema_class = type(
-					schema_class_name, (ma.SQLAlchemyAutoSchema,), {"Meta": meta_class}
-				)
-
-				setattr(class_, "__marshmallow__", schema_class)
-
-	return setup_schema_fn
+class formats:
+	Follower = lambda: CustomerSchema(only=["id", "username"])
 
 
-setup_schema()()
+def setup_schemas():
+	# generate individual base meta to be used for every schema class
+	class Meta(object):
+		model = None
+		sqla_session = session
+		include_fk = True
+		load_instance = True
+
+	for class_ in [x.class_ for x in Model.registry.mappers]:
+		if hasattr(class_, "__tablename__"):
+			meta_class = type("Meta", (Meta,), {"model": class_})
+			schema_class_name = "%sSchema" % class_.__name__
+			schema_class = type(schema_class_name, (ma.SQLAlchemyAutoSchema,), {"Meta": meta_class})
+			setattr(class_, "__marshmallow__", schema_class)
+
+
+setup_schemas()
+
+
+class PostSchema(SQLAlchemyAutoSchema):
+	Meta = Post.__marshmallow__().Meta
+
+	customer_id = custom_fields.customer_id()
+	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
+	content = fields.Str(validate=validate.Length(max=120))
+	type = EnumField(groups.PostTypes, required=True)
+
+	@validates_schema
+	def validate_schema(self, data, **kwargs):
+		if not ('content' in data or 'image_id' in data):
+			raise ValidationError("Either content or an image is required")
 
 
 class BaseSchema(SQLAlchemyAutoSchema):
@@ -76,33 +81,24 @@ class CustomerSchema(BaseSchema):
 
 	username = fields.Str(required=True)
 	password = fields.Str(required=True, load_only=True)
-	first_name = fields.Method(deserialize="capitalize", required=True, load_only=True)
-	last_name = fields.Method(deserialize="capitalize", required=True, load_only=True)
-	email = fields.Email(required=True, load_only=True)
+	first_name = custom_fields.Custom(load="capitalize", required=True)
+	last_name = custom_fields.Custom(load="capitalize", required=True)
+	email = fields.Email(required=True)
 	gender = EnumField(groups.Genders, load_only=True)
-	phone_number = fields.Method(deserialize="remove_unnecessary_chars", required=True, load_only=True)
+	phone_number = custom_fields.Custom(load=lambda val: re.sub('[^\d+]+', '', val), required=True)
 	business_type = EnumField(groups.BusinessTypes, required=True)
 	business_name = fields.Str(required=True)
-	organization_number = fields.Int(required=True, load_only=True)
-	customer_number = fields.Str(load_only=True, load_default=lambda: CustomerSchema().unique_customer_number())
-
-	class FollowSchema(SQLAlchemyAutoSchema):
-		id = fields.Int()
-		username = fields.Str()
+	organization_number = fields.Int(required=True)
+	customer_number = fields.Str(load_default=lambda: unique_customer_number())
 
 	# relationships:
-	following = fields.Nested(FollowSchema, dump_only=True, many=True)
-	followers = fields.Nested(FollowSchema, dump_only=True, many=True)
-	posts = fields.Nested(lambda: PostSchema(), many=True)
+	following = fields.Nested(formats.Follower, dump_only=True, many=True)
+	followers = fields.Nested(formats.Follower, dump_only=True, many=True)
+	posts = fields.Nested(PostSchema, many=True)
 
 	@staticmethod
 	def capitalize(value):
 		return value.title()
-
-	# removes everything except digits and '+'
-	@staticmethod
-	def remove_unnecessary_chars(value):
-		return re.sub('[^\d+]+', '', value)
 
 	@validator('username')
 	def validate_username(self, value):
@@ -144,38 +140,18 @@ class CustomerSchema(BaseSchema):
 		if obj_with_attr_exists(Customer, 'organization_number', value):
 			raise ValidationError("Customer with this organization_number already exists")
 
-	# generate unique customer_number
-	@staticmethod
-	def unique_customer_number():
-		def generator():
-			return id_generator(size=3, chars=string.ascii_uppercase) + id_generator(size=3, chars=string.digits)
-
-		generated_id = generator()
-		while obj_with_attr_exists(Customer, 'customer_number', generated_id):
-			generated_id = generator()
-		return generated_id
-
 	@post_load
-	def add_missing(self, data, **kwargs):
-		# data['customer_number'] = self.unique_customer_number()
-
+	def format_fields(self, data, **kwargs):
 		# format phone number into swedish standard
 		data['phone_number'] = format_phone_number(data['phone_number'])
 
 		data['password'] = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 		return data
 
-	@post_dump
-	def remove_id(self, data, **kwargs):
-		data.pop('id', None)
-		data.pop('customer_number', None)
-		return data
-
 
 class AddressSchema(SQLAlchemyAutoSchema):
 	Meta = Address.__marshmallow__().Meta
 
-	# fix enum later
 	address_type = EnumField(groups.AddressTypes, required=True)
 	street = fields.Str(required=True)
 	city = fields.Str(required=True)
@@ -208,24 +184,6 @@ class CommentSchema(SQLAlchemyAutoSchema):
 	customer_id = custom_fields.customer_id()
 
 
-# def get_days_since_created(self, obj):
-# 	return datetime.datetime.now().day - obj.created_at.day
-
-
-class PostSchema(SQLAlchemyAutoSchema):
-	Meta = Post.__marshmallow__().Meta
-
-	customer_id = custom_fields.customer_id()
-	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
-	content = fields.Str(validate=validate.Length(max=120))
-	type = EnumField(groups.PostTypes, required=True)
-
-	@validates_schema
-	def validate_schema(self, data, **kwargs):
-		if not ('content' in data or 'image_id' in data):
-			raise ValidationError("Either content or an image is required")
-
-
 class LikeSchema(SQLAlchemyAutoSchema):
 	Meta = Like.__marshmallow__().Meta
 
@@ -245,31 +203,18 @@ class ImageReferenceSchema(SQLAlchemyAutoSchema):
 			raise ValidationError("length of path can at max be 120 characters long")
 
 
-class FeedSchema(SQLAlchemyAutoSchema):
-	Meta = Feed.__marshmallow__().Meta
-
-	customer_id = custom_fields.customer_id()
-
-
 def register_schemas():
 	"""
 	Adds a reference attribute to the corresponding schema for every model class.
 	Also adds the required fields used for json validation (used in views.py).
 	"""
 	for class_ in [x.class_ for x in Model.registry.mappers]:
-		txt = str(class_.__name__)
-		if txt == "TokenBlocklist":
-			continue
-		# found_class = eval(str(class_.__name__))
-		# print(found_class._validation)
-		schema = eval(str(class_.__name__) + "Schema")
-		setattr(class_, "__schema__", schema)
-	for class_ in [x.class_ for x in Model.registry.mappers]:
-		if class_.__name__ == "TokenBlocklist":
-			continue
-		required_fields = []
-		schema_fields = class_.__schema__._declared_fields
-		for field in schema_fields:
-			if schema_fields[field].required:
-				required_fields.append(field)
-		setattr(class_, "__required_params__", required_fields)
+		if class_._validation:
+			# add schema class
+			schema = eval(str(class_.__name__) + "Schema")
+			setattr(class_, "__schema__", schema)
+
+			# adding required params from required attribute in schema class
+			schema_fields = schema._declared_fields
+			required_fields = [field for field in schema_fields if schema_fields[field].required]
+			setattr(class_, "__required_params__", required_fields)
