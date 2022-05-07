@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+
 import com.squareup.picasso.Picasso;
 import com.vinga129.savolax.databinding.PostPreviewItemBinding;
 import com.vinga129.savolax.ui.profile.BaseRecyclerAdapter;
@@ -25,7 +26,8 @@ public class PostPreviewsRecyclerAdapter extends BaseRecyclerAdapter {
     @Override
     protected ViewHolder onCreateViewBinding(@NonNull ViewGroup parent) {
         // return new ViewHolder(FragmentProfileBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
-        return new ViewHolder(PostPreviewItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        binding = PostPreviewItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override

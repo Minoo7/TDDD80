@@ -201,7 +201,7 @@ def feed(customer_id):
 		return jsonify(find(Customer, customer_id).get_feed()), 200
 
 
-@app.route("/customers/profiles/<int:customer_id>", methods=[GET])
+@app.route("/customers/<int:customer_id>/profile", methods=[GET])
 @require_id_exists()
 def profile(customer_id):
 	if request.method == GET:
