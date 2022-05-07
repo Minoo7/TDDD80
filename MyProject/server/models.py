@@ -7,7 +7,6 @@ from sqlalchemy.orm import relationship, sessionmaker, deferred
 from MyProject.server import groups, Model
 from sqlalchemy.dialects.postgresql import ENUM
 
-
 # --- settings for model ---
 Model._validation = True
 Model.id = Column(Integer, primary_key=True)
@@ -106,11 +105,9 @@ class Customer(User):
 			only=["username", "business_type", "business_name", "followers", "following", "posts"]).dump(self)
 
 	def get_feed(self):
-		return Post.__schema__(many=True).dump(Post.query.join(follower_table, (follower_table.c.following_id == Post.customer_id)).filter(
-							  follower_table.c.customer_id == self.id).order_by(Post.created_at).all())
-
-	def __repr__(self):
-		return '<Customer %r>' % self.customer_number
+		return Post.__schema__(many=True).dump(
+			Post.query.join(follower_table, (follower_table.c.following_id == Post.customer_id)).filter(
+				follower_table.c.customer_id == self.id).order_by(Post.created_at).all())
 
 
 follower_table = Table(

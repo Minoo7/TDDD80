@@ -6,9 +6,9 @@ from MyProject.server.models import Customer, Post
 
 
 class FieldExistingId(fields.Integer):
-	def __init__(self, class_, required=False):
+	def __init__(self, class_, required=False, **kwargs):
 		self.class_ = class_
-		super().__init__(strict=True, allow_none=True, required=required)
+		super().__init__(strict=True, allow_none=True, required=required, **kwargs)
 
 	def _validated(self, value):
 		assert_id_exists(self.class_, value)
@@ -72,17 +72,9 @@ class Custom(fields.String):
 		super()._bind_to_schema(field_name, schema)
 
 
-class NameField(fields.String):
-	def _serialize(self, value, attr, obj, **kwargs):
-		return value
-
-	def _deserialize(self, value, attr, data, **kwargs):
-		return value.title()
-
-
 def customer_id():
 	return FieldExistingId(class_=Customer)
 
 
-def post_id():
-	return FieldExistingId(class_=Post)
+def post_id(**kwargs):
+	return FieldExistingId(class_=Post, load_only=True)

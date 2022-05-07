@@ -1,35 +1,21 @@
 import re
 
-from flask_bcrypt import Bcrypt
-from marshmallow_enum import EnumField
-from password_validator import PasswordValidator
-
-from .validate import unique_customer_number, obj_with_attr_exists
 from .. import groups, app, ValidationError, session
 from . import custom_fields
-from ..models import Model, Customer, Address, Comment, Post, ImageReference, Like, Feed
+from ..models import Model, Customer, Address, Comment, Post, ImageReference, Like
+from .validate import unique_customer_number, obj_with_attr_exists, USERNAME_LENGTH_MIN, NAME_LENGTH_MIN, \
+	NAME_LENGTH_MAX, my_password_validator
 from .phoneformat import format_phone_number
+
 from flask_marshmallow import Marshmallow
 from marshmallow import validates as validator, validate, validates_schema, post_load, fields
+from flask_bcrypt import Bcrypt
+
+from marshmallow_enum import EnumField
 from usernames import is_safe_username
 
 bcrypt = Bcrypt(app)
-
 ma = Marshmallow(app)
-
-USERNAME_LENGTH_MIN = 5
-NAME_LENGTH_MIN = 3
-NAME_LENGTH_MAX = 32
-
-my_password_validator = PasswordValidator()
-
-my_password_validator \
-	.min(8) \
-	.max(100) \
-	.has().uppercase() \
-	.has().lowercase() \
-	.has().digits() \
-	.has().no().spaces()
 
 # --- Nice imports ---
 SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
@@ -37,6 +23,7 @@ SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
 
 class formats:
 	Follower = lambda: CustomerSchema(only=["id", "username"])
+	# Like = lambda: LikeSchema(only=["id"])
 
 
 def setup_schemas():
@@ -65,6 +52,11 @@ class PostSchema(SQLAlchemyAutoSchema):
 	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
 	content = fields.Str(validate=validate.Length(max=120))
 	type = EnumField(groups.PostTypes, required=True)
+	created_at = fields.DateTime(dump_only=True)
+
+	# relationships:
+	likes = fields.Nested(lambda: LikeSchema, dump_only=True, many=True)
+	comments = fields.Nested(lambda: CommentSchema, dump_only=True, many=True)
 
 	@validates_schema
 	def validate_schema(self, data, **kwargs):

@@ -4,8 +4,25 @@ import string
 import pytz  # as pytz
 from datetime import datetime
 
+from password_validator import PasswordValidator
+
 from ... import server
 from .. import session
+
+# --- Constants ---
+USERNAME_LENGTH_MIN = 5
+NAME_LENGTH_MIN = 3
+NAME_LENGTH_MAX = 32
+
+my_password_validator = PasswordValidator()
+
+my_password_validator \
+	.min(8) \
+	.max(100) \
+	.has().uppercase() \
+	.has().lowercase() \
+	.has().digits() \
+	.has().no().spaces()
 
 
 class IdError(Exception):
