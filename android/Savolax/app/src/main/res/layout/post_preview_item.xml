@@ -1,41 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="8dp"
-    android:padding="8dp"
-    android:layout_margin="5dp"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="10dp"
+    <data>
+
+        <variable
+            name="post"
+            type="com.vinga129.savolax.ui.retrofit.rest_objects.Post" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="8dp"
+        app:cardCornerRadius="8dp">
 
-        <ImageView
-            android:id="@+id/image_post"
+        <LinearLayout
+            android:id="@+id/layout_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:orientation="vertical"
+            app:loadBackgroundUrl="@{post.imageUrl}"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Holiday Name"
-            android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/text_post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:shadowColor="@color/white"
+                android:shadowRadius="5"
+                android:textColor="@android:color/black"
+                android:text="@{post.title}"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                tools:text="Holiday Name" />
 
-        <TextView
-            android:id="@+id/text_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Holiday Date"
-            android:textSize="23sp" />
+            <TextView
+                android:id="@+id/text_post_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="23sp"
+                android:text="@{post.content}"
+                tools:text="Holiday Date" />
 
-    </LinearLayout>
+        </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</layout>

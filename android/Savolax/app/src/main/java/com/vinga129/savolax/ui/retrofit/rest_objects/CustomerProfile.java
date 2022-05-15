@@ -6,6 +6,17 @@ public class CustomerProfile {
     private String username;
     private String business_name;
     private groups.BusinessTypes business_type;
+    private String bio;
+    private String image_url;
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
     private List<MiniCustomer> followers;
     private List<MiniCustomer> following;
     private List<Post> posts;
@@ -18,12 +29,28 @@ public class CustomerProfile {
         this.username = username;
     }
 
-    public String getBusiness_name() {
+    public String getBusinessName() {
         return business_name;
     }
 
-    public void setBusiness_name(String business_name) {
+    public void setBusinessName(String business_name) {
         this.business_name = business_name;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getImageUrl() {
+        return image_url;
+    }
+
+    public void setImageUrl(String image_url) {
+        this.image_url = image_url;
     }
 
     public groups.BusinessTypes getBusiness_type() {

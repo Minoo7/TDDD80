@@ -7,17 +7,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
-// public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.ViewHolder> {
 public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseRecyclerAdapter.ViewHolder> {
 
     protected List<Object> dataList;
     ViewBinding binding;
 
-
     public BaseRecyclerAdapter(List<Object> dataList) {
         this.dataList = dataList;
+    }
+
+    public void updateData(List<Object> dataList) {
+        this.dataList = dataList != null ? dataList : new ArrayList<>();
+        notifyDataSetChanged();
     }
 
     @NonNull

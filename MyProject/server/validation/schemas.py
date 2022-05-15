@@ -1,3 +1,4 @@
+import collections
 import re
 
 from .. import groups, app, ValidationError, session
@@ -8,7 +9,7 @@ from .validate import unique_customer_number, obj_with_attr_exists, USERNAME_LEN
 from .phoneformat import format_phone_number
 
 from flask_marshmallow import Marshmallow
-from marshmallow import validates as validator, validate, validates_schema, post_load, fields
+from marshmallow import validates as validator, validate, validates_schema, post_load, fields, post_dump
 from flask_bcrypt import Bcrypt
 
 from marshmallow_enum import EnumField
@@ -21,9 +22,12 @@ ma = Marshmallow(app)
 SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
 
 
-class formats:
+"""class formats:
 	Follower = lambda: CustomerSchema(only=["id", "username"])
 	# Like = lambda: LikeSchema(only=["id"])
+"""
+
+formats = collections.namedtuple("TupleOfCustomFormats", ("Follower"))(lambda: CustomerSchema(only=["id", "username"]))
 
 
 def setup_schemas():
@@ -50,6 +54,7 @@ class PostSchema(SQLAlchemyAutoSchema):
 
 	customer_id = custom_fields.customer_id()
 	image_id = custom_fields.FieldExistingId(ImageReference, required=False)
+	title = fields.Str(validate=validate.Length(max=40), required=True)
 	content = fields.Str(validate=validate.Length(max=120))
 	type = EnumField(groups.PostTypes, required=True)
 	created_at = fields.DateTime(dump_only=True)
@@ -62,6 +67,14 @@ class PostSchema(SQLAlchemyAutoSchema):
 	def validate_schema(self, data, **kwargs):
 		if not ('content' in data or 'image_id' in data):
 			raise ValidationError("Either content or an image is required")
+
+	@post_dump
+	def add_image_reference(self, data, **kwargs):
+		image_id_ = data.pop('image_id', None)
+
+		if image_id_ is not None:
+			data['image_url'] = ImageReference.query.get(image_id_).path
+		return data
 
 
 class BaseSchema(SQLAlchemyAutoSchema):
@@ -80,8 +93,11 @@ class CustomerSchema(BaseSchema):
 	phone_number = custom_fields.Custom(load=lambda val: re.sub('[^\d+]+', '', val), required=True)
 	business_type = EnumField(groups.BusinessTypes, required=True)
 	business_name = fields.Str(required=True)
+	bio = fields.Str()
 	organization_number = fields.Int(required=True)
 	customer_number = fields.Str(load_default=lambda: unique_customer_number())
+	# add validation:....
+	image_url = custom_fields.FieldExistingId(class_=ImageReference)
 
 	# relationships:
 	following = fields.Nested(formats.Follower, dump_only=True, many=True)
@@ -124,6 +140,11 @@ class CustomerSchema(BaseSchema):
 			raise ValidationError('invalid phone number')
 		if obj_with_attr_exists(Customer, 'phone_number', value):
 			raise ValidationError("Customer with this phone number already exists")
+
+	@validator('bio')
+	def validate_bio(self, value):
+		if len(value) > 120:
+			raise ValidationError("Bio can't be longer than 120 characters long!")
 
 	@validator('organization_number')
 	def validate_organization_number(self, value):

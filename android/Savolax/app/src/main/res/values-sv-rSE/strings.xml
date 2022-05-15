@@ -10,4 +10,5 @@
     <string name="posts">Inlägg</string>
     <string name="followers">Följare</string>
     <string name="following">Följer</string>
+    <string name="follow">Follow</string>
 </resources>

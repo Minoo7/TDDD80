@@ -12,7 +12,7 @@ def reset_db():
 
 def add_examples():
 	# --- Customer 1 ---
-	create_obj(Customer, {"username": "rafeb3233", "password": "goodPass123", "first_name": "rafeb", "last_name": "Laban", "email": "rafeb3233@gmail.com", "gender": "Man", "phone_number": "0735156678", "business_type": "Cafe", "organization_number": "12345678911", "business_name": "Savolax"})
+	create_obj(Customer, {"username": "rafeb3233", "bio": "hello this is my biooo", "password": "goodPass123", "first_name": "rafeb", "last_name": "Laban", "email": "rafeb3233@gmail.com", "gender": "Man", "phone_number": "0735156678", "business_type": "Cafe", "organization_number": "12345678911", "business_name": "Savolax"})
 	create_obj(Address, {"address_type": "home", "street": "Landsvägen 13", "city": "Lund", "zip_code": "192 71", "customer_id": 1})
 	customer1 = Customer.query.get(1)
 
@@ -24,8 +24,8 @@ def add_examples():
 	customer1.follow(customer2)
 	session.commit()
 
-	# customer2 add post
-	create_obj(Post, {"content": "hejsan svejsan", "type": "review", "customer_id": 2})
+	# customer1 add post
+	create_obj(Post, {"title": "post title yey", "content": "hejsan svejsan", "type": "review", "customer_id": 1})
 
 
 if __name__ == "__main__":
@@ -33,4 +33,4 @@ if __name__ == "__main__":
 	reset_db()
 	add_examples()
 	app.debug = True
-	app.run(port=5080)
+	app.run(host='0.0.0.0', port=5080)

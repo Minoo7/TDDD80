@@ -1,22 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.post.PostFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/text_post"
+    <data>
+
+        <variable
+            name="BindingUtil"
+            type="com.vinga129.savolax.ui.BindingUtils" />
+
+        <variable
+            name="viewmodel"
+            type="com.vinga129.savolax.ui.post.PostViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.post.PostFragment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        tools:context=".ui.post.PostFragment">
+
+        <TextView
+            android:id="@+id/text_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@{String.valueOf(viewmodel.post.type)}"
+            android:textColor="@color/orange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Review" />
+
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:text="@{viewmodel.post.title}"
+            android:textAlignment="viewStart"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_type"
+            tools:text="Don't be afraid to give up the good to go for the great." />
+
+        <RelativeLayout
+            android:id="@+id/clickable_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:clickable="true"
+            android:onClick="@{() -> fragment.navigateToPostUser()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_title">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/image_profile_pic"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:error="@{@drawable/ic_round_person_24}"
+                app:imageUrl="@{viewmodel.post.imageUrl}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                tools:ignore="ImageContrastCheck"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/text_post_username2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@+id/image_profile_pic"
+                android:text="@{viewmodel.miniCustomer.username}"
+                tools:text="rafeb3233" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/image_post_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/post_image"
+            android:minHeight="300dp"
+            android:scaleType="fitXY"
+            app:error="@{@drawable/image1}"
+            app:imageUrl="@{viewmodel.post.imageUrl}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clickable_profile"
+            tools:src="@drawable/image4" />
+
+        <TextView
+            android:id="@+id/text_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginTop="8dp"
+            android:text="@{viewmodel.post.createdAt}"
+            android:textColor="@color/orange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_post_image"
+            tools:text="Date: 2022-05-14" />
+
+        <ToggleButton
+            android:id="@+id/button_like"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/like_check"
+            android:checked="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:textOff=""
+            android:textOn=""
+            android:theme="@style/ToggleButton.CustomTheme"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_date"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <TextView
+            android:id="@+id/text_likes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:text="@{String.valueOf(viewmodel.post.likes.size())}"
+            app:layout_constraintBottom_toBottomOf="@+id/button_like"
+            app:layout_constraintStart_toEndOf="@+id/button_like"
+            app:layout_constraintTop_toTopOf="@+id/button_like"
+            tools:ignore="TouchTargetSizeCheck"
+            tools:text="326 Likes" />
+
+        <RelativeLayout
+            android:id="@+id/clickable_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:onClick="@{() -> fragment.showLikesWindow()}"
+            app:layout_constraintStart_toEndOf="@+id/text_likes"
+            app:layout_constraintTop_toBottomOf="@+id/text_date">
+
+            <ImageView
+                android:id="@+id/image_comment"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_outline_mode_comment_24"
+                tools:ignore="contentDescription" />
+
+            <TextView
+                android:id="@+id/text_comments_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/image_comment"
+                android:text="@{String.valueOf(viewmodel.post.comments.size())}"
+                tools:text="56" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/text_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:text="@{viewmodel.post.content}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_like"
+            tools:text="Hello this is my post please like it!" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

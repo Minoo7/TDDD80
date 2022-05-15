@@ -18,10 +18,10 @@
         tools:layout="@layout/fragment_products" />
 
     <fragment
-        android:id="@+id/navigation_post"
-        android:name="com.vinga129.savolax.ui.post.PostFragment"
+        android:id="@+id/navigation_add_post"
+        android:name="com.vinga129.savolax.ui.add_post.AddPostFragment"
         android:label="@string/title_post"
-        tools:layout="@layout/fragment_post" />
+        tools:layout="@layout/fragment_add_post" />
 
     <fragment
         android:id="@+id/navigation_other"
@@ -33,6 +33,29 @@
         android:id="@+id/navigation_account"
         android:name="com.vinga129.savolax.ui.account.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_navigation_account_to_postFragment"
+            app:destination="@id/navigation_post" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.vinga129.savolax.ui.profile.ProfileFragment"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/toPost"
+            app:destination="@id/navigation_post" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_post"
+        android:name="com.vinga129.savolax.ui.post.PostFragment"
+        android:label="PostFragment" >
+        <action
+            android:id="@+id/toPostProfile"
+            app:destination="@id/navigation_profile" />
+    </fragment>
+
+    <action android:id="@+id/moveToSpecificFragment"
+        app:destination="@id/navigation_post"/>
 
 </navigation>

@@ -98,4 +98,6 @@
     <string name="posts">Posts</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>
+    <string name="follow">Follow</string>
+    <string name="post_image">Post image</string>
 </resources>

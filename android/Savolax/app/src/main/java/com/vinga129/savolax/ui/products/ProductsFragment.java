@@ -10,12 +10,16 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.vinga129.savolax.R;
-import com.vinga129.savolax.databinding.FragmentPostBinding;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 import com.vinga129.savolax.databinding.FragmentProductsBinding;
-import com.vinga129.savolax.ui.post.PostViewModel;
+import com.vinga129.savolax.ui.retrofit.Controller;
+import com.vinga129.savolax.ui.retrofit.RestAPI;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProductsFragment extends Fragment {
 
@@ -29,8 +33,9 @@ public class ProductsFragment extends Fragment {
         binding = FragmentProductsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textProducts;
-        productsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final TextView textView = binding.textProducts;
+        //productsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
         return root;
     }
 

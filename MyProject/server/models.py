@@ -66,10 +66,12 @@ class Customer(User):
 	"""
 	__tablename__ = "customers"
 	customer_number = Column(String(6), unique=True, nullable=False)
+	image_url = Column(String(120))
 	phone_number = Column(String(20), unique=True, nullable=False)
 	business_type = Column(ENUM(groups.BusinessTypes), nullable=False)
 	organization_number = Column(String(11), unique=True, nullable=False)
 	business_name = Column(String(50), unique=True, nullable=False)
+	bio = Column(String(120))
 
 	address = relationship("Address",
 						   primaryjoin="and_(Customer.id==Address.customer_id, Address.address_type=='home')",
@@ -102,7 +104,10 @@ class Customer(User):
 
 	def get_profile(self):
 		return self.__schema__(
-			only=["username", "business_type", "business_name", "followers", "following", "posts"]).dump(self)
+			only=["username", "image_url", "business_type", "business_name", "followers", "following", "posts", "bio"]).dump(self)
+
+	def get_mini(self):
+		return self.__schema__(only=["id", "username", "image_url"]).dump(self)
 
 	def get_feed(self):
 		return Post.__schema__(many=True).dump(
@@ -174,6 +179,7 @@ class Post(Model):
 	__tablename__ = "posts"
 	customer_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
 	image_id = Column(Integer, ForeignKey('images.id'))
+	title = Column(String(40), nullable=False)
 	content = Column(String(255))
 	type = Column(ENUM(groups.PostTypes), nullable=False)
 	created_at = Column(DateTime(), default=datetime.now(), nullable=False)

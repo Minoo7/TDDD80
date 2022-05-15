@@ -39,6 +39,11 @@ def test_env_id(num):
 	return jsonify(message=get_jwt_identity()), 200
 
 
+@app.route("/test", methods=[GET])
+def test():
+	return jsonify({"username": "usrname"}), 200
+
+
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
 	jti = jwt_payload['jti']
@@ -98,6 +103,12 @@ def update_customers(customer_id):
 	if request.method == DELETE:
 		delete_obj(Customer, customer_id)
 		return jsonify(message="Successfully deleted Customer"), 200
+
+
+@app.route("/customers/<int:customer_id>/mini", methods=[GET])
+def as_mini(customer_id):
+	if request.method == GET:
+		return jsonify(find(Customer, customer_id).get_mini()), 200
 
 
 @app.route("/customers/<int:customer_id>/addresses", methods=[GET, POST])
@@ -205,17 +216,18 @@ def feed(customer_id):
 @require_id_exists()
 def profile(customer_id):
 	if request.method == GET:
+		print(find(Customer, customer_id).get_profile())
 		return jsonify(find(Customer, customer_id).get_profile()), 200
 
 
 @app.route("/posts", methods=[GET, POST])
 @require_method_params(POST=post_params)
-# @jwt_required()
+@jwt_required()
 def posts():
 	if request.method == GET:
 		return jsonify(get_all(Post)), 200
 	if request.method == POST:
-		create_obj(Post, request.json | dict(customer_id=2))  # get_jwt_identity()
+		create_obj(Post, request.json | dict(customer_id=get_jwt_identity()))  # get_jwt_identity()
 		return jsonify(message="Successfully created post"), 201
 
 
