@@ -100,4 +100,36 @@
     <string name="following">Following</string>
     <string name="follow">Follow</string>
     <string name="post_image">Post image</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username <font color='#B3B71C1C'>*</font></string>
+    <string name="first_name">First name <font color='#B3B71C1C'>*</font></string>
+    <string name="last_name">Last Name <font color='#B3B71C1C'>*</font></string>
+    <string name="email">Email <font color='#B3B71C1C'>*</font></string>
+    <string name="gender">Gender</string>
+    <string name="phone_number">Phone number <font color='#B3B71C1C'>*</font></string>
+    <string name="business_type">Business type <font color='#B3B71C1C'>*</font></string>
+    <string name="business_name">Business name <font color='#B3B71C1C'>*</font></string>
+    <string name="bio">Bio</string>
+    <string name="organization_number">Organization number <font color='#B3B71C1C'>*</font></string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="password">Password <font color='#B3B71C1C'>*</font></string>
+
+    <string-array name="genders">
+        <item>Man</item>
+        <item>Woman</item>
+        <item>Non binary</item>
+        <item>Other</item>
+    </string-array>
 </resources>
+

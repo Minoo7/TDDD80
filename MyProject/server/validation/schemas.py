@@ -153,6 +153,7 @@ class CustomerSchema(BaseSchema):
 		if obj_with_attr_exists(Customer, 'organization_number', value):
 			raise ValidationError("Customer with this organization_number already exists")
 
+
 	@post_load
 	def format_fields(self, data, **kwargs):
 		# format phone number into swedish standard
@@ -197,11 +198,16 @@ class CommentSchema(SQLAlchemyAutoSchema):
 	customer_id = custom_fields.customer_id()
 
 
-class LikeSchema(SQLAlchemyAutoSchema):
+class LikeSchema(BaseSchema):
 	Meta = Like.__marshmallow__().Meta
 
 	post_id = custom_fields.post_id()
 	customer_id = custom_fields.customer_id()
+
+	"""@validates_schema
+	def validate_schema(self, data, **kwargs):
+		if not ('post_id' in data and 'customer_id' in data):
+			raise ValidationError("Either content or an image is required")"""
 
 
 class ImageReferenceSchema(SQLAlchemyAutoSchema):

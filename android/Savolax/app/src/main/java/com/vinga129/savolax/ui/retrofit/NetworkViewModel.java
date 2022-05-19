@@ -12,7 +12,7 @@ public abstract class NetworkViewModel extends AndroidViewModel {
         super(application);
 
         controller = Controller.getInstance();
-        restAPI = Controller.getRestAPI();
+        restAPI = controller.getRestAPI();
     }
 
     //public abstract void loadData();

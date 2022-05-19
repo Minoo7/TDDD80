@@ -1,6 +1,8 @@
 # routes..
+import ast
 import os
 from datetime import datetime, timezone
+from traceback import format_exc
 
 import werkzeug
 from flask import request, jsonify, abort
@@ -13,7 +15,7 @@ from MyProject.server import app, ValidationError, groups, session
 from MyProject.server.config import ALLOWED_EXTENSIONS
 from MyProject.server.constants import GET, POST, DELETE, PUT
 from MyProject.server.main import edit_obj, find, create_obj, delete_obj, \
-	get_obj, get_all, find_possible_logins
+	get_obj, get_all, find_possible_logins, find_by
 from MyProject.server.models import Customer, Address, Post, ImageReference, Like, Comment, TokenBlocklist
 from MyProject.server.routes.helpers import require_method_params, require_id_exists, customer_params, address_params, \
 	post_params, require_ownership, comment_params, require_json_id_exists
@@ -246,7 +248,10 @@ def likes(post_id):
 	if request.method == GET:
 		return jsonify([post_.likes for post_ in find(Post, post_id)]), 200
 	if request.method == POST:
-		create_obj(Like, dict(post_id=post_id, customer_id=get_jwt_identity()))
+		json = dict(post_id=post_id, customer_id=get_jwt_identity())
+		if find_by(Like, **json):
+			return jsonify(message="Already liked post"), 200
+		create_obj(Like, json)
 		return jsonify(message="Successfully liked post"), 201
 
 
@@ -295,7 +300,7 @@ def handle_bad_id(e):
 
 @app.errorhandler(ValidationError)
 def handle_bad_validation(e):
-	return jsonify(error=str(e)), 400
+	return jsonify(error=ast.literal_eval(str(e))), 400
 
 
 @app.errorhandler(werkzeug.exceptions.BadRequest)

@@ -86,4 +86,10 @@ public class Post {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    // Help methods
+
+    public boolean isLikedBy(int customer_id) {
+        return likes.stream().anyMatch(mini -> mini.getId() == customer_id);
+    }
 }

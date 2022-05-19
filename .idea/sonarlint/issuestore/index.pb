@@ -7,8 +7,6 @@ B
 MyProject/test2.py,f\b\fbc04803d4ffb7f8e5ee11a89608b67a03d7527c
 R
 "MyProject/server/routes/helpers.py,b\0\b00c0df4c309e224e095c6671e6d015b74bbd4ee
-W
-'MyProject/server/validation/validate.py,9\8\98505bdc148453d385f9f5f691d0001f0016af96
 C
 Labbar/S4/README.md,f\0\f041f407cc59c24aaf269fc68fcfefd2f6fa659a
 C
@@ -46,10 +44,6 @@ P
 `
 0android/Savolax/app/src/main/AndroidManifest.xml,b\e\be16b7c6b38c1cefb37a075c22d3320f16678428
 J
-MyProject/server/groups.py,3\d\3d0c76ad9b9059c4faccdc06fecab70ada5f98a4
-H
-MyProject/server/main.py,9\7\97a086caeb6c95391d21616d6d044183c24004f3
-J
 MyProject/server/config.py,1\e\1e0ce5c3cb38a71e698535cb01d894cc54da8787
 M
 MyProject/server/constants.py,e\2\e25af03fd7aefcd3c1d44109d3f2051dad2db312
@@ -57,3 +51,5 @@ M
 Procfile,b\c\bc3c68e880d1a01632bce79f69dd1387c7ba9c54
 E
 MyProject/__init__.py,8\9\89b6f02f9d7bf9038c09abc1ab911fea3677fdf6
+H
+MyProject/server/main.py,9\7\97a086caeb6c95391d21616d6d044183c24004f3

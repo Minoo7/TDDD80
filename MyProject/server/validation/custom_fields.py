@@ -77,4 +77,4 @@ def customer_id():
 
 
 def post_id(**kwargs):
-	return FieldExistingId(class_=Post, load_only=True)
+	return FieldExistingId(class_=Post)

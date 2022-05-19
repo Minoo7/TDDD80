@@ -18,6 +18,7 @@ import retrofit2.Response;
 public class PostViewModel extends NetworkViewModel {
     private MutableLiveData<Post> post = new MutableLiveData<>();
     private MutableLiveData<MiniCustomer> miniCustomer = new MutableLiveData<>();
+    private MutableLiveData<Boolean> liked = new MutableLiveData<>();
 
     public PostViewModel(Application application) {
         super(application);
@@ -37,6 +38,14 @@ public class PostViewModel extends NetworkViewModel {
 
     public void setMiniCustomer(MiniCustomer customer) {
         this.miniCustomer.setValue(customer);
+    }
+
+    public LiveData<Boolean> getLiked() {
+        return liked;
+    }
+
+    public void setLiked(Boolean bool) {
+        liked.setValue(bool);
     }
 
     public void init(Post post) {

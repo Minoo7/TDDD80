@@ -1,7 +1,10 @@
 package com.vinga129.savolax;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.service.controls.Control;
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -13,12 +16,16 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.vinga129.savolax.databinding.ActivityMainBinding;
+import com.vinga129.savolax.ui.retrofit.Controller;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +53,26 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         // restAPI = Controller.getRetrofitInstance().create(RestAPI.class);
+
+        // temp setting auth key
+        Map<String, String> map = new HashMap<>();
+        map.put("login_method_name", "rafeb3233@gmail.com"); //{"login_method_name": "rafeb3233@gmail.com", "password": "goodPass123"}
+        map.put("password", "goodPass123");
+        Controller.getInstance().init(getContext());
+        Controller.getInstance().getRestAPI().login(map).enqueue(new Callback<Map<String, String>>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
+                if (response.body() != null)
+                    getSharedPreferences("API", Context.MODE_PRIVATE).edit().putString("JWT_KEY", response.body().get("token")).apply();
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<Map<String, String>> call, Throwable t) {
+
+            }
+        });
     }
 
     public static Context getContext() {
@@ -54,6 +81,23 @@ public class MainActivity extends AppCompatActivity {
 
     public NavController getNavController() {
         return navController;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        navController.popBackStack();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                navController.navigateUp();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public <T> void doNetworkCall(NetworkReceiver receiver, Call<T> call) {

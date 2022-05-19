@@ -92,7 +92,6 @@ public class ProfileViewModel extends NetworkViewModel {
             @Override
             public void onResponse(@NonNull Call<CustomerProfile> call, @NonNull Response<CustomerProfile> response) {
                 // CustomerProfile customerProfile = response.body();
-                System.out.println("success");
 
                 customerProfile.setValue(response.body());
 

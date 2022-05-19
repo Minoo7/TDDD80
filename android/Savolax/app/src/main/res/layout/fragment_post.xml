@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="current"
+            type="com.vinga129.savolax.ui.UserRepository" />
+
+        <variable
             name="BindingUtil"
             type="com.vinga129.savolax.ui.BindingUtils" />
 
@@ -92,7 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:contentDescription="@string/post_image"
-            android:minHeight="300dp"
+            android:maxHeight="400dp"
+            android:minHeight="200dp"
             android:scaleType="fitXY"
             app:error="@{@drawable/image1}"
             app:imageUrl="@{viewmodel.post.imageUrl}"
@@ -115,21 +120,28 @@
 
         <ToggleButton
             android:id="@+id/button_like"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="8dp"
             android:background="@drawable/like_check"
-            android:checked="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            app:myLikeButton="@{viewmodel.post.isLikedBy(current.id)}"
+            app:checkedColor="@{@color/orange}"
             android:textOff=""
             android:textOn=""
-            android:theme="@style/ToggleButton.CustomTheme"
+            android:onCheckedChanged="@{fragment.likeButtonAction}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_date"
             tools:ignore="TouchTargetSizeCheck" />
+
+        <!--@color/orange-->
+
+        <!--android:checked="false"-->
+
+        <!--app:customOnClick="@{fragment.likeButtonAction}"-->
 
         <TextView
             android:id="@+id/text_likes"
@@ -153,12 +165,13 @@
             android:clickable="true"
             android:onClick="@{() -> fragment.showLikesWindow()}"
             app:layout_constraintStart_toEndOf="@+id/text_likes"
-            app:layout_constraintTop_toBottomOf="@+id/text_date">
+            app:layout_constraintTop_toBottomOf="@+id/text_date"
+            tools:ignore="TouchTargetSizeCheck">
 
             <ImageView
                 android:id="@+id/image_comment"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_outline_mode_comment_24"
                 tools:ignore="contentDescription" />
 

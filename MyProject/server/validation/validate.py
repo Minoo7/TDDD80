@@ -7,7 +7,7 @@ from datetime import datetime
 from password_validator import PasswordValidator
 
 from ... import server
-from .. import session
+from .. import session, ValidationError
 
 # --- Constants ---
 USERNAME_LENGTH_MIN = 5
