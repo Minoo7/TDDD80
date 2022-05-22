@@ -4,10 +4,12 @@ import static com.vinga129.savolax.MainActivity.getContext;
 
 import android.content.Context;
 import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.data.RegisterRepository;
 import com.vinga129.savolax.data.Result;
@@ -36,6 +38,7 @@ public class RegisterViewModel extends ViewModel {
     public LiveData<String[]> getGenders() {
         return genders;
     }
+
     public LiveData<String[]> getBusinessTypes() {
         return business_types;
     }
@@ -49,7 +52,6 @@ public class RegisterViewModel extends ViewModel {
     }
 
     public void register(Customer customer) {
-
         Result<RegisteredUser> result = registerRepository.register(customer);
 
         if (result instanceof Result.Success) {

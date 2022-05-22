@@ -38,7 +38,9 @@ import com.google.gson.JsonObject;
 import com.vinga129.savolax.HelperUtil;
 import com.vinga129.savolax.HelperUtil.CustomMapSerializer;
 import com.vinga129.savolax.R;
+import com.vinga129.savolax.data.UserView;
 import com.vinga129.savolax.databinding.FragmentRegisterBinding;
+import com.vinga129.savolax.ui.FormFragment;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
 import com.vinga129.savolax.ui.retrofit.rest_objects.MiniCustomer;
 import java.util.HashMap;
@@ -46,10 +48,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBinding> {
 
     private RegisterViewModel registerViewModel;
-    private FragmentRegisterBinding binding;
+    /*private FragmentRegisterBinding binding;
 
     @Nullable
     @Override
@@ -59,7 +61,7 @@ public class RegisterFragment extends Fragment {
 
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
         return binding.getRoot();
-    }
+    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -73,102 +75,39 @@ public class RegisterFragment extends Fragment {
         final Button registerButton = binding.register;
         final ProgressBar loadingProgressBar = binding.loading;
 
-        registerViewModel.getRegisterFormState().observe(getViewLifecycleOwner(), new Observer<RegisterFormState>() {
-            @Override
-            public void onChanged(@Nullable RegisterFormState registerFormState) {
-                if (registerFormState == null) {
-                    return;
-                }
-                // registerButton.setEnabled(registerFormState.isDataValid());
-                if (registerFormState.getUsernameError() != null) {
-                    usernameEditText.setError(registerFormState.getUsernameError());
-                }
-                if (registerFormState.getPasswordError() != null) {
-                    passwordEditText.setError(registerFormState.getPasswordError());
-                }
+        registerViewModel.getRegisterFormState().observe(getViewLifecycleOwner(), registerFormState -> {
+            if (registerFormState == null) {
+                return;
+            }
+            if (registerFormState.getUsernameError() != null) {
+                usernameEditText.setError(registerFormState.getUsernameError());
+            }
+            if (registerFormState.getPasswordError() != null) {
+                passwordEditText.setError(registerFormState.getPasswordError());
             }
         });
 
-        registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(), new Observer<RegisterResult>() {
-            @Override
-            public void onChanged(@Nullable RegisterResult registerResult) {
-                if (registerResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (registerResult.getError() != null) {
-                    showLoginFailed(registerResult.getError());
-                }
-                if (registerResult.getSuccess() != null) {
-                    updateUiWithUser(registerResult.getSuccess());
-                }
+        registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(), registerResult -> {
+            if (registerResult == null) {
+                return;
             }
-        });
-
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
+            loadingProgressBar.setVisibility(View.GONE);
+            if (registerResult.getError() != null) {
+                showLoginFailed(registerResult.getError());
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-                System.out.println("hejsan");
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                /*registerViewModel.registerDataValidate(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());*/
-                System.out.println("hejsan");
-                registerViewModel.registerDataValidate(getContext());
-            }
-        };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    /*registerViewModel.register(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());*/
-                }
-                return false;
+            if (registerResult.getSuccess() != null) {
+                updateUiWithUser(registerResult.getSuccess());
             }
         });
 
         registerButton.setOnClickListener(v -> {
-            /*loadingProgressBar.setVisibility(View.VISIBLE);
-
-            Customer customer = new Customer(binding.fieldUsername.getEditText().getText(), )
-
-            /*registerViewModel.register(usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString());*/
-
-            getFormData(view);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+            Customer customer = getFormData();
+            registerViewModel.register(customer);
         });
     }
 
-    private void getFormData(View view) {
-        /*ViewGroup allViews = ((ViewGroup) view);
-        Map<String, String> formData = new HashMap<>();
-        Gson gson = new GsonBuilder().registerTypeAdapter(formData.getClass(), new CustomMapSerializer()).setPrettyPrinting()
-                .create();
-        for (int i = 0; i < allViews.getChildCount(); i++) {
-            View childView = allViews.getChildAt(i);
-            if (childView instanceof TextInputLayout) {
-                TextInputLayout textInputLayout = (TextInputLayout) childView;
-                formData.put(
-                        Objects.requireNonNull(
-                                textInputLayout.getHint()).toString(),
-                        Objects.requireNonNull(
-                                textInputLayout.getEditText()).getText().toString());
-            }
-        }
-        String jsonForm = gson.toJson(formData);*/
-
+    public Customer getFormData() {
         JsonObject formData = new JsonObject();
         formData.add("username", properFormValue(binding.fieldUsername));
         formData.add("first_name", properFormValue(binding.fieldFirstName));
@@ -183,7 +122,17 @@ public class RegisterFragment extends Fragment {
         formData.add("password", properFormValue(binding.fieldBio));
 
         Gson gson = new Gson();
-        Customer customer = gson.fromJson(gson.toJson(formData), Customer.class);
+        return gson.fromJson(gson.toJson(formData), Customer.class);
+    }
+
+    @Override
+    public void updateUi(UserView model) {
+
+    }
+
+    @Override
+    public void showFail() {
+
     }
 
     private void updateUiWithUser(RegisteredUserView model) {
@@ -209,4 +158,8 @@ public class RegisterFragment extends Fragment {
         binding = null;
     }
 
+    @Override
+    protected void initFragmentImpl() {
+
+    }
 }

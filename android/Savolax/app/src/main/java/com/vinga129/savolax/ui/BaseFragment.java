@@ -22,15 +22,6 @@ public abstract class BaseFragment extends Fragment {
     protected UserRepository current;
     // Objects.requireNonNull(userRepository.getUserLiveData().getValue()).getId()
 
-    /*public BaseFragment() {
-        main = (MainActivity) getActivity();
-    }*/
-
-    /*public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        main = (MainActivity) getActivity();
-    }*/
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

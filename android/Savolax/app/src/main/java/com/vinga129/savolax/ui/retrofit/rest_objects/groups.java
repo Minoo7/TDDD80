@@ -6,11 +6,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class groups {
+    public enum AddressTypes {
+        HOME, WORK
+    }
+
     public enum BusinessTypes {
         RESTAURANT, CAFE, SHOP, SUPERMARKET
     }
     public enum PostTypes {
-        REVIEW
+        REVIEW, SOCIAL
     }
     public enum Genders {
         MAN, WOMAN, NON_BINARY, OTHER

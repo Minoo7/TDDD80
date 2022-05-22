@@ -19,19 +19,16 @@ public class RegisterDataSource {
 
     public Result<RegisteredUser> register(Customer customer) {
         try {
-            // TODO: handle loggedInUser authentication
-            /*LoggedInUser fakeUser =
-                    new LoggedInUser(
-                            java.util.UUID.randomUUID().toString(),
-                            "Jane Doe");*/
-            Response<Map<String, String>> response = Controller.getUnauthedService().createCustomer(customer).execute();
+            /*Response<Map<String, String>> response = Controller.getUnauthedService().createCustomer(customer).execute();
             if (response.isSuccessful()) {
                 return new Result.Success<>(null);
             }
             else {
                 Map<String, String> errorJson = new Gson().fromJson(response.errorBody().charStream(), Map.class);
                 return new Result.Error(errorJson);
-            }
+            }*/
+            // Temp since no network, auto yes:
+            return new Result.Success<>(customer);
         } catch (Exception e) {
             return new Result.Error(new IOException("Error logging in", e));
         }
