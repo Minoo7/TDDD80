@@ -1,40 +1,22 @@
 package com.vinga129.savolax.ui.post;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.util.Consumer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.airbnb.paris.Paris;
-import com.airbnb.paris.StyleBuilder;
-import com.airbnb.paris.annotations.Style;
-import com.airbnb.paris.annotations.Styleable;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.databinding.FragmentPostBinding;
-import com.vinga129.savolax.ui.ActiveCustomerViewModel;
-import com.vinga129.savolax.ui.BaseFragment;
+import com.vinga129.savolax.base.OldBaseFragment;
 import com.vinga129.savolax.ui.BindingUtils;
-import com.vinga129.savolax.ui.CreatorUtil;
-import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Like;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,9 +24,8 @@ import java.util.stream.Collectors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.internal.EverythingIsNonNull;
 
-public class PostFragment extends BaseFragment {
+public class PostFragmentOld extends OldBaseFragment {
 
     private PostViewModel mViewModel;
     private FragmentPostBinding binding;

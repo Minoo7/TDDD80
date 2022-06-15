@@ -1,15 +1,18 @@
 package com.vinga129.savolax.ui.register;
 
 import androidx.annotation.Nullable;
+import com.vinga129.savolax.ui.address.AddressUserView;
+import java.util.List;
+import java.util.Map;
 
 public class RegisterResult {
     @Nullable
     private RegisteredUserView success;
     @Nullable
-    private Integer error;
+    private Map<String, List<String>> errorMap;
 
-    RegisterResult(@Nullable Integer error) {
-        this.error = error;
+    RegisterResult(@Nullable Map<String, List<String>> errorMap) {
+        this.errorMap = errorMap;
     }
 
     RegisterResult(@Nullable RegisteredUserView success) {
@@ -22,7 +25,7 @@ public class RegisterResult {
     }
 
     @Nullable
-    Integer getError() {
-        return error;
+    Map<String, List<String>> getErrorMap() {
+        return errorMap;
     }
 }

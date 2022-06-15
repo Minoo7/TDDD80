@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomTextInputLayout">
+        <attr name="formRequired" format="boolean"/>
+        <attr name="jsonKey" format="string"/>
+    </declare-styleable>
+</resources>

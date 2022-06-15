@@ -1,4 +1,4 @@
-package com.vinga129.savolax.ui.profile;
+package com.vinga129.savolax.base;
 
 
 import android.view.ViewGroup;

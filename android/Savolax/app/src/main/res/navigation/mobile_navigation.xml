@@ -48,7 +48,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_post"
-        android:name="com.vinga129.savolax.ui.post.PostFragment"
+        android:name="com.vinga129.savolax.ui.post.PostFragmentOld"
         android:label="PostFragment" >
         <action
             android:id="@+id/toPostProfile"

@@ -1,4 +1,4 @@
-package com.vinga129.savolax.ui;
+package com.vinga129.savolax.base;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import com.vinga129.savolax.MainActivity;
+import com.vinga129.savolax.ui.ActiveCustomerViewModel;
+import com.vinga129.savolax.ui.UserRepository;
 import com.vinga129.savolax.ui.retrofit.Controller;
 import com.vinga129.savolax.ui.retrofit.RestAPI;
 
 import java.util.Objects;
 
-public abstract class BaseFragment extends Fragment {
+public abstract class OldBaseFragment extends Fragment {
     //protected MainActivity main; //= (MainActivity) getActivity();
     protected NavController navController;
     protected Controller controller;

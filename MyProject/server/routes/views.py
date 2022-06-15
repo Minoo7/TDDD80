@@ -295,17 +295,17 @@ def customer_likes(customer_id):
 
 @app.errorhandler(IdError)
 def handle_bad_id(e):
-	return jsonify(error=str(e)), 400
+	return jsonify(str(e)), 400
 
 
 @app.errorhandler(ValidationError)
 def handle_bad_validation(e):
-	return jsonify(error=ast.literal_eval(str(e))), 400
+	return jsonify(ast.literal_eval(str(e))), 400
 
 
 @app.errorhandler(werkzeug.exceptions.BadRequest)
 def handle_bad_request(e):
-	return jsonify(error=str(e)), 400
+	return jsonify(str(e)), 400
 
 
 """@app.errorhandler(HTTPException)
@@ -325,12 +325,12 @@ return response"""
 
 @app.errorhandler(404)
 def resource_not_found(e):
-	return jsonify(error=str(e)), 404
+	return jsonify(str(e)), 404
 
 
 @app.errorhandler(ValueError)
 def handle_value_error(e):
-	return jsonify(error=str(e)), 404
+	return jsonify(str(e)), 404
 
 
 @app.route("/cheese")

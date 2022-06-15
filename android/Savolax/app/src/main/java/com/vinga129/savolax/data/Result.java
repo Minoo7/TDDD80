@@ -1,5 +1,6 @@
 package com.vinga129.savolax.data;
 
+import androidx.annotation.NonNull;
 import java.util.Map;
 
 /**
@@ -10,6 +11,7 @@ public class Result<T> {
     private Result() {
     }
 
+    @NonNull
     @Override
     public String toString() {
         if (this instanceof Result.Success) {

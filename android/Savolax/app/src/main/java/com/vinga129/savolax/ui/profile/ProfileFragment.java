@@ -7,18 +7,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.vinga129.savolax.MobileNavigationDirections;
+import com.vinga129.savolax.base.OldBaseFragment;
 import com.vinga129.savolax.databinding.FragmentProfileBinding;
-import com.vinga129.savolax.ui.BaseFragment;
 import com.vinga129.savolax.ui.post.PostViewModel;
 import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
 
-public class ProfileFragment extends BaseFragment implements PostPreviewsRecyclerAdapter.OnItemListener {
+public class ProfileFragment extends OldBaseFragment implements PostPreviewsRecyclerAdapter.OnItemListener {
 
     private FragmentProfileBinding binding;
     private PostPreviewsRecyclerAdapter mAdapter;

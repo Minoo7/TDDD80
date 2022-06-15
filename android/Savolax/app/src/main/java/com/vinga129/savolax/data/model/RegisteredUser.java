@@ -2,9 +2,9 @@ package com.vinga129.savolax.data.model;
 
 public class RegisteredUser {
 
-    private String username;
-    private String email;
-    private String customer_number;
+    private final String username;
+    private final String email;
+    private final String customer_number;
 
     public RegisteredUser(String username, String email, String customer_number) {
         this.username = username;

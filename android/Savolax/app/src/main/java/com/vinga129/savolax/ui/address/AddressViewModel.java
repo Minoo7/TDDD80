@@ -1,63 +1,67 @@
 package com.vinga129.savolax.ui.address;
 
-import android.content.Context;
-import android.widget.Toast;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.vinga129.savolax.R;
+import com.google.gson.Gson;
+import com.vinga129.savolax.base.ResultHolder;
 import com.vinga129.savolax.data.AddressRepository;
 import com.vinga129.savolax.data.Result;
+import com.vinga129.savolax.data.Result.Success;
 import com.vinga129.savolax.data.model.AddressUser;
+import com.vinga129.savolax.data.model.RegisteredUser;
+import com.vinga129.savolax.ui.register.RegisterResult;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Objects;
+import retrofit2.HttpException;
 
 public class AddressViewModel extends ViewModel {
 
-    private MutableLiveData<AddressFormState> addressFormState = new MutableLiveData<>();
-    private MutableLiveData<AddressResult> addressResult = new MutableLiveData<>();
-    private AddressRepository addressRepository;
-
-    private MutableLiveData<String[]> addressTypes = new MutableLiveData<>(groups.enumToStrings(groups.AddressTypes.values(),
-            groups.AddressTypes::name));
+    private final MutableLiveData<ResultHolder<AddressUserView>> addressResult = new MutableLiveData<>();
+    private final AddressRepository addressRepository;
 
     AddressViewModel(AddressRepository addressRepository) {
         this.addressRepository = addressRepository;
     }
 
-    public LiveData<String[]> getAddressTypes() {
-        return addressTypes;
-    }
-
-    LiveData<AddressFormState> getAddressFormState() {
-        return addressFormState;
-    }
-
-    LiveData<AddressResult> getAddressResult() {
+    LiveData<ResultHolder<AddressUserView>> getAddressResult() {
         return addressResult;
     }
 
     public void addAddress(Address address) {
-        Result<AddressUser> result = addressRepository.register(address);
+        addressRepository.addAddress(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(
+                        new DisposableSingleObserver<Result<AddressUser>>() {
+                            @Override
+                            public void onSuccess(final Result<AddressUser> value) {
+                                AddressUser data = ((Success<AddressUser>) value).getData();
+                                addressResult.setValue(
+                                        new ResultHolder<>(
+                                                new AddressUserView(data.getStreet(), data.getAddress_type())));
+                            }
 
-        if (result instanceof Result.Success) {
-            AddressUser data = ((Result.Success<AddressUser>) result).getData();
-            addressResult.setValue(new AddressResult(new AddressUserView(data.getStreet())));
-        } else {
-            addressResult.setValue(new AddressResult(R.string.login_failed));
-        }
-    }
-
-    public void addressDataValidate(Address address) {
-        // TODO: if error returns error for username for example then set error value returned by request:
-        addressFormState.setValue(new AddressFormState("error returned"));
-    }
-
-    public void addressDataValidate(Context context) {
-        // TODO: if error returns error for username for example then set error value returned by request:
-        addressFormState.setValue(new AddressFormState(false));
-        Toast.makeText(context.getApplicationContext(), "ddddd", Toast.LENGTH_LONG).show();
+                            @Override
+                            public void onError(final Throwable e) {
+                                if (e instanceof HttpException) {
+                                    HttpException error = (HttpException) e;
+                                    try {
+                                        String errorBody = Objects
+                                                .requireNonNull(Objects.requireNonNull(error.response()).errorBody())
+                                                .string();
+                                        addressResult
+                                                .setValue(new ResultHolder<>(
+                                                        new Gson().fromJson(errorBody, Map.class)));
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
     }
 }

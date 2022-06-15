@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         // restAPI = Controller.getRetrofitInstance().create(RestAPI.class);
 
         // temp setting auth key
-        Map<String, String> map = new HashMap<>();
+        /*Map<String, String> map = new HashMap<>();
         map.put("login_method_name", "rafeb3233@gmail.com"); //{"login_method_name": "rafeb3233@gmail.com", "password": "goodPass123"}
         map.put("password", "goodPass123");
         Controller.getInstance().init(getContext());
@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<Map<String, String>> call, Throwable t) {
 
             }
-        });
+        });*/
+        // Controller.getInstance().init(getContext());
     }
 
     public static Context getContext() {

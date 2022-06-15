@@ -8,6 +8,13 @@
         <variable
             name="viewmodel"
             type="com.vinga129.savolax.ui.register.RegisterViewModel" />
+
+        <variable
+            name="genders"
+            type="String[]" />
+        <variable
+            name="businessTypes"
+            type="String[]" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -74,13 +81,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.3" />
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:layout_marginStart="24dp"
             android:hint="@string/username"
+            app:formRequired="true"
+            app:jsonKey="username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -106,13 +115,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_username">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <com.vinga129.savolax.custom.CustomTextInputLayout
                 android:id="@+id/field_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="0.5"
                 android:hint="@string/first_name"
+                app:formRequired="true"
+                app:jsonKey="first_name"
                 app:startIconDrawable="@drawable/ic_round_person_24"
                 tools:ignore="ExtraText">
 
@@ -120,15 +131,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <com.vinga129.savolax.custom.CustomTextInputLayout
                 android:id="@+id/field_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_weight="0.5"
                 android:hint="@string/last_name"
+                app:formRequired="true"
+                app:jsonKey="last_name"
                 app:startIconDrawable="@drawable/ic_round_person_24"
                 tools:ignore="ExtraText">
 
@@ -136,11 +149,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,6 +161,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/email"
+            app:formRequired="true"
+            app:jsonKey="email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout"
@@ -159,9 +174,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_gender"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
@@ -170,6 +185,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/gender"
+            app:jsonKey="gender"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_email"
@@ -180,12 +196,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                app:dropDownItems="@{viewmodel.genders}"
+                app:dropDownItems="@{genders}"
                 tools:ignore="TextContrastCheck" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -193,6 +209,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/phone_number"
+            app:formRequired="true"
+            app:jsonKey="phone_number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_gender"
@@ -205,9 +223,9 @@
                 android:ems="10"
                 android:inputType="phone"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_business_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -215,6 +233,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/business_name"
+            app:formRequired="true"
+            app:jsonKey="business_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_phone"
@@ -226,9 +246,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_business_type"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
@@ -237,6 +257,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/business_type"
+            app:formRequired="true"
+            app:jsonKey="business_type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_business_name"
@@ -247,12 +269,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                app:dropDownItems="@{viewmodel.businessTypes}"
+                app:dropDownItems="@{businessTypes}"
                 tools:ignore="TextContrastCheck" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_organization_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -260,6 +282,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/organization_number"
+            app:jsonKey="organization_number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_business_type"
@@ -271,9 +294,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_bio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -281,6 +304,8 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:hint="@string/bio"
+            app:formRequired="true"
+            app:jsonKey="bio"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_organization_number"
@@ -292,9 +317,9 @@
                 android:layout_height="wrap_content"
                 android:inputType="textLongMessage"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -303,6 +328,8 @@
             android:layout_marginTop="8dp"
             android:hint="@string/password"
             app:endIconMode="password_toggle"
+            app:formRequired="true"
+            app:jsonKey="password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_bio"
@@ -314,11 +341,10 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
         <Button
             android:id="@+id/register"
-
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start"

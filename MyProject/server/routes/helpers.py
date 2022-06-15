@@ -51,9 +51,12 @@ def require_method_params(**outer_kwargs):
 					if param not in params:
 						abort(400, f"Json parameter provided was not allowed. Allowed: {params}")
 			elif isinstance(params, list):
+				missing_params = []
 				for param in params:
 					if param not in request.json:
-						abort(400, f"Missing json parameter. Required: {params}")
+						missing_params.append(param)
+				if missing_params:
+					abort(400, f"Missing json parameter {missing_params}. Required: {params}")
 
 	return generate_decorator(inner)(**outer_kwargs)
 

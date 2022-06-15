@@ -1,153 +1,141 @@
 package com.vinga129.savolax.ui.address;
 
+import static com.vinga129.savolax.HelperUtil.makeWarning;
 import static com.vinga129.savolax.HelperUtil.properFormValue;
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
+import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.vinga129.savolax.R;
-import com.vinga129.savolax.data.UserView;
-import com.vinga129.savolax.data.model.AddressUser;
+import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
+import com.vinga129.savolax.base.FormFragment;
+import com.vinga129.savolax.custom.CustomTextInputLayout;
 import com.vinga129.savolax.databinding.FragmentAddressBinding;
-import com.vinga129.savolax.ui.FormFragment;
+import com.vinga129.savolax.ui.register.RegisteredUserView;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
+import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
+import com.vinga129.savolax.ui.retrofit.rest_objects.groups;
+import com.vinga129.savolax.ui.retrofit.rest_objects.groups.AddressTypes;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+@AnnotationContentId(contentId = R.layout.fragment_address)
 public class AddressFragment extends FormFragment<Address, FragmentAddressBinding> {
 
     private AddressViewModel addressViewModel;
-    // private FragmentAddressBinding binding;
-
-    /*@Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
-        binding = FragmentAddressBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-    }*/
+    List<CustomTextInputLayout> formViews = new ArrayList<>();
 
     @Override
-    protected void initFragmentImpl() {}
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void initFragment() {
         addressViewModel = new ViewModelProvider(this, new AddressViewModelFactory())
                 .get(AddressViewModel.class);
+
+        binding.setAddressTypes(groups.enumToStrings(AddressTypes.values(),
+                AddressTypes::name));
+
+        // temp
+        binding.fieldAddressType.getEditText().setText("Home");
+        binding.fieldStreet.getEditText().setText("Landsvagen 13");
+        binding.fieldCity.getEditText().setText("Stockholm");
+        binding.fieldZipCode.getEditText().setText("19571");
+
+        formViews.addAll(Arrays
+                .asList(binding.fieldAddressType, binding.fieldStreet, binding.fieldCity, binding.fieldZipCode, binding.fieldOtherInfo));
+
         binding.setViewmodel(addressViewModel);
 
-        final Button registerButton = binding.register;
-        final ProgressBar loadingProgressBar = binding.loading;
-
-        addressViewModel.getAddressFormState().observe(getViewLifecycleOwner(), formState -> {
-            if (formState == null) {
+        /*registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(), registerResult -> {
+            if (registerResult == null)
                 return;
+            binding.loading.setVisibility(View.GONE);
+            if (registerResult.getErrorMap() != null) {
+                Map<String, List<String>> errorMap = registerResult.getErrorMap();
+                formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
+                        .forEach(f -> Objects.requireNonNull(f.getEditText())
+                                .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
+                binding.fieldUsername.setError("");
             }
-            if (formState.getStreetError() != null) {
-                // usernameEditText.setError(formState.getUsernameError());
+            if (registerResult.getSuccess() != null) {
+                updateUi(registerResult.getSuccess());
             }
         });
 
-        addressViewModel.getAddressResult().observe(getViewLifecycleOwner(), addressResult -> {
-            if (addressResult == null) {
-                return;
+        binding.register.setOnClickListener(v -> {
+            try {
+                // formViews.forEach(this::clearError);
+                Customer customer = addFormData();
+                binding.loading.setVisibility(View.VISIBLE);
+                registerViewModel.register(customer);
+            } catch (IOException e) {
+                makeWarning(requireContext(), binding.container, e.getMessage());
             }
-            loadingProgressBar.setVisibility(View.GONE);
-            if (addressResult.getError() != null) {
-                // showFail(addressResult.getError());
-                showFail();
-            }
-            if (addressResult.getSuccess() != null) {
-                updateUi(addressResult.getSuccess());
-            }
-        });
-
-        registerButton.setOnClickListener(v -> {
-            loadingProgressBar.setVisibility(View.VISIBLE);
-
-            Address address = getFormData();
-            addressViewModel.addAddress(address);
         });
     }
 
-    public Address getFormData() {
+    private void clearError(CustomTextInputLayout textInputLayout) {
+        textInputLayout.setError(null);
+        textInputLayout.setErrorEnabled(false);
+    }
+
+    public Customer addFormData() throws IOException {
         JsonObject formData = new JsonObject();
 
-        formData.add("username", properFormValue(binding.fieldUsername));
-        formData.add("first_name", properFormValue(binding.fieldFirstName));
-        formData.add("last_name", properFormValue(binding.fieldLastName));
-        formData.add("email", properFormValue(binding.fieldEmail));
-        formData.add("gender", properFormValue(binding.fieldGender));
-        formData.add("phone", properFormValue(binding.fieldPhone));
-        formData.add("business_name", properFormValue(binding.fieldBusinessName));
-        formData.add("business_type", properFormValue(binding.fieldBusinessType));
-        formData.add("organization_number", properFormValue(binding.fieldOrganizationNumber));
-        formData.add("bio", properFormValue(binding.fieldBio));
-        formData.add("password", properFormValue(binding.fieldBio));
+        for (CustomTextInputLayout formView : formViews) {
+            JsonElement value = properFormValue(formView);
+            if (value.isJsonNull() && formView.isRequired())
+                throw new IOException("Required fields can not be empty");
+            formData.add(formView.getKey(), value);
+        }
 
         Gson gson = new Gson();
-        return gson.fromJson(gson.toJson(formData), Address.class);
+        return gson.fromJson(gson.toJson(formData), Customer.class);
+    }*/
+
+    // @Override
+    /*public void updateUi(RegisteredUserView model) {
+        /*String welcome = getString(R.string.welcome) + ((RegisteredUserView) model).getUsername();
+        // TODO : initiate successful logged in experience
+        if (getContext() != null && getContext().getApplicationContext() != null) {
+            Toast.makeText(getContext().getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+        }*/
+        /*CharSequence[] charSequence = new CharSequence[]{"hejsan"};
+        new MaterialAlertDialogBuilder(requireContext()).setTitle("Successfully registered")
+                .setItems(charSequence, null)
+                .setPositiveButton(getResources().getString(R.string.ok), (dialogInterface, i) -> {
+
+                }).show();
+
+        /*val items = arrayOf("Item 1", "Item 2", "Item 3")
+
+        MaterialAlertDialogBuilder(context)
+                .setTitle(resources.getString(R.string.title))
+                .setItems(items) { dialog, which ->
+            // Respond to item chosen
+        }
+        .show()*/
     }
 
     @Override
-    public void updateUi(UserView model) {
-        String welcome = getString(R.string.welcome) + ((AddressUserView) model).getUsername();
-        // TODO : initiate successful logged in experience
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(getContext().getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-        }
+    public Address addFormData() throws IOException {
+        return null;
     }
-
-    /*@Override
-    public void updateUi(UserView model) {
-        String welcome = getString(R.string.welcome) + model.getUsername();
-        // TODO : initiate successful logged in experience
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(getContext().getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-        }
-    }*/
 
     @Override
     public void showFail() {
         if (getContext() != null && getContext().getApplicationContext() != null) {
             Toast.makeText(
                     getContext().getApplicationContext(),
-                    "errorString",
+                    "error text string test",
                     Toast.LENGTH_LONG).show();
         }
-    }
-
-    /*private void updateUiWithUser(AddressUserView model) {
-    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(
-                    getContext().getApplicationContext(),
-                    errorString,
-                    Toast.LENGTH_LONG).show();
-        }
-    }*/
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

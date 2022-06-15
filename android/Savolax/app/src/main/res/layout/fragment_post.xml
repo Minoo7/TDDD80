@@ -19,13 +19,13 @@
 
         <variable
             name="fragment"
-            type="com.vinga129.savolax.ui.post.PostFragment" />
+            type="com.vinga129.savolax.ui.post.PostFragmentOld" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.post.PostFragment">
+        tools:context=".ui.post.PostFragmentOld">
 
         <TextView
             android:id="@+id/text_type"

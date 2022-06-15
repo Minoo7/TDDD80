@@ -2,10 +2,8 @@ package com.vinga129.savolax.ui.profile;
 
 import android.app.Application;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
@@ -14,14 +12,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
-import com.vinga129.savolax.NetworkReceiver;
+import com.vinga129.savolax.base.BaseRecyclerAdapter;
 import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
 import com.vinga129.savolax.ui.retrofit.NetworkViewModel;
 import com.vinga129.savolax.ui.retrofit.rest_objects.CustomerProfile;
-import com.vinga129.savolax.ui.retrofit.rest_objects.MiniCustomer;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

@@ -124,6 +124,13 @@
     <string name="organization_number">Organization number <font color='#B3B71C1C'>*</font></string>
     <string name="profile_picture">Profile picture</string>
     <string name="password">Password <font color='#B3B71C1C'>*</font></string>
+    <string name="ok">Ok</string>
+    <string name="address_type">Address type <font color='#B3B71C1C'>*</font></string>
+    <string name="street">Street <font color='#B3B71C1C'>*</font></string>
+    <string name="city">City <font color='#B3B71C1C'>*</font></string>
+    <string name="zip_code">Zip code <font color='#B3B71C1C'>*</font></string>
+    <string name="other_info">Other info</string>
+    <string name="add_address">Add address</string>
 
     <string-array name="genders">
         <item>Man</item>

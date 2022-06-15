@@ -5,22 +5,24 @@ import com.vinga129.savolax.ui.retrofit.rest_objects.groups.BusinessTypes;
 import com.vinga129.savolax.ui.retrofit.rest_objects.groups.Genders;
 
 public class Customer {
+
     private String username;
     private String password;
     private String first_name;
     private String last_name;
     private String email;
-    private groups.Genders gender;
+    private String gender;
     private String phone_number;
-    private groups.BusinessTypes businessType;
+    private String business_type;
     private String organization_number;
     private String business_name;
     private String bio;
+    private String customer_number;
 
     public Customer(final String username, final String password, final String first_name, final String last_name,
             final String email,
-            @Nullable final Genders gender, final String phone_number,
-            final BusinessTypes businessType, final String organization_number, final String business_name,
+            @Nullable final String gender, final String phone_number,
+            final String business_type, final String organization_number, final String business_name,
             @Nullable final String bio) {
         this.username = username;
         this.password = password;
@@ -29,7 +31,7 @@ public class Customer {
         this.email = email;
         this.gender = gender;
         this.phone_number = phone_number;
-        this.businessType = businessType;
+        this.business_type = business_type;
         this.organization_number = organization_number;
         this.business_name = business_name;
         this.bio = bio;
@@ -75,11 +77,11 @@ public class Customer {
         this.email = email;
     }
 
-    public groups.Genders getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(groups.Genders gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -91,12 +93,12 @@ public class Customer {
         this.phone_number = phone_number;
     }
 
-    public groups.BusinessTypes getBusinessType() {
-        return businessType;
+    public String getBusiness_type() {
+        return business_type;
     }
 
-    public void setBusinessType(groups.BusinessTypes businessType) {
-        this.businessType = businessType;
+    public void setBusiness_type(String business_type) {
+        this.business_type = business_type;
     }
 
     public String getOrganization_number() {
@@ -121,5 +123,13 @@ public class Customer {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getCustomer_number() {
+        return customer_number;
+    }
+
+    public void setCustomer_number(final String customer_number) {
+        this.customer_number = customer_number;
     }
 }
