@@ -11,7 +11,7 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
+            android:id="@+id/to_registerFragment"
             app:destination="@id/registerFragment" />
     </fragment>
     <fragment
@@ -19,15 +19,7 @@
         android:name="com.vinga129.savolax.ui.register.RegisterFragment"
         android:label="RegisterFragment" >
         <action
-            android:id="@+id/action_registerFragment_to_addressFragment"
-            app:destination="@id/addressFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/addressFragment"
-        android:name="com.vinga129.savolax.ui.address.AddressFragment"
-        android:label="AddressFragment" >
-        <action
-            android:id="@+id/action_addressFragment_to_loginFragment"
+            android:id="@+id/to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
 </navigation>

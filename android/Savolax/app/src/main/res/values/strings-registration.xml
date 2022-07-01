@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="username_login">Username</string>
+    <string name="password_login">Password</string>
+
+    <string name="username">Username <font color='#B3B71C1C'>*</font></string>
+    <string name="first_name">First name <font color='#B3B71C1C'>*</font></string>
+    <string name="last_name">Last Name <font color='#B3B71C1C'>*</font></string>
+    <string name="email">Email <font color='#B3B71C1C'>*</font></string>
+    <string name="gender">Gender</string>
+    <string name="phone_number">Phone number <font color='#B3B71C1C'>*</font></string>
+    <string name="business_type">Business type <font color='#B3B71C1C'>*</font></string>
+    <string name="business_name">Business name <font color='#B3B71C1C'>*</font></string>
+    <string name="bio">Bio</string>
+    <string name="organization_number">Organization number <font color='#B3B71C1C'>*</font></string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="password">Password <font color='#B3B71C1C'>*</font></string>
+
+    <string-array name="genders">
+        <item>Man</item>
+        <item>Woman</item>
+        <item>Non binary</item>
+        <item>Other</item>
+    </string-array>
+
+    <string name="on_new_user_info">We have generated a customer number which can be used to log in, please write this down</string>
+
+    <!-- Strings for creating new Address: -->
+    <string name="address_type">Address type <font color='#B3B71C1C'>*</font></string>
+    <string name="street">Street <font color='#B3B71C1C'>*</font></string>
+    <string name="city">City <font color='#B3B71C1C'>*</font></string>
+    <string name="zip_code">Zip code <font color='#B3B71C1C'>*</font></string>
+    <string name="other_info">Other info</string>
+    <string name="add_address">Add address</string>
+</resources>

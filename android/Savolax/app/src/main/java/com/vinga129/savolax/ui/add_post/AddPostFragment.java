@@ -1,23 +1,20 @@
 package com.vinga129.savolax.ui.add_post;
 
-import static com.vinga129.savolax.HelperUtil.properFormValue;
-
 import android.os.Bundle;
 import android.view.View;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.GetContent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonObject;
-import com.vinga129.savolax.data.UserView;
+import com.vinga129.savolax.R;
+import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
+import com.vinga129.savolax.base.FormFragment;
 import com.vinga129.savolax.databinding.FragmentAddPostBinding;
-import com.vinga129.savolax.ui.FormFragment;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
 
+@AnnotationContentId(contentId = R.layout.fragment_add_post)
 public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> {
 
     private AddPostViewModel addPostViewModel;
@@ -48,8 +45,13 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         });
     }
 
-    @Override
+    /*@Override
     protected void initFragmentImpl() {
+
+    }*/
+
+    @Override
+    protected void initFragment() {
 
     }
 
@@ -59,17 +61,17 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         binding = null;
     }
 
-    @Override
+    /*@Override
     public Post getFormData() {
-        JsonObject formData = new JsonObject();
-        formData.add("title", properFormValue(binding.fieldTitle));
+        //JsonObject formData = new JsonObject();
+        //formData.add("title", properFormValue(binding.fieldTitle));
         return null;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void updateUi(UserView model) {
 
-    }
+    }*/
 
     @Override
     public void showFail() {

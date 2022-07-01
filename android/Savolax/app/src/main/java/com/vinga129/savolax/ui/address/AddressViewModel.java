@@ -4,20 +4,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.Gson;
 import com.vinga129.savolax.base.ResultHolder;
 import com.vinga129.savolax.data.AddressRepository;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;
-import com.vinga129.savolax.data.model.AddressUser;
-import com.vinga129.savolax.data.model.RegisteredUser;
-import com.vinga129.savolax.ui.register.RegisterResult;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 import retrofit2.HttpException;
 
@@ -37,29 +32,28 @@ public class AddressViewModel extends ViewModel {
     public void addAddress(Address address) {
         addressRepository.addAddress(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(
-                        new DisposableSingleObserver<Result<AddressUser>>() {
+                        new DisposableSingleObserver<Result<AddressUserView>>() {
                             @Override
-                            public void onSuccess(final Result<AddressUser> value) {
-                                AddressUser data = ((Success<AddressUser>) value).getData();
-                                addressResult.setValue(
-                                        new ResultHolder<>(
-                                                new AddressUserView(data.getStreet(), data.getAddress_type())));
+                            public void onSuccess(final Result<AddressUserView> value) {
+                                AddressUserView data = ((Success<AddressUserView>) value).getData();
+                                addressResult.setValue(new ResultHolder<>(data));
                             }
 
                             @Override
                             public void onError(final Throwable e) {
                                 if (e instanceof HttpException) {
-                                    HttpException error = (HttpException) e;
+
                                     try {
                                         String errorBody = Objects
-                                                .requireNonNull(Objects.requireNonNull(error.response()).errorBody())
-                                                .string();
-                                        addressResult
-                                                .setValue(new ResultHolder<>(
-                                                        new Gson().fromJson(errorBody, Map.class)));
+                                                .requireNonNull(Objects.requireNonNull(((HttpException) e).response()).errorBody()).string();
+                                        System.out.println("ddddd");
+                                        System.out.println(errorBody);
                                     } catch (IOException ioException) {
                                         ioException.printStackTrace();
                                     }
+                                    /*NetworkUtil.handleOnError((HttpException) e,
+                                            (errorBody) -> addressResult.setValue(new ResultHolder<>(
+                                                    new Gson().fromJson(errorBody, Map.class))));*/
                                 }
                             }
                         });

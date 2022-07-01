@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.service.controls.Control;
+import android.util.AttributeSet;
 import android.view.MenuItem;
 
+import android.view.View;
+import androidx.annotation.Nullable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         sContextReference = new WeakReference<>(getApplicationContext());
 
+        Controller.getInstance().init(getContext());
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -49,31 +54,13 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_other, R.id.navigation_account)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        // restAPI = Controller.getRetrofitInstance().create(RestAPI.class);
-
-        // temp setting auth key
-        /*Map<String, String> map = new HashMap<>();
-        map.put("login_method_name", "rafeb3233@gmail.com"); //{"login_method_name": "rafeb3233@gmail.com", "password": "goodPass123"}
-        map.put("password", "goodPass123");
-        Controller.getInstance().init(getContext());
-        Controller.getInstance().getRestAPI().login(map).enqueue(new Callback<Map<String, String>>() {
-            @EverythingIsNonNull
-            @Override
-            public void onResponse(Call<Map<String, String>> call, Response<Map<String, String>> response) {
-                if (response.body() != null)
-                    getSharedPreferences("API", Context.MODE_PRIVATE).edit().putString("JWT_KEY", response.body().get("token")).apply();
-            }
-
-            @EverythingIsNonNull
-            @Override
-            public void onFailure(Call<Map<String, String>> call, Throwable t) {
-
-            }
-        });*/
-        // Controller.getInstance().init(getContext());
+        // check if address already added, if not then go to AddAddressFragment
+        if (getIntent().getBooleanExtra("first_login", false)) {
+            navController.navigate(R.id.moveToAddressFragment);
+        }
     }
 
     public static Context getContext() {
@@ -99,18 +86,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public <T> void doNetworkCall(NetworkReceiver receiver, Call<T> call) {
-        call.enqueue(new Callback<T>() {
-            @Override
-            public void onResponse(@NonNull Call<T> call, @NonNull Response<T> response) {
-                receiver.onNetworkReceived(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<T> call, @NonNull Throwable t) {
-            }
-        });
     }
 }

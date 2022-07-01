@@ -1,17 +1,8 @@
 package com.vinga129.savolax.data;
 
-import androidx.annotation.NonNull;
-import com.vinga129.savolax.data.model.RegisteredUser;
-import com.vinga129.savolax.ui.retrofit.Controller;
+import com.vinga129.savolax.ui.register.RegisteredUserView;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import java.util.Map;
 
 public class RegisterRepository {
 
@@ -25,7 +16,7 @@ public class RegisterRepository {
         return instance;
     }
 
-    public Single<Result<RegisteredUser>> register(Customer customer) {
+    public Single<Result<RegisteredUserView>> register(Customer customer) {
         return RegisterDataSource.register(customer);
     }
 }

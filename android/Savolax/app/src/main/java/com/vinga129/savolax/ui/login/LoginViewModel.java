@@ -1,70 +1,55 @@
 package com.vinga129.savolax.ui.login;
 
+import static com.vinga129.savolax.HelperUtil.parseHttpError;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.util.Patterns;
-
+import com.vinga129.savolax.base.ResultHolder;
 import com.vinga129.savolax.data.LoginRepository;
 import com.vinga129.savolax.data.Result;
-import com.vinga129.savolax.data.model.LoggedInUser;
-import com.vinga129.savolax.R;
+import com.vinga129.savolax.data.Result.Success;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import java.io.IOException;
+import java.util.Map;
+import retrofit2.HttpException;
 
 public class LoginViewModel extends ViewModel {
 
-    private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
-    private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private final MutableLiveData<ResultHolder<LoggedInUserView>> loginResult = new MutableLiveData<>();
+    private final LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
     }
 
-    LiveData<LoginFormState> getLoginFormState() {
-        return loginFormState;
-    }
-
-    LiveData<LoginResult> getLoginResult() {
+    LiveData<ResultHolder<LoggedInUserView>> getLoginResult() {
         return loginResult;
     }
 
-    public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+    public void login(Map<String, String> _login) {
+        loginRepository.login(_login).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(
+                        new DisposableSingleObserver<Result<LoggedInUserView>>() {
+                            @Override
+                            public void onSuccess(final Result<LoggedInUserView> value) {
+                                LoggedInUserView data = ((Success<LoggedInUserView>) value).getData();
+                                loginResult.setValue(new ResultHolder<>(data));
+                            }
 
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
-    }
-
-    public void loginDataChanged(String username, String password) {
-        if (!isUserNameValid(username)) {
-            loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
-        } else if (!isPasswordValid(password)) {
-            loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
-        } else {
-            loginFormState.setValue(new LoginFormState(true));
-        }
-    }
-
-    // A placeholder username validation check
-    private boolean isUserNameValid(String username) {
-        if (username == null) {
-            return false;
-        }
-        if (username.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        } else {
-            return !username.trim().isEmpty();
-        }
-    }
-
-    // A placeholder password validation check
-    private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+                            @Override
+                            public void onError(final Throwable e) {
+                                if (e instanceof HttpException) {
+                                    try {
+                                        loginResult.setValue(parseHttpError((HttpException) e));
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
     }
 }

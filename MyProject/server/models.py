@@ -74,10 +74,10 @@ class Customer(User):
 	bio = Column(String(120))
 
 	address = relationship("Address",
-						   primaryjoin="and_(Customer.id==Address.customer_id, Address.address_type=='home')",
+						   primaryjoin="and_(Customer.id==Address.customer_id, Address.address_type=='Home')",
 						   post_update=True, cascade="all, delete", uselist=False)
 	business_address = relationship("Address",
-									primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='work')",
+									primaryjoin="and_(Customer.id==Address.customer_id, ""Address.address_type=='Work')",
 									post_update=True, overlaps="address", cascade="all, delete", uselist=False)
 	posts = relationship("Post")
 
@@ -97,9 +97,9 @@ class Customer(User):
 		self.following.pop(follow_customer, None)
 
 	def has_address(self, address_type: groups.AddressTypes):
-		if address_type == groups.AddressTypes.home:
+		if address_type == groups.AddressTypes.Home:
 			return self.address is not None
-		if address_type == groups.AddressTypes.work:
+		if address_type == groups.AddressTypes.Work:
 			return self.business_address is not None
 
 	def get_profile(self):

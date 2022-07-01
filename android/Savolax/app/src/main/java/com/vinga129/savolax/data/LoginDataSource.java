@@ -1,26 +1,26 @@
 package com.vinga129.savolax.data;
 
-import com.vinga129.savolax.data.model.LoggedInUser;
+import android.content.Context;
+import android.content.SharedPreferences;
+import com.vinga129.savolax.ui.login.LoggedInUserView;
 
-import java.io.IOException;
+import com.vinga129.savolax.ui.retrofit.Controller;
+import io.reactivex.Single;
+import java.util.Map;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
 public class LoginDataSource {
 
-    public Result<LoggedInUser> login(String username, String password) {
+    public static Single<Result<LoggedInUserView>> login(Map<String, String> _login) {
+        return Controller.getInstance().getNoAuthAPI().login(_login).flatMap(stringStringMap -> parseResult(_login, stringStringMap));
+    }
 
-        try {
-            // TODO: handle loggedInUser authentication
-            LoggedInUser fakeUser =
-                    new LoggedInUser(
-                            java.util.UUID.randomUUID().toString(),
-                            "Jane Doe");
-            return new Result.Success<>(fakeUser);
-        } catch (Exception e) {
-            return new Result.Error(new IOException("Error logging in", e));
-        }
+    private static Single<Result<LoggedInUserView>> parseResult(Map<String, String> _login, Map<String, String> _response) {
+        return Single.just(new Result.Success<LoggedInUserView>(
+                new LoggedInUserView(_response.get("id"), _login.get("username"), _response.get("first_login"), _response.get("token"))
+        ));
     }
 
     public void logout() {

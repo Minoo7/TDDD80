@@ -134,12 +134,24 @@ class CustomerSchema(BaseSchema):
 		if not self.is_valid_name(value):
 			raise ValidationError("last name: " + value + " is not a valid name")
 
+	@validator('email')
+	def validate_email(self, value):
+		if obj_with_attr_exists(Customer, 'email', value):
+			raise ValidationError("Customer with this email already exists")
+
 	@validator('phone_number')
 	def validate_phone_number(self, value):
 		if re.match('\+?(?:0{0,2}[46]*){1}7{1}[0-9]{8}', value) is None:
 			raise ValidationError('invalid phone number')
-		if obj_with_attr_exists(Customer, 'phone_number', value):
+		if obj_with_attr_exists(Customer, 'phone_number', format_phone_number(value)):
 			raise ValidationError("Customer with this phone number already exists")
+
+	@validator('business_name')
+	def validate_business_name(self, value):
+		if not (2 <= len(value) <= 50):
+			raise ValidationError("Business name must be between 2 and 50 characters long")
+		if obj_with_attr_exists(Customer, 'business_name', value):
+			raise ValidationError("Customer with this Business name already exists")
 
 	@validator('bio')
 	def validate_bio(self, value):
@@ -152,7 +164,6 @@ class CustomerSchema(BaseSchema):
 			raise ValidationError("Organization number must be 11 digits")
 		if obj_with_attr_exists(Customer, 'organization_number', value):
 			raise ValidationError("Customer with this organization_number already exists")
-
 
 	@post_load
 	def format_fields(self, data, **kwargs):

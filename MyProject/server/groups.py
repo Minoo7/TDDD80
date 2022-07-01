@@ -20,5 +20,5 @@ class PostTypes(Enum):
 
 
 class AddressTypes(Enum):
-	home = 1
-	work = 2
+	Home = 1
+	Work = 2

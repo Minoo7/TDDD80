@@ -24,7 +24,8 @@ public class Controller {
     private static NoAuthAPI noAuthAPI;
     private static RestAPI restAPI;
     // private static final String BASE_URL = "https://tddd80-2022.herokuapp.com/";
-    public static final String BASE_URL = "http://10.0.0.7:5080/";
+    //public static final String BASE_URL = "http://10.0.0.7:5080/";
+    public static final String BASE_URL = "http://192.168.10.172:5080/";
 
     private Controller() {
     }
@@ -71,10 +72,9 @@ public class Controller {
         @NonNull
         @Override
         public okhttp3.Response intercept(Chain chain) throws IOException {
-            Request newRequest = chain.request().newBuilder()
-                    .header("Authorization", "Bearer " + context.getSharedPreferences
-                            ("API", Context.MODE_PRIVATE).getString("JWT_KEY", "Default"))
-                    .build();
+            String JWT_KEY = context.getSharedPreferences
+                    ("API", Context.MODE_PRIVATE).getString("JWT_KEY", "Default");
+            Request newRequest = chain.request().newBuilder().header("Authorization", "Bearer " + JWT_KEY).build();
 
             return chain.proceed(newRequest);
         }

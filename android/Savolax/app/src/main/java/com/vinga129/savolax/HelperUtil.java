@@ -1,43 +1,24 @@
 package com.vinga129.savolax;
 
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.view.View;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.airbnb.paris.Paris;
 import com.androidadvance.topsnackbar.TSnackbar;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.vinga129.savolax.base.ResultHolder;
 import com.vinga129.savolax.custom.CustomTextInputLayout;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups.BusinessTypes;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import retrofit2.Converter;
-import retrofit2.Converter.Factory;
-import retrofit2.Retrofit;
-import retrofit2.internal.EverythingIsNonNull;
+import retrofit2.HttpException;
 
 public class HelperUtil {
 
@@ -63,6 +44,11 @@ public class HelperUtil {
         }
     }
 
+    public static void clearError(CustomTextInputLayout textInputLayout) {
+        textInputLayout.setError(null);
+        textInputLayout.setErrorEnabled(false);
+    }
+
     public static String getEditText(View view) {
         if (view instanceof CustomTextInputLayout) {
             return Objects.requireNonNull(((CustomTextInputLayout) view).getEditText()).getText().toString();
@@ -82,4 +68,46 @@ public class HelperUtil {
                 .apply();
         warning.show();
     }
+
+    public static <T> T addFormData(List<CustomTextInputLayout> formViews, Class<T> _class) throws IOException {
+        JsonObject formData = new JsonObject();
+
+        for (CustomTextInputLayout formView : formViews) {
+            JsonElement value = properFormValue(formView);
+            if (value.isJsonNull() && formView.isRequired())
+                throw new IOException("Required fields can not be empty");
+            formData.add(formView.getKey(), value);
+        }
+
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(formData), _class);
+    }
+
+    public static <T> ResultHolder<T> parseHttpError(HttpException httpError) throws IOException {
+        String errorBody = Objects
+                .requireNonNull(Objects.requireNonNull(httpError.response()).errorBody()).string();
+
+        if (errorBody.startsWith("{")) {
+            return new ResultHolder<>(new Gson().fromJson(errorBody, Map.class));
+        }
+        else {
+            return  new ResultHolder<>(httpError.code(), errorBody);
+        }
+    }
+
+    /*public static void handleHttpError(HttpException error, MutableLiveData<ResultHolder<?>> result, Context context, View view) {
+        try {
+            String errorBody = Objects
+                    .requireNonNull(Objects.requireNonNull(error.response()).errorBody()).string();
+
+            if (errorBody.startsWith("{")) {
+                result.setValue(new ResultHolder<>(new Gson().fromJson(errorBody, Map.class)));
+            }
+            else {
+                makeWarning(context, view, errorBody);
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }*/
 }

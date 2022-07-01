@@ -1,19 +1,20 @@
 package com.vinga129.savolax.data;
 
-import com.vinga129.savolax.data.model.RegisteredUser;
+import com.vinga129.savolax.ui.register.RegisteredUserView;
 import com.vinga129.savolax.ui.retrofit.Controller;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
 import io.reactivex.Single;
+import java.util.Map;
 
 public class RegisterDataSource {
 
-    public static Single<Result<RegisteredUser>> register(Customer customer) {
+    public static Single<Result<RegisteredUserView>> register(Customer customer) {
         return Controller.getInstance().getNoAuthAPI().createCustomer(customer).flatMap(
-                stringStringMap -> parseL(customer));
+                stringStringMap -> parseResult(customer, stringStringMap));
     }
 
-    private static Single<Result<RegisteredUser>> parseL(Customer customer) {
-        return Single.just(new Result.Success<RegisteredUser>(
-                new RegisteredUser(customer.getUsername(), customer.getEmail(), customer.getCustomer_number())));
+    private static Single<Result<RegisteredUserView>> parseResult(Customer customer, Map<String, String> responseMap) {
+        return Single.just(new Result.Success<RegisteredUserView>(
+                new RegisteredUserView(customer.getUsername(), customer.getEmail(), responseMap.get("customer_number"))));
     }
 }

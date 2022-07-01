@@ -29,6 +29,7 @@ def create_obj(class_, json_input):
 	obj = class_.__schema__().load(json_input)
 	session.add(obj)
 	session.commit()
+	return obj
 
 
 def edit_obj(class_, id_, json_input):

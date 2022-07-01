@@ -1,17 +1,13 @@
 package com.vinga129.savolax.ui.retrofit.rest_objects;
 
 public class Address {
-    private groups.AddressTypes address_type;
+    private String address_type;
     private String street;
     private String city;
     private String zip_code;
 
-    public groups.AddressTypes getAddress_type() {
+    public String getAddress_type() {
         return address_type;
-    }
-
-    public void setAddress_type(groups.AddressTypes address_type) {
-        this.address_type = address_type;
     }
 
     public String getStreet() {

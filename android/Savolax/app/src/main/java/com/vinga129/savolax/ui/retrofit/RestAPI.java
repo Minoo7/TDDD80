@@ -2,6 +2,7 @@ package com.vinga129.savolax.ui.retrofit;
 
 import com.vinga129.savolax.ui.User;
 import com.vinga129.savolax.ui.products.ProductG;
+import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
 import com.vinga129.savolax.ui.retrofit.rest_objects.CustomerProfile;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Like;
@@ -23,11 +24,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface RestAPI {
-    @POST("login")
-    Call<Map<String, String>> login(@Body Map<String, String> body);
+    /*@POST("login")
+    Call<Map<String, String>> login(@Body Map<String, String> body);*/
 
     @GET("login/update")
     Call<User> getUpdated();
+
+    @POST("customers/{id}/addresses")
+    Single<Map<String, String>> addAddress(@Path("id") int id, @Body Address address);
 
     @GET("customers/{id}/profile")
     Call<CustomerProfile> getCustomerProfile(@Path("id") int id); // String?

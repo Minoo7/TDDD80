@@ -68,8 +68,12 @@ def login():
 				existing_customer = customer
 		if not existing_customer:
 			abort(400, "Wrong username or password")
+
+		# checking for first login by checking if an address has been added:
+		first_login = existing_customer.address is None
+
 		return jsonify(message="Successfully logged in", id=existing_customer.id,
-					   token=create_access_token(identity=existing_customer.id)), 200
+					   token=create_access_token(identity=existing_customer.id), first_login=first_login), 200
 
 
 @app.route("/logout", methods=["POST"])
@@ -88,8 +92,8 @@ def customers():
 	if request.method == GET:
 		return jsonify(get_all(Customer)), 200
 	if request.method == POST:
-		create_obj(Customer, request.json)
-		return jsonify(message="Successfully created customer"), 201
+		_customer = create_obj(Customer, request.json)
+		return jsonify(message="Successfully created customer", customer_number=_customer.customer_number), 201
 
 
 @app.route("/customers/<int:customer_id>", methods=[GET, PUT, DELETE])
@@ -305,7 +309,7 @@ def handle_bad_validation(e):
 
 @app.errorhandler(werkzeug.exceptions.BadRequest)
 def handle_bad_request(e):
-	return jsonify(str(e)), 400
+	return jsonify(str(e).split(':')[1][1:]), 400
 
 
 """@app.errorhandler(HTTPException)

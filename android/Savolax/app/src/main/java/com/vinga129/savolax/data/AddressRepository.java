@@ -1,9 +1,7 @@
 package com.vinga129.savolax.data;
 
-import com.vinga129.savolax.data.model.AddressUser;
-import com.vinga129.savolax.data.model.RegisteredUser;
+import com.vinga129.savolax.ui.address.AddressUserView;
 import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
 import io.reactivex.Single;
 
 public class AddressRepository {
@@ -21,7 +19,7 @@ public class AddressRepository {
         return instance;
     }
 
-    public Single<Result<AddressUser>> addAddress(Address address) {
+    public Single<Result<AddressUserView>> addAddress(Address address) {
         return dataSource.addAddress(address);
     }
 }

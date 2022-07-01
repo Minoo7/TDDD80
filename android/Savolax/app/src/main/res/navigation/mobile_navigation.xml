@@ -58,4 +58,11 @@
     <action android:id="@+id/moveToSpecificFragment"
         app:destination="@id/navigation_post"/>
 
+    <action android:id="@+id/moveToAddressFragment"
+        app:destination="@id/navigation_address"/>
+    <fragment
+        android:id="@+id/navigation_address"
+        android:name="com.vinga129.savolax.ui.address.AddressFragment"
+        android:label="AddressFragment" />
+
 </navigation>

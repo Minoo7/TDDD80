@@ -49,5 +49,3 @@ M
 Procfile,b\c\bc3c68e880d1a01632bce79f69dd1387c7ba9c54
 E
 MyProject/__init__.py,8\9\89b6f02f9d7bf9038c09abc1ab911fea3677fdf6
-H
-MyProject/server/main.py,9\7\97a086caeb6c95391d21616d6d044183c24004f3

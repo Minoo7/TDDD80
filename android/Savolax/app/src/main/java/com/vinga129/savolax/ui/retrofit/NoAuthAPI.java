@@ -12,9 +12,10 @@ import retrofit2.http.Path;
 public interface NoAuthAPI {
 
     @Headers("Content-Type: application/json")
+    @POST("login")
+    Single<Map<String, String>> login(@Body Map<String, String> _login);
+
+    @Headers("Content-Type: application/json")
     @POST("customers")
     Single<Map<String, String>> createCustomer(@Body Customer customer);
-
-    @POST("customers/{id}/address")
-    Single<Map<String, String>> addAddress(@Path("id") int id, @Body Address address);
 }

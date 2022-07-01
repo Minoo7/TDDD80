@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="username_login">Användarnamn</string>
+    <string name="password_login">Lösenord</string>
+
+    <string name="username">Användarnamn <font color='#B3B71C1C'>*</font></string>
+    <string name="first_name">Förnamn <font color='#B3B71C1C'>*</font></string>
+    <string name="last_name">Efternamn <font color='#B3B71C1C'>*</font></string>
+    <string name="email">Email <font color='#B3B71C1C'>*</font></string>
+    <string name="gender">Genus</string>
+    <string name="phone_number">Mobilnummer <font color='#B3B71C1C'>*</font></string>
+    <string name="business_type">Typ av verksamhet <font color='#B3B71C1C'>*</font></string>
+    <string name="business_name">Företagsnamn <font color='#B3B71C1C'>*</font></string>
+    <string name="bio">Bio</string>
+    <string name="organization_number">Organisationsnummer <font color='#B3B71C1C'>*</font></string>
+    <string name="profile_picture">Profilbild</string>
+    <string name="password">Lösenord <font color='#B3B71C1C'>*</font></string>
+
+    <string-array name="genders">
+        <item>Man</item>
+        <item>Kvinna</item>
+        <item>Icke-binär</item>
+        <item>Annan</item>
+    </string-array>
+
+    <string name="on_new_user_info">Vi har skapat ett kundnummer åt dig som kan användas för att logga in, vänligen skriv ner detta</string>
+
+    <!-- Strings for creating new Address: -->
+    <string name="address_type">Adresstyp <font color='#B3B71C1C'>*</font></string>
+    <string name="street">Gata <font color='#B3B71C1C'>*</font></string>
+    <string name="city">Stad <font color='#B3B71C1C'>*</font></string>
+    <string name="zip_code">Postnummer <font color='#B3B71C1C'>*</font></string>
+    <string name="other_info">Annan info</string>
+    <string name="add_address">Lägg till address</string>
+    <string name="title">Titel</string>
+    <string name="add_photo">Lägg till foto</string>
+    <string name="post_type">Inläggstyp</string>
+</resources>
