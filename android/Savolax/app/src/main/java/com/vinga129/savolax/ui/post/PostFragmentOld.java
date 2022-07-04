@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.databinding.FragmentPostBinding;
 import com.vinga129.savolax.base.OldBaseFragment;
-import com.vinga129.savolax.ui.BindingUtils;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Like;
+import com.vinga129.savolax.util.BindingUtils;
+import com.vinga129.savolax.retrofit.rest_objects.Like;
 
 import java.util.Map;
 import java.util.Objects;

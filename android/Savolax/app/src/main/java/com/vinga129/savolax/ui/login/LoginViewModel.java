@@ -1,12 +1,12 @@
 package com.vinga129.savolax.ui.login;
 
-import static com.vinga129.savolax.HelperUtil.parseHttpError;
+import static com.vinga129.savolax.util.HelperUtil.parseHttpError;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.vinga129.savolax.base.ResultHolder;
+import com.vinga129.savolax.ResultHolder;
 import com.vinga129.savolax.data.LoginRepository;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;

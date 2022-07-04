@@ -13,7 +13,7 @@ import com.vinga129.savolax.base.OldBaseFragment;
 import com.vinga129.savolax.databinding.FragmentProfileBinding;
 import com.vinga129.savolax.ui.post.PostViewModel;
 import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
+import com.vinga129.savolax.retrofit.rest_objects.Post;
 
 public class ProfileFragment extends OldBaseFragment implements PostPreviewsRecyclerAdapter.OnItemListener {
 

@@ -1,6 +1,6 @@
 package com.vinga129.savolax.ui.register;
 
-import static com.vinga129.savolax.HelperUtil.makeWarning;
+import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
 import android.view.View;
 import android.widget.Toast;
@@ -11,10 +11,10 @@ import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
 import com.vinga129.savolax.databinding.FragmentRegisterBinding;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups.BusinessTypes;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups.Genders;
+import com.vinga129.savolax.retrofit.rest_objects.Customer;
+import com.vinga129.savolax.retrofit.rest_objects.groups;
+import com.vinga129.savolax.retrofit.rest_objects.groups.BusinessTypes;
+import com.vinga129.savolax.retrofit.rest_objects.groups.Genders;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;

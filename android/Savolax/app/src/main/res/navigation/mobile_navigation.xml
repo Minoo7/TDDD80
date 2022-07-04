@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation android:id="@+id/mobile_navigation"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
     <fragment
@@ -21,7 +21,11 @@
         android:id="@+id/navigation_add_post"
         android:name="com.vinga129.savolax.ui.add_post.AddPostFragment"
         android:label="@string/title_post"
-        tools:layout="@layout/fragment_add_post" />
+        tools:layout="@layout/fragment_add_post" >
+        <action
+            android:id="@+id/to_camera_for_post"
+            app:destination="@id/navigation_camera" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_other"
@@ -33,7 +37,7 @@
         android:id="@+id/navigation_account"
         android:name="com.vinga129.savolax.ui.account.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_account" >
+        tools:layout="@layout/fragment_account">
         <action
             android:id="@+id/action_navigation_account_to_postFragment"
             app:destination="@id/navigation_post" />
@@ -41,7 +45,7 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.vinga129.savolax.ui.profile.ProfileFragment"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment">
         <action
             android:id="@+id/toPost"
             app:destination="@id/navigation_post" />
@@ -49,20 +53,55 @@
     <fragment
         android:id="@+id/navigation_post"
         android:name="com.vinga129.savolax.ui.post.PostFragmentOld"
-        android:label="PostFragment" >
+        android:label="PostFragment">
         <action
             android:id="@+id/toPostProfile"
             app:destination="@id/navigation_profile" />
     </fragment>
 
-    <action android:id="@+id/moveToSpecificFragment"
-        app:destination="@id/navigation_post"/>
+    <action
+        android:id="@+id/moveToSpecificFragment"
+        app:destination="@id/navigation_post" />
 
-    <action android:id="@+id/moveToAddressFragment"
-        app:destination="@id/navigation_address"/>
+    <action
+        android:id="@+id/moveToAddressFragment"
+        app:destination="@id/navigation_address" />
+
+    <!--<action
+        android:id="@+id/moveToCameraFragment"
+        app:destination="@id/navigation_camera" />-->
+
     <fragment
         android:id="@+id/navigation_address"
         android:name="com.vinga129.savolax.ui.address.AddressFragment"
-        android:label="AddressFragment" />
+        android:label="AddressFragment">
+        <argument
+            android:name="ShowBottomNav"
+            android:defaultValue="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_camera"
+        android:name="com.vinga129.savolax.ui.camera.CameraFragment"
+        android:label="CameraFragment">
+        <argument
+            android:name="ShowBottomNav"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/to_image_result"
+            app:destination="@id/navigation_image_result" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_image_result"
+        android:name="com.vinga129.savolax.ui.camera.image_result.ImageResultFragment"
+        android:label="fragment_image_result"
+        tools:layout="@layout/fragment_image_result" >
+        <argument
+            android:name="ShowBottomNav"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/to_add_post"
+            app:destination="@id/navigation_add_post" />
+    </fragment>
 
 </navigation>

@@ -3,16 +3,14 @@ package com.vinga129.savolax.ui.register;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.google.gson.Gson;
-import com.vinga129.savolax.base.ResultHolder;
+import com.vinga129.savolax.ResultHolder;
 import com.vinga129.savolax.data.RegisterRepository;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
+import com.vinga129.savolax.retrofit.rest_objects.Customer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import java.util.Map;
 import retrofit2.HttpException;
 
 public class RegisterViewModel extends ViewModel {

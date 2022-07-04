@@ -1,7 +1,6 @@
 package com.vinga129.savolax.ui.login;
 
-import static com.vinga129.savolax.HelperUtil.makeWarning;
-import static com.vinga129.savolax.HelperUtil.properFormValue;
+import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,16 +11,11 @@ import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
-import com.vinga129.savolax.custom.CustomTextInputLayout;
 import com.vinga129.savolax.databinding.FragmentLoginBinding;
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import retrofit2.HttpException;
 
 @AnnotationContentId(contentId = R.layout.fragment_login)
 public class LoginFragment extends FormFragment<Map<String, String>, FragmentLoginBinding> {

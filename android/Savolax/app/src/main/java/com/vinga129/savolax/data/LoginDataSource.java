@@ -1,10 +1,8 @@
 package com.vinga129.savolax.data;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import com.vinga129.savolax.ui.login.LoggedInUserView;
 
-import com.vinga129.savolax.ui.retrofit.Controller;
+import com.vinga129.savolax.retrofit.Controller;
 import io.reactivex.Single;
 import java.util.Map;
 

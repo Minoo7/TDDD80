@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.vinga129.savolax.ui.retrofit.NetworkViewModel;
-import com.vinga129.savolax.ui.retrofit.rest_objects.MiniCustomer;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
+import com.vinga129.savolax.retrofit.NetworkViewModel;
+import com.vinga129.savolax.retrofit.rest_objects.MiniCustomer;
+import com.vinga129.savolax.retrofit.rest_objects.Post;
 
 import retrofit2.Call;
 import retrofit2.Callback;

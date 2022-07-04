@@ -1,30 +1,29 @@
 package com.vinga129.savolax.ui.add_post;
 
-import android.os.Bundle;
 import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.GetContent;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.snackbar.Snackbar;
+import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
 import com.vinga129.savolax.databinding.FragmentAddPostBinding;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
+import com.vinga129.savolax.retrofit.rest_objects.Post;
 
 @AnnotationContentId(contentId = R.layout.fragment_add_post)
 public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> {
 
-    private AddPostViewModel addPostViewModel;
+    private AddPostViewModel model;
     public static final int PICK_FILE = 99;
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        addPostViewModel = new ViewModelProvider(this).get(AddPostViewModel.class);
-        binding.setViewmodel(addPostViewModel);
+    protected void initFragment() {
+        model = new ViewModelProvider(requireActivity()).get(AddPostViewModel.class);
+        binding.setViewmodel(model);
+
+        binding.setLifecycleOwner(this);
 
         /*binding.buttonAddPhoto.setOnClickListener((View) -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -43,16 +42,12 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         binding.buttonAddPhoto.setOnClickListener((View) -> {
             mGetContent.launch("image/*");
         });
-    }
 
-    /*@Override
-    protected void initFragmentImpl() {
+        binding.buttonTakePhoto.setOnClickListener((view -> {
+            ((MainActivity) requireActivity()).requestCameraPermission();
+        }));
 
-    }*/
-
-    @Override
-    protected void initFragment() {
-
+        binding.buttonCloseImageResult.setOnClickListener((x) -> model.showAddPhoto());
     }
 
     @Override

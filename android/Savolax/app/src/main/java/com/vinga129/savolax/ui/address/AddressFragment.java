@@ -1,20 +1,20 @@
 package com.vinga129.savolax.ui.address;
 
-import static com.vinga129.savolax.HelperUtil.makeWarning;
+import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
 import android.view.View;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.vinga129.savolax.HelperUtil;
+import com.vinga129.savolax.util.HelperUtil;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
 import com.vinga129.savolax.databinding.FragmentAddressBinding;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups;
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups.AddressTypes;
+import com.vinga129.savolax.retrofit.rest_objects.Address;
+import com.vinga129.savolax.retrofit.rest_objects.groups;
+import com.vinga129.savolax.retrofit.rest_objects.groups.AddressTypes;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;

@@ -7,11 +7,11 @@
         
         <variable
             name="BindingUtil"
-            type="com.vinga129.savolax.ui.BindingUtils" />
+            type="com.vinga129.savolax.util.BindingUtils" />
 
         <variable
             name="miniCustomer"
-            type="com.vinga129.savolax.ui.retrofit.rest_objects.MiniCustomer" />
+            type="com.vinga129.savolax.retrofit.rest_objects.MiniCustomer" />
 
     </data>
 

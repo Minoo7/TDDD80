@@ -7,11 +7,11 @@
 
         <variable
             name="current"
-            type="com.vinga129.savolax.ui.UserRepository" />
+            type="com.vinga129.savolax.ui.later.UserRepository" />
 
         <variable
             name="BindingUtil"
-            type="com.vinga129.savolax.ui.BindingUtils" />
+            type="com.vinga129.savolax.util.BindingUtils" />
 
         <variable
             name="viewmodel"

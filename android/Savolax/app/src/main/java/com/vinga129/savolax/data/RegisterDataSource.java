@@ -1,8 +1,8 @@
 package com.vinga129.savolax.data;
 
 import com.vinga129.savolax.ui.register.RegisteredUserView;
-import com.vinga129.savolax.ui.retrofit.Controller;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Customer;
+import com.vinga129.savolax.retrofit.Controller;
+import com.vinga129.savolax.retrofit.rest_objects.Customer;
 import io.reactivex.Single;
 import java.util.Map;
 

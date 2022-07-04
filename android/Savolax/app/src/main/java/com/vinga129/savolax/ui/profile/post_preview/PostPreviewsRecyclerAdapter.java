@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.vinga129.savolax.databinding.PostPreviewItemBinding;
 import com.vinga129.savolax.base.BaseRecyclerAdapter;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Post;
+import com.vinga129.savolax.retrofit.rest_objects.Post;
 
 import java.util.ArrayList;
 

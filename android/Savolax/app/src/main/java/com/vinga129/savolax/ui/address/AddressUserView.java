@@ -1,7 +1,5 @@
 package com.vinga129.savolax.ui.address;
 
-import com.vinga129.savolax.ui.retrofit.rest_objects.groups;
-
 public class AddressUserView {
     private String address_type;
     private String street;

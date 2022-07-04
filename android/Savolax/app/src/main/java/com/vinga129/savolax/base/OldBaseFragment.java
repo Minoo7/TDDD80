@@ -8,12 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 
 import com.vinga129.savolax.MainActivity;
-import com.vinga129.savolax.ui.ActiveCustomerViewModel;
-import com.vinga129.savolax.ui.UserRepository;
-import com.vinga129.savolax.ui.retrofit.Controller;
-import com.vinga129.savolax.ui.retrofit.RestAPI;
-
-import java.util.Objects;
+import com.vinga129.savolax.ui.later.ActiveCustomerViewModel;
+import com.vinga129.savolax.ui.later.UserRepository;
+import com.vinga129.savolax.retrofit.Controller;
+import com.vinga129.savolax.retrofit.RestAPI;
 
 public abstract class OldBaseFragment extends Fragment {
     //protected MainActivity main; //= (MainActivity) getActivity();

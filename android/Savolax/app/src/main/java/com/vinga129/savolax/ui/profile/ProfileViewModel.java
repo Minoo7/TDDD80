@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 import com.vinga129.savolax.base.BaseRecyclerAdapter;
 import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
-import com.vinga129.savolax.ui.retrofit.NetworkViewModel;
-import com.vinga129.savolax.ui.retrofit.rest_objects.CustomerProfile;
+import com.vinga129.savolax.retrofit.NetworkViewModel;
+import com.vinga129.savolax.retrofit.rest_objects.CustomerProfile;
 
 import java.util.List;
 

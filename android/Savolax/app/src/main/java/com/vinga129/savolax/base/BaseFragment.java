@@ -11,6 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import com.vinga129.savolax.MainActivity;
+import com.vinga129.savolax.R;
 
 public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
 
@@ -18,6 +22,7 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
     protected Bundle bundle;
     protected Activity activity;
     protected B binding;
+    protected NavController navController;
 
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -25,7 +30,9 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
         if (contentId == 0) {
             bundle = getArguments();
             contentId = AnnotationUtil.check(this);
-            activity = getActivity();
+            activity = requireActivity();
+            if (activity instanceof MainActivity)
+                navController = ((MainActivity) activity).getNavController();
         }
     }
 
@@ -35,6 +42,7 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
             @Nullable Bundle savedInstanceState) {
         if (binding == null) {
             binding = DataBindingUtil.inflate(inflater, contentId, container, false);
+            // requireActivity().invalidateOptionsMenu();
             initFragment();
         }
         return binding.getRoot();

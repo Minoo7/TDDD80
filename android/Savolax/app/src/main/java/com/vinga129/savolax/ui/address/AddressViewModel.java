@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.vinga129.savolax.base.ResultHolder;
+import com.vinga129.savolax.ResultHolder;
 import com.vinga129.savolax.data.AddressRepository;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;
-import com.vinga129.savolax.ui.retrofit.rest_objects.Address;
+import com.vinga129.savolax.retrofit.rest_objects.Address;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
