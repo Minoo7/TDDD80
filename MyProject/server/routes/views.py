@@ -4,21 +4,23 @@ import os
 from datetime import datetime, timezone
 from traceback import format_exc
 
+import boto3 as boto3
 import werkzeug
-from flask import request, jsonify, abort
+from flask import request, jsonify, abort, url_for
 from flask_bcrypt import check_password_hash
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity, get_jwt
 from werkzeug.exceptions import HTTPException
 from werkzeug.utils import secure_filename
 
-from MyProject.server import app, ValidationError, groups, session
-from MyProject.server.config import ALLOWED_EXTENSIONS
+from MyProject.server import app, ValidationError, groups, session, s3
+from MyProject.server.config import ALLOWED_EXTENSIONS, AWS_STORAGE_BUCKET_NAME
 from MyProject.server.constants import GET, POST, DELETE, PUT
 from MyProject.server.main import edit_obj, find, create_obj, delete_obj, \
 	get_obj, get_all, find_possible_logins, find_by
 from MyProject.server.models import Customer, Address, Post, ImageReference, Like, Comment, TokenBlocklist
-from MyProject.server.routes.helpers import require_method_params, require_id_exists, customer_params, address_params, \
-	post_params, require_ownership, comment_params, require_json_id_exists
+from MyProject.server.routes.helpers import require_method_params, require_id_exists, customer_required_params, \
+	address_params, \
+	post_params, require_ownership, comment_params, require_json_id_exists, customer_params
 from MyProject.server.validation.validate import IdError
 
 jwt = JWTManager(app)
@@ -87,7 +89,7 @@ def modify_token():
 
 
 @app.route("/customers", methods=[GET, POST])
-@require_method_params(POST=customer_params)
+@require_method_params(POST=customer_required_params)
 def customers():
 	if request.method == GET:
 		return jsonify(get_all(Customer)), 200
@@ -157,17 +159,15 @@ def images(customer_id):
 		if not file.filename:
 			return jsonify(message='No file selected for uploading'), 400
 
-		upload_path = os.path.join(os.getcwd() + app.config['UPLOAD_FOLDER'])
-		user_folder = os.path.join(upload_path + "/" + str(find(Customer, customer_id).username))
-		if not os.path.isdir(user_folder):
-			os.mkdir(user_folder)
-
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
-			file_path = os.path.join(user_folder, filename)
-			file.save(file_path)
-			create_obj(ImageReference, {'path': file_path})
-			return jsonify(message='File successfully uploaded'), 201
+
+			s3_resource = boto3.resource('s3')
+			my_bucket = s3_resource.Bucket(AWS_STORAGE_BUCKET_NAME)
+			my_bucket.Object(filename).put(Body=file)
+
+			img = create_obj(ImageReference, {'path': filename})
+			return jsonify(message='File successfully uploaded', id=img.id), 201
 		else:
 			return jsonify(message='Allowed file types are png, jpg, jpeg'), 400
 

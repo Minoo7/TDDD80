@@ -29,7 +29,7 @@ public class AddressFragment extends FormFragment<Address, FragmentAddressBindin
 
     @Override
     protected void initFragment() {
-        addressViewModel = new ViewModelProvider(this, new AddressViewModelFactory())
+        addressViewModel = new ViewModelProvider(this)
                 .get(AddressViewModel.class);
 
         binding.setAddressTypes(groups.enumToStrings(AddressTypes.values(),
@@ -51,12 +51,8 @@ public class AddressFragment extends FormFragment<Address, FragmentAddressBindin
             if (addressResult == null)
                 return;
             binding.loading.setVisibility(View.GONE);
-            if (addressResult.getErrorMap() != null) {
-                Map<String, List<String>> errorMap = addressResult.getErrorMap();
-                formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
-                        .forEach(f -> Objects.requireNonNull(f.getEditText())
-                                .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
-            }
+            if (addressResult.getError() != null && addressResult.getError().getErrorMap() != null)
+                showErrors(addressResult.getError().getErrorMap());
             if (addressResult.getSuccess() != null)
                 updateUi();
         });
@@ -81,15 +77,5 @@ public class AddressFragment extends FormFragment<Address, FragmentAddressBindin
                     Navigation.findNavController(binding.container).popBackStack();
                     //Navigation.findNavController(binding.container).navigate(AddressFragmentDirections.toLoginFragment());
                 }).show();
-    }
-
-    @Override
-    public void showFail() {
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(
-                    getContext().getApplicationContext(),
-                    "error text string test",
-                    Toast.LENGTH_LONG).show();
-        }
     }
 }

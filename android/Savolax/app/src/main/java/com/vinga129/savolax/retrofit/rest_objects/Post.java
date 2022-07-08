@@ -1,24 +1,32 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
+import androidx.annotation.Nullable;
 import java.util.List;
 
 public class Post {
-    private int id;
-    private int customer_id;
+    @Nullable
+    private Integer id;
+    private Integer customer_id;
     private String image_url;
+    private Integer image_id;
     private String title;
     private String content;
-    private groups.PostTypes type;
+    private String type;
     private String created_at;
     private List<Like> likes;
     private List<Comment> comments;
 
-    public int getId() {
-        return id;
+    public int getImage_id() {
+        return image_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setImage_id(final int image_id) {
+        this.image_id = image_id;
+    }
+
+    public int getId() {
+        //return id;
+        return 1;
     }
 
     public int getCustomerId() {
@@ -30,8 +38,6 @@ public class Post {
     }
 
     public String getImageUrl() {
-        if (image_url != null)
-            return "https://picsum.photos/536/354";
         return image_url;
     }
 
@@ -55,11 +61,11 @@ public class Post {
         this.content = content;
     }
 
-    public groups.PostTypes getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(groups.PostTypes type) {
+    public void setType(String type) {
         this.type = type;
     }
 

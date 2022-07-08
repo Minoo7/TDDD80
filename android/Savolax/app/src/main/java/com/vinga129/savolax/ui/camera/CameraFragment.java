@@ -3,7 +3,6 @@ package com.vinga129.savolax.ui.camera;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.widget.Button;
 import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
@@ -14,12 +13,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
 import com.vinga129.savolax.databinding.FragmentCameraBinding;
+import com.vinga129.savolax.other.AddImageViewModel;
 import com.vinga129.savolax.ui.add_post.AddPostViewModel;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
@@ -34,7 +33,7 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
     private PreviewView previewView;
     private ImageButton captureButton;
 
-    private AddPostViewModel model;
+    private AddImageViewModel addImageViewModel;
 
     private int lensFacing = CameraSelector.LENS_FACING_BACK;
 
@@ -43,21 +42,11 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
         previewView = binding.cameraView;
         captureButton = binding.buttonCapture;
 
-        model = new ViewModelProvider(requireActivity()).get(AddPostViewModel.class);
+        addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
 
         captureButton.setOnClickListener((View) -> capturePhoto());
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
-
-        /*model.getCameraPermitted().observe(getViewLifecycleOwner(), bool -> {
-            if (bool)
-                initCamera();
-        });
-
-        if (main.hasCameraPermission())
-            initCamera();
-        else
-            main.requestCameraPermission();*/
 
         binding.buttonSwitch.setOnClickListener((View) -> flipCamera());
 
@@ -114,7 +103,7 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
         imageCapture.takePicture(getExecutor(), new ImageCapture.OnImageCapturedCallback() {
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy image) {
-                model.setCapturedImage(imageProxyToBitmap(image));
+                addImageViewModel.setCapturedImage(imageProxyToBitmap(image));
                 navController.navigate(CameraFragmentDirections.toImageResult());
                 // navController.navigate(CameraFragmentDirections.toImageViewerFragment());
                 // main.updateLocation();

@@ -1,10 +1,12 @@
 package com.vinga129.savolax.ui.address;
 
+import static com.vinga129.savolax.util.HelperUtil.parseHttpError;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.vinga129.savolax.ResultHolder;
+import com.vinga129.savolax.data.ResultHolder;
 import com.vinga129.savolax.data.AddressRepository;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;
@@ -19,18 +21,13 @@ import retrofit2.HttpException;
 public class AddressViewModel extends ViewModel {
 
     private final MutableLiveData<ResultHolder<AddressUserView>> addressResult = new MutableLiveData<>();
-    private final AddressRepository addressRepository;
-
-    AddressViewModel(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
 
     LiveData<ResultHolder<AddressUserView>> getAddressResult() {
         return addressResult;
     }
 
     public void addAddress(Address address) {
-        addressRepository.addAddress(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        AddressRepository.getInstance().addAddress(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(
                         new DisposableSingleObserver<Result<AddressUserView>>() {
                             @Override
@@ -42,18 +39,7 @@ public class AddressViewModel extends ViewModel {
                             @Override
                             public void onError(final Throwable e) {
                                 if (e instanceof HttpException) {
-
-                                    try {
-                                        String errorBody = Objects
-                                                .requireNonNull(Objects.requireNonNull(((HttpException) e).response()).errorBody()).string();
-                                        System.out.println("ddddd");
-                                        System.out.println(errorBody);
-                                    } catch (IOException ioException) {
-                                        ioException.printStackTrace();
-                                    }
-                                    /*NetworkUtil.handleOnError((HttpException) e,
-                                            (errorBody) -> addressResult.setValue(new ResultHolder<>(
-                                                    new Gson().fromJson(errorBody, Map.class))));*/
+                                    addressResult.setValue(parseHttpError((HttpException) e));
                                 }
                             }
                         });

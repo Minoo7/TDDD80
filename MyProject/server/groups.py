@@ -16,7 +16,8 @@ class Genders(Enum):
 
 
 class PostTypes(Enum):
-	review = 1
+	Review = 1
+	Social = 2
 
 
 class AddressTypes(Enum):

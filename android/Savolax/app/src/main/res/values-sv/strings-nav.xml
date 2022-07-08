@@ -4,6 +4,6 @@
     <string name="title_home">Hem</string>
     <string name="title_post">Inlägg</string>
     <string name="title_products">Produkter</string>
-    <string name="title_other">Annat</string>
+    <string name="title_more">Annat</string>
     <string name="title_account">Konto</string>
 </resources>

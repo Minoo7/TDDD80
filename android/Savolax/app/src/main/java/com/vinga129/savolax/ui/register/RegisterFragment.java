@@ -29,7 +29,7 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
 
     @Override
     protected void initFragment() {
-        registerViewModel = new ViewModelProvider(this, new RegisterViewModelFactory())
+        registerViewModel = new ViewModelProvider(this)
                 .get(RegisterViewModel.class);
 
         binding.setGenders(groups.enumToStrings(Genders.values(),
@@ -61,21 +61,14 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
             if (registerResult == null)
                 return;
             binding.loading.setVisibility(View.GONE);
-            if (registerResult.getErrorMap() != null) {
-                Map<String, List<String>> errorMap = registerResult.getErrorMap();
-                formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
-                        .forEach(f -> Objects.requireNonNull(f.getEditText())
-                                .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
-                // binding.fieldUsername.setError("");
-            }
-            if (registerResult.getSuccess() != null) {
+            if (registerResult.getError() != null && registerResult.getError().getErrorMap() != null)
+                showErrors(registerResult.getError().getErrorMap());
+            if (registerResult.getSuccess() != null)
                 updateUi(registerResult.getSuccess());
-            }
         });
 
         binding.register.setOnClickListener(v -> {
             try {
-                // formViews.forEach(this::clearError);
                 Customer customer = addFormData(Customer.class);
                 binding.loading.setVisibility(View.VISIBLE);
                 registerViewModel.register(customer);
@@ -87,22 +80,14 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
 
 
     public void updateUi(RegisteredUserView model) {
-        CharSequence[] charSequence = new CharSequence[]{ getString(R.string.on_new_user_info),
-                "Customer number: " + model.getCustomer_number(), "---Other login methods:---", "username: " + model.getUsername() + "\nemail: " + model.getEmail() };
+        CharSequence[] charSequence = new CharSequence[]{getString(R.string.on_new_user_info),
+                "Customer number: " + model.getCustomer_number(), "---Other login methods:---",
+                "username: " + model.getUsername() + "\nemail: " + model.getEmail()};
         new MaterialAlertDialogBuilder(requireContext()).setTitle("Successfully registered")
                 .setItems(charSequence, null)
                 .setPositiveButton(getResources().getString(R.string.ok), (dialogInterface, i) -> {
-                    Navigation.findNavController(binding.container).navigate(RegisterFragmentDirections.toLoginFragment());
+                    Navigation.findNavController(binding.container)
+                            .navigate(RegisterFragmentDirections.toLoginFragment());
                 }).show();
-    }
-
-    @Override
-    public void showFail() {
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(
-                    getContext().getApplicationContext(),
-                    "error text string test",
-                    Toast.LENGTH_LONG).show();
-        }
     }
 }

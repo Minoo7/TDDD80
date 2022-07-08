@@ -160,6 +160,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 tools:ignore="TextContrastCheck" />
+
         </com.vinga129.savolax.custom.CustomTextInputLayout>
 
         <com.vinga129.savolax.custom.CustomTextInputLayout

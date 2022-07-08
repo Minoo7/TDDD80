@@ -10,7 +10,8 @@ from MyProject.server.validation.schemas import register_schemas
 register_schemas()
 
 # --- Params ---
-customer_params = Customer.__required_params__
+customer_required_params = Customer.__required_params__
+customer_params = Customer.__params__
 address_params = Address.__required_params__
 post_params = Post.__required_params__
 like_params = Like.__required_params__

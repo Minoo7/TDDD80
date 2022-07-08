@@ -39,6 +39,7 @@
         <item name="actionModeCloseDrawable">@drawable/ic_baseline_close_24</item>
         <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
 
+        <item name="android:actionModeCloseButtonStyle">@style/NoCloseButton</item>
     </style>
 
     <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
@@ -54,5 +55,9 @@
     <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="NoCloseButton" parent="@android:style/Widget.DeviceDefault.ActionButton.CloseMode">
+        <item name="android:visibility">invisible</item>
     </style>
 </resources>

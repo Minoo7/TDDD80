@@ -16,6 +16,7 @@ public class Customer {
     private String business_name;
     private String bio;
     private String customer_number;
+    private Integer image_id;
 
     public Customer(final String username, final String password, final String first_name, final String last_name,
             final String email,
@@ -129,5 +130,13 @@ public class Customer {
 
     public void setCustomer_number(final String customer_number) {
         this.customer_number = customer_number;
+    }
+
+    public int getImage_id() {
+        return image_id;
+    }
+
+    public void setImage_id(final int image_id) {
+        this.image_id = image_id;
     }
 }

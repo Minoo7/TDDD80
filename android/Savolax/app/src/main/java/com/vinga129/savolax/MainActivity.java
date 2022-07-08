@@ -1,9 +1,13 @@
 package com.vinga129.savolax;
 
 import android.Manifest;
+import android.Manifest.permission;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private static WeakReference<Context> sContextReference;
     private NavController navController;
+    private ActionMode actionMode;
 
     private View navHostFragment;
 
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home,
-                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_other, R.id.navigation_account)
+                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_other, R.id.navigation_profile)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
@@ -169,7 +174,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCamera() {
-        navController.navigate(AddPostFragmentDirections.toCameraForPost());
+        navController.navigate(R.id.moveToCameraFragment);
         // navController.navigate(R.id.moveToCameraFragment);
+    }
+
+    public void setCallBack(ActionMode.Callback callback) {
+        actionMode = startActionMode(callback);
+
+        findViewById(androidx.appcompat.R.id.action_mode_close_button).setOnClickListener(
+                __ -> {
+                    navController.popBackStack();
+                    actionMode.finish();
+                    actionMode = null;
+                });
+    }
+
+    public void finishActionMode() {
+        if (actionMode != null)
+            actionMode.finish();
     }
 }

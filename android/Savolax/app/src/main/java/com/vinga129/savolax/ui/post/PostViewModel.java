@@ -20,10 +20,6 @@ public class PostViewModel extends NetworkViewModel {
     private MutableLiveData<MiniCustomer> miniCustomer = new MutableLiveData<>();
     private MutableLiveData<Boolean> liked = new MutableLiveData<>();
 
-    public PostViewModel(Application application) {
-        super(application);
-    }
-
     public LiveData<Post> getPost() {
         return post;
     }

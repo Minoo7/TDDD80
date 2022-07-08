@@ -15,6 +15,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
+import com.vinga129.savolax.ui.later.User;
+import com.vinga129.savolax.ui.later.UserRepository;
 
 public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
 
@@ -23,6 +25,7 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
     protected Activity activity;
     protected B binding;
     protected NavController navController;
+    protected UserRepository user;
 
     @Override
     public void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
             activity = requireActivity();
             if (activity instanceof MainActivity)
                 navController = ((MainActivity) activity).getNavController();
+            user = UserRepository.getINSTANCE();
         }
     }
 

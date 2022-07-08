@@ -31,7 +31,7 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
 
     @Override
     protected void initFragment() {
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
+        loginViewModel = new ViewModelProvider(this)
                 .get(LoginViewModel.class);
 
         formViews.addAll(Arrays.asList(binding.username, binding.password));
@@ -44,18 +44,10 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
             if (loginResult == null)
                 return;
             binding.loading.setVisibility(View.GONE);
-            if (loginResult.getErrorMap() != null) {
-                // formViews.forEach(HelperUtil::clearError);
-                Map<String, List<String>> errorMap = loginResult.getErrorMap();
-                formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
-                        .forEach(f -> Objects
-                                .requireNonNull(f.getEditText())
-                                .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
-                // binding.username
-            }
-            if (loginResult.getError() != null) {
-                makeWarning(requireContext(), binding.container, loginResult.getError());
-            }
+            if (loginResult.getError() != null && loginResult.getError().getErrorMap() != null)
+                showErrors(loginResult.getError().getErrorMap());
+            if (loginResult.getError() != null)
+                makeWarning(requireContext(), binding.container, loginResult.getError().getError());
             if (loginResult.getSuccess() != null) {
 
                 SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
@@ -74,7 +66,7 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
         binding.login.setOnClickListener(v -> {
             try {
                 binding.loading.setVisibility(View.VISIBLE);
-                Class<Map<String,String>> clazz = (Class<Map<String,String>>)(Class)Map.class;
+                Class<Map<String, String>> clazz = (Class<Map<String, String>>) (Class) Map.class;
                 loginViewModel.login(addFormData(clazz));
             } catch (IOException e) {
                 makeWarning(requireContext(), binding.container, e.getMessage());
@@ -98,11 +90,6 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
 
         binding.register.setOnClickListener((View) -> Navigation.findNavController(binding.container)
                 .navigate(LoginFragmentDirections.toRegisterFragment()));
-    }
-
-    @Override
-    public void showFail() {
-
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

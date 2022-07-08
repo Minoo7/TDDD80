@@ -24,15 +24,15 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:scaleType="fitXY"
-            app:error="@{@drawable/image1}"
+            android:scaleType="center"
+            app:error="@{@drawable/blank_profile_picture}"
             app:imageUrl="@{viewmodel.customerProfile.imageUrl}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:ignore="ImageContrastCheck"
-            tools:src="@drawable/image1" />
+            tools:srcCompat="@drawable/image7" />
 
         <TextView
             android:id="@+id/text_business_name"

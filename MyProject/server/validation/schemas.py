@@ -1,8 +1,9 @@
 import collections
 import re
 
-from .. import groups, app, ValidationError, session
+from .. import groups, app, ValidationError, session, s3
 from . import custom_fields
+from ..config import AWS_STORAGE_BUCKET_NAME
 from ..models import Model, Customer, Address, Comment, Post, ImageReference, Like
 from .validate import unique_customer_number, obj_with_attr_exists, USERNAME_LENGTH_MIN, NAME_LENGTH_MIN, \
 	NAME_LENGTH_MAX, my_password_validator
@@ -73,7 +74,14 @@ class PostSchema(SQLAlchemyAutoSchema):
 		image_id_ = data.pop('image_id', None)
 
 		if image_id_ is not None:
-			data['image_url'] = ImageReference.query.get(image_id_).path
+			url = s3.generate_presigned_url(
+				ClientMethod='get_object',
+				Params={
+					'Bucket': AWS_STORAGE_BUCKET_NAME,
+					'Key': ImageReference.query.get(image_id_).path
+				}
+			)
+			data['image_url'] = url
 		return data
 
 
@@ -97,7 +105,7 @@ class CustomerSchema(BaseSchema):
 	organization_number = fields.Int(required=True)
 	customer_number = fields.Str(load_default=lambda: unique_customer_number())
 	# add validation:....
-	image_url = custom_fields.FieldExistingId(class_=ImageReference)
+	image_id = custom_fields.FieldExistingId(class_=ImageReference)
 
 	# relationships:
 	following = fields.Nested(formats.Follower, dump_only=True, many=True)
@@ -171,6 +179,21 @@ class CustomerSchema(BaseSchema):
 		data['phone_number'] = format_phone_number(data['phone_number'])
 
 		data['password'] = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+		return data
+
+	@post_dump
+	def add_image_reference(self, data, **kwargs):
+		image_id_ = data.pop('image_id', None)
+
+		if image_id_ is not None:
+			url = s3.generate_presigned_url(
+				ClientMethod='get_object',
+				Params={
+					'Bucket': AWS_STORAGE_BUCKET_NAME,
+					'Key': ImageReference.query.get(image_id_).path
+				}
+			)
+			data['image_url'] = url
 		return data
 
 
@@ -248,3 +271,4 @@ def register_schemas():
 			schema_fields = schema._declared_fields
 			required_fields = [field for field in schema_fields if schema_fields[field].required]
 			setattr(class_, "__required_params__", required_fields)
+			setattr(class_, "__params__", schema_fields)

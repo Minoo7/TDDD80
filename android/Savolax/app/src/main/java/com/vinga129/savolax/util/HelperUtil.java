@@ -1,6 +1,7 @@
 package com.vinga129.savolax.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import androidx.core.content.ContextCompat;
 import com.airbnb.paris.Paris;
@@ -11,9 +12,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.vinga129.savolax.R;
-import com.vinga129.savolax.ResultHolder;
+import com.vinga129.savolax.data.ResultHolder;
 import com.vinga129.savolax.custom.CustomTextInputLayout;
+import com.vinga129.savolax.data.Result.Error;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -84,31 +89,39 @@ public class HelperUtil {
         return gson.fromJson(gson.toJson(formData), _class);
     }
 
-    public static <T> ResultHolder<T> parseHttpError(HttpException httpError) throws IOException {
-        String errorBody = Objects
-                .requireNonNull(Objects.requireNonNull(httpError.response()).errorBody()).string();
-
-        if (errorBody.startsWith("{")) {
-            return new ResultHolder<>(new Gson().fromJson(errorBody, Map.class));
+    public static <T> ResultHolder<T> parseHttpError(HttpException httpError) {
+        String errorBody = null;
+        try {
+            errorBody = Objects
+                    .requireNonNull(Objects.requireNonNull(httpError.response()).errorBody()).string();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        else {
-            return  new ResultHolder<>(httpError.code(), errorBody);
+
+        Error error = null;
+        if (errorBody.startsWith("{")) {
+            error = new Error(new Gson().fromJson(errorBody, Map.class));
+            return new ResultHolder<>(error);
+        } else {
+            error = new Error(httpError.code(), errorBody);
+            return new ResultHolder<>(error);
         }
     }
 
-    /*public static void handleHttpError(HttpException error, MutableLiveData<ResultHolder<?>> result, Context context, View view) {
-        try {
-            String errorBody = Objects
-                    .requireNonNull(Objects.requireNonNull(error.response()).errorBody()).string();
+    public static File persistImage(Context context, Bitmap bitmap, String name) {
+        File filesDir = context.getFilesDir();
+        File imageFile = new File(filesDir, name + ".jpg");
 
-            if (errorBody.startsWith("{")) {
-                result.setValue(new ResultHolder<>(new Gson().fromJson(errorBody, Map.class)));
-            }
-            else {
-                makeWarning(context, view, errorBody);
-            }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        OutputStream os;
+        try {
+            os = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+            return imageFile;
+        } catch (Exception e) {
+            System.out.println("Couldn't write bitmap");
+            return null;
         }
-    }*/
+    }
 }

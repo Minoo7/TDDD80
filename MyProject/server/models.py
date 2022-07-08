@@ -66,7 +66,7 @@ class Customer(User):
 	"""
 	__tablename__ = "customers"
 	customer_number = Column(String(6), unique=True, nullable=False)
-	image_url = Column(String(120))
+	# image_id = Column(Integer, ForeignKey('images.id'))
 	phone_number = Column(String(20), unique=True, nullable=False)
 	business_type = Column(ENUM(groups.BusinessTypes), nullable=False)
 	organization_number = Column(String(11), unique=True, nullable=False)
@@ -104,7 +104,7 @@ class Customer(User):
 
 	def get_profile(self):
 		return self.__schema__(
-			only=["username", "image_url", "business_type", "business_name", "followers", "following", "posts", "bio"]).dump(self)
+			only=["username", "image_id", "business_type", "business_name", "followers", "following", "posts", "bio"]).dump(self)
 
 	def get_mini(self):
 		return self.__schema__(only=["id", "username", "image_url"]).dump(self)

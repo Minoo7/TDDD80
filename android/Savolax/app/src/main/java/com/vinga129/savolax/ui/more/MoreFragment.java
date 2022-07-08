@@ -1,4 +1,4 @@
-package com.vinga129.savolax.ui.other;
+package com.vinga129.savolax.ui.more;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -10,20 +10,19 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.vinga129.savolax.databinding.FragmentOtherBinding;
+import com.vinga129.savolax.databinding.FragmentMoreBinding;
 
-public class OtherFragment extends Fragment {
+public class MoreFragment extends Fragment {
 
-    private FragmentOtherBinding binding;
+    private FragmentMoreBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        OtherViewModel otherViewModel =
-                new ViewModelProvider(this).get(OtherViewModel.class);
+            ViewGroup container, Bundle savedInstanceState) {
+        MoreViewModel moreViewModel =
+                new ViewModelProvider(this).get(MoreViewModel.class);
 
-        binding = FragmentOtherBinding.inflate(inflater, container, false);
+        binding = FragmentMoreBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         //final TextView textView = binding.textOther;

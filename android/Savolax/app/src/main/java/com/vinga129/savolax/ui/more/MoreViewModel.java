@@ -1,14 +1,14 @@
-package com.vinga129.savolax.ui.account;
+package com.vinga129.savolax.ui.more;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class AccountViewModel extends ViewModel {
+public class MoreViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public AccountViewModel() {
+    public MoreViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

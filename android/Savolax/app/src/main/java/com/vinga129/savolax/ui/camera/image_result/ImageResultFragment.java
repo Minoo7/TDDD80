@@ -9,19 +9,20 @@ import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
 import com.vinga129.savolax.databinding.FragmentImageResultBinding;
+import com.vinga129.savolax.other.AddImageViewModel;
 import com.vinga129.savolax.ui.add_post.AddPostViewModel;
 
 @AnnotationContentId(contentId = R.layout.fragment_image_result)
 public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding> {
 
-    private boolean accepted = false;
+    //private boolean accepted = false;
+    private ActionMode actionMode;
 
     @Override
     protected void initFragment() {
+        AddImageViewModel addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
 
-        AddPostViewModel model = new ViewModelProvider(requireActivity()).get(AddPostViewModel.class);
-
-        binding.setViewmodel(model);
+        binding.setViewmodel(addImageViewModel);
 
         ActionMode.Callback callback = new Callback() {
             @Override
@@ -38,10 +39,8 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
             @Override
             public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.accept) {
-                    accepted = true;
-                    model.showImageResult();
-                    actionMode.finish();
-
+                    addImageViewModel.showImageResult();
+                    navController.popBackStack();
                     return true;
                 }
                 return false;
@@ -49,13 +48,16 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
 
             @Override
             public void onDestroyActionMode(final ActionMode actionMode) {
-                if (accepted)
-                    navController.navigate(ImageResultFragmentDirections.toAddPost());
-                else
-                    navController.popBackStack();
+                navController.popBackStack();
             }
         };
-        ActionMode actionMode = requireActivity().startActionMode(callback);
+        actionMode = requireActivity().startActionMode(callback);
         actionMode.setTitle("Selected photo");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        actionMode.finish();
     }
 }

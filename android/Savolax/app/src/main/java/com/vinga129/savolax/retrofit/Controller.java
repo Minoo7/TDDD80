@@ -2,7 +2,7 @@ package com.vinga129.savolax.retrofit;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import com.vinga129.savolax.NetworkReceiver;
+import com.vinga129.savolax.other.NetworkReceiver;
 import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient.Builder;

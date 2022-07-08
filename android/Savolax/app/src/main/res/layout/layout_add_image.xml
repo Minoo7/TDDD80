@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.vinga129.savolax.other.AddImageViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_image"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/linearLayout_photo_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="@{viewmodel.addPhotoVisibility}">
+
+                <Button
+                    android:id="@+id/button_take_photo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/upload_photo_border"
+                    android:backgroundTint="@null"
+                    android:drawableTop="@drawable/ic_baseline_camera_alt_24"
+                    android:text="@string/take_photo"
+                    android:textColor="#000000" />
+
+                <Button
+                    android:id="@+id/button_add_photo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/upload_photo_border"
+                    android:backgroundTint="@null"
+                    android:drawableTop="@drawable/ic_baseline_add_photo_alternate_24"
+                    android:text="@string/add_photo"
+                    android:textColor="#000000" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_image_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewmodel.imageResultVisibility}">
+
+                <ImageView
+                    android:id="@+id/image_selected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="200dp"
+                    android:src="@{viewmodel.capturedImage}"
+                    app:srcCompat="@drawable/tea_cup" />
+
+                <ImageButton
+                    android:id="@+id/button_close_image_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:minHeight="48dp"
+                    android:minWidth="48dp"
+                    app:srcCompat="@drawable/ic_baseline_close_24"
+                    tools:ignore="SpeakableTextPresentCheck" />
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

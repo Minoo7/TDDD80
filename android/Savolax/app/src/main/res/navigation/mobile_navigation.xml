@@ -22,33 +22,29 @@
         android:name="com.vinga129.savolax.ui.add_post.AddPostFragment"
         android:label="@string/title_post"
         tools:layout="@layout/fragment_add_post" >
-        <action
-            android:id="@+id/to_camera_for_post"
-            app:destination="@id/navigation_camera" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_other"
-        android:name="com.vinga129.savolax.ui.other.OtherFragment"
-        android:label="@string/title_other"
-        tools:layout="@layout/fragment_other" />
+        android:id="@+id/navigation_more"
+        android:name="com.vinga129.savolax.ui.more.MoreFragment"
+        android:label="@string/title_more"
+        tools:layout="@layout/fragment_more" />
 
-    <fragment
-        android:id="@+id/navigation_account"
-        android:name="com.vinga129.savolax.ui.account.AccountFragment"
-        android:label="@string/title_account"
-        tools:layout="@layout/fragment_account">
-        <action
-            android:id="@+id/action_navigation_account_to_postFragment"
-            app:destination="@id/navigation_post" />
-    </fragment>
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.vinga129.savolax.ui.profile.ProfileFragment"
-        android:label="ProfileFragment">
+        android:label="@string/title_profile">
         <action
             android:id="@+id/toPost"
             app:destination="@id/navigation_post" />
+        <argument
+            android:name="customerId"
+            app:argType="com.vinga129.savolax.custom.CustomNullableIntegerArgument"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/to_edit_profile"
+            app:destination="@id/navigation_editProfile" />
     </fragment>
     <fragment
         android:id="@+id/navigation_post"
@@ -67,9 +63,9 @@
         android:id="@+id/moveToAddressFragment"
         app:destination="@id/navigation_address" />
 
-    <!--<action
+    <action
         android:id="@+id/moveToCameraFragment"
-        app:destination="@id/navigation_camera" />-->
+        app:destination="@id/navigation_camera" />
 
     <fragment
         android:id="@+id/navigation_address"
@@ -102,6 +98,14 @@
         <action
             android:id="@+id/to_add_post"
             app:destination="@id/navigation_add_post" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_editProfile"
+        android:name="com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragment"
+        android:label="EditProfileFragment" >
+        <action
+            android:id="@+id/to_profile_after_edit"
+            app:destination="@id/navigation_profile" />
     </fragment>
 
 </navigation>

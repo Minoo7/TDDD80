@@ -6,24 +6,27 @@
     <data>
 
         <variable
-            name="viewmodel"
-            type="com.vinga129.savolax.ui.add_post.AddPostViewModel" />
+            name="postTypes"
+            type="String[]" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         tools:context=".ui.add_post.AddPostFragment">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/fragment_horizontal_margin"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
             android:hint="@string/title"
+            app:formRequired="true"
+            app:jsonKey="title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -34,85 +37,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <LinearLayout
-            android:id="@+id/layout_image"
+        <include
+            android:id="@+id/layout_add_image"
+            layout="@layout/layout_add_image"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/fragment_horizontal_margin"
             android:layout_marginStart="@dimen/fragment_horizontal_margin"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
-            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_title">
+            app:layout_constraintTop_toBottomOf="@id/field_title" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout_photo_options"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="@{viewmodel.addPhotoVisibility}">
-
-                <Button
-                    android:id="@+id/button_take_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="0.5"
-                    android:background="@drawable/upload_photo_border"
-                    android:backgroundTint="@null"
-                    android:drawableTop="@drawable/ic_baseline_camera_alt_24"
-                    android:text="@string/take_photo"
-                    android:textColor="#000000" />
-
-                <Button
-                    android:id="@+id/button_add_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="0.5"
-                    android:background="@drawable/upload_photo_border"
-                    android:backgroundTint="@null"
-                    android:drawableTop="@drawable/ic_baseline_add_photo_alternate_24"
-                    android:text="@string/add_photo"
-                    android:textColor="#000000" />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/layout_image_result"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="@{viewmodel.imageResultVisibility}">
-
-                <ImageView
-                    android:id="@+id/image_selected"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:maxHeight="200dp"
-                    android:src="@{viewmodel.capturedImage}"
-                    app:srcCompat="@drawable/tea_cup" />
-
-                <ImageButton
-                    android:id="@+id/button_close_image_result"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:adjustViewBounds="true"
-                    android:background="@null"
-                    android:minHeight="48dp"
-                    android:minWidth="48dp"
-                    app:srcCompat="@drawable/ic_baseline_close_24"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_post_type"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
@@ -121,9 +60,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/fragment_vertical_margin"
             android:hint="@string/post_type"
+            app:formRequired="true"
+            app:jsonKey="type"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_image"
+            app:layout_constraintTop_toBottomOf="@id/layout_add_image"
             app:startIconDrawable="@drawable/ic_outline_circle_24">
 
             <AutoCompleteTextView
@@ -131,12 +72,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                app:dropDownItems="@{viewmodel.postTypes}"
-                tools:ignore="TextContrastCheck" />
+                app:dropDownItems="@{postTypes}"
+                tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/field_bio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -144,6 +85,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:hint="@string/bio"
+            app:formRequired="false"
+            app:jsonKey="content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_post_type"
@@ -155,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textLongMessage"
                 tools:ignore="TextContrastCheck" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
         <Button
             android:id="@+id/button_publish"

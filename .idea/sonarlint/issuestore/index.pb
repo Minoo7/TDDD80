@@ -15,8 +15,6 @@ H
 Vandroid/Savolax/app/src/main/java/com/vinga129/savolax/ui/profile/ProfileFragment.java,c\c\cc50937331018f99e1c226e34a08c55fa848a367
 S
 #.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
-{
-Kandroid/Savolax/app/src/main/java/com/vinga129/savolax/NetworkReceiver.java,b\f\bfffa7a5f6e6c9c80b529b7e1308ab846af91c0b
 x
 Handroid/Savolax/app/src/main/java/com/vinga129/savolax/MainActivity.java,d\e\de1fcd87f7e8132e9d94565a2d749a28956b9bd4
 Ÿ
@@ -25,11 +23,11 @@ P
  android/Savolax/app/build.gradle,8\9\893248207f412806494ab905fb92b22003eb7b05
 `
 0android/Savolax/app/src/main/AndroidManifest.xml,b\e\be16b7c6b38c1cefb37a075c22d3320f16678428
-J
-MyProject/server/config.py,1\e\1e0ce5c3cb38a71e698535cb01d894cc54da8787
 M
 MyProject/server/constants.py,e\2\e25af03fd7aefcd3c1d44109d3f2051dad2db312
 8
 Procfile,b\c\bc3c68e880d1a01632bce79f69dd1387c7ba9c54
 E
 MyProject/__init__.py,8\9\89b6f02f9d7bf9038c09abc1ab911fea3677fdf6
+H
+MyProject/server/main.py,9\7\97a086caeb6c95391d21616d6d044183c24004f3
