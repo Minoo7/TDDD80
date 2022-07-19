@@ -5,18 +5,15 @@ import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.lifecycle.ViewModelProvider;
+import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
 import com.vinga129.savolax.databinding.FragmentImageResultBinding;
 import com.vinga129.savolax.other.AddImageViewModel;
-import com.vinga129.savolax.ui.add_post.AddPostViewModel;
 
 @AnnotationContentId(contentId = R.layout.fragment_image_result)
 public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding> {
-
-    //private boolean accepted = false;
-    private ActionMode actionMode;
 
     @Override
     protected void initFragment() {
@@ -40,24 +37,23 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
             public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.accept) {
                     addImageViewModel.showImageResult();
-                    navController.popBackStack();
+                    navController.navigate(addImageViewModel.getDestinationForResult().getValue());
                     return true;
                 }
                 return false;
             }
 
             @Override
-            public void onDestroyActionMode(final ActionMode actionMode) {
-                navController.popBackStack();
-            }
+            public void onDestroyActionMode(final ActionMode actionMode) {}
         };
-        actionMode = requireActivity().startActionMode(callback);
-        actionMode.setTitle("Selected photo");
+
+        ((MainActivity) requireActivity()).setCallBackWithTitle(callback, "Selected photo");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        actionMode.finish();
+
+        ((MainActivity) requireActivity()).finishActionMode();
     }
 }

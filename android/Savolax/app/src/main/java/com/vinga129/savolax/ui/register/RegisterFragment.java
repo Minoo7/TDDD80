@@ -3,7 +3,6 @@ package com.vinga129.savolax.ui.register;
 import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
 import android.view.View;
-import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -17,10 +16,6 @@ import com.vinga129.savolax.retrofit.rest_objects.groups.BusinessTypes;
 import com.vinga129.savolax.retrofit.rest_objects.groups.Genders;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @AnnotationContentId(contentId = R.layout.fragment_register)
 public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBinding> {
@@ -69,7 +64,7 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
 
         binding.register.setOnClickListener(v -> {
             try {
-                Customer customer = addFormData(Customer.class);
+                Customer customer = formDataToClass(Customer.class);
                 binding.loading.setVisibility(View.VISIBLE);
                 registerViewModel.register(customer);
             } catch (IOException e) {

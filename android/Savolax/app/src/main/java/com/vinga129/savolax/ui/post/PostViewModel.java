@@ -3,76 +3,97 @@ package com.vinga129.savolax.ui.post;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Observable;
+import androidx.databinding.Observable.OnPropertyChangedCallback;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import androidx.lifecycle.ViewModel;
+import com.vinga129.savolax.retrofit.NetworkBaseObservable;
 import com.vinga129.savolax.retrofit.NetworkViewModel;
 import com.vinga129.savolax.retrofit.rest_objects.MiniCustomer;
 import com.vinga129.savolax.retrofit.rest_objects.Post;
 
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 @SuppressWarnings({"FieldMayBeFinal"})
 public class PostViewModel extends NetworkViewModel {
-    private MutableLiveData<Post> post = new MutableLiveData<>();
-    private MutableLiveData<MiniCustomer> miniCustomer = new MutableLiveData<>();
-    private MutableLiveData<Boolean> liked = new MutableLiveData<>();
 
-    public LiveData<Post> getPost() {
-        return post;
-    }
+    private ObservableField<MiniCustomer> miniCustomer = new ObservableField<>();
+    private ObservableBoolean liked = new ObservableBoolean();
 
-    public void setPost(Post post) {
-        this.post.setValue(post);
-    }
-
-    public LiveData<MiniCustomer> getMiniCustomer() {
+    public ObservableField<MiniCustomer> getMiniCustomer() {
         return miniCustomer;
     }
 
-    public void setMiniCustomer(MiniCustomer customer) {
-        this.miniCustomer.setValue(customer);
-    }
-
-    public LiveData<Boolean> getLiked() {
+    public ObservableBoolean getLiked() {
         return liked;
     }
 
-    public void setLiked(Boolean bool) {
-        liked.setValue(bool);
+    public void setMiniCustomer(MiniCustomer customer) {
+        this.miniCustomer.set(customer);
     }
 
-    public void init(Post post) {
-        this.post.setValue(post);
-        Call<MiniCustomer> miniCustomerCall = restAPI.getCustomerAsMini(post.getId());
-        miniCustomerCall.enqueue(new Callback<MiniCustomer>() {
-            @Override
-            public void onResponse(@NonNull Call<MiniCustomer> call, @NonNull Response<MiniCustomer> response) {
-                miniCustomer.setValue(response.body());
-            }
+    public void setLiked(boolean value) {
+        liked.set(value);
+    }
 
+    private CompletableObserver observer = new CompletableObserver() {
+        @Override
+        public void onSubscribe(final Disposable d) {
+        }
+
+        @Override
+        public void onComplete() {
+
+        }
+
+        @Override
+        public void onError(final Throwable e) {
+
+        }
+    };
+
+    public void loadMiniCustomer(int customerId) {
+        restAPI.getCustomerAsMini(customerId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(
+                        new DisposableSingleObserver<MiniCustomer>() {
+                            @Override
+                            public void onSuccess(final MiniCustomer value) {
+                                miniCustomer.set(value);
+                            }
+
+                            @Override
+                            public void onError(final Throwable e) {
+
+                            }
+                        });
+    }
+
+    public void initLikeValue(boolean value, int postId) {
+        liked.set(value);
+        liked.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
             @Override
-            public void onFailure(@NonNull Call<MiniCustomer> call, @NonNull Throwable t) {
-                System.out.println("ddd");
+            public void onPropertyChanged(final Observable sender, final int propertyId) {
+                boolean value = ((ObservableBoolean) sender).get();
+
+                if (value)
+                    restAPI.likePost(postId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(observer);
+                else
+                    restAPI.deleteLike(postId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(observer);
             }
         });
-    }
-
-    public void loadData() {
-        /*Call<Post> postCall = restAPI.getPost(1);
-        Call<CustomerProfile> customerProfileCall = restAPI.getCustomerProfile("1");
-        customerProfileCall.enqueue(new Callback<CustomerProfile>() {
-            @Override
-            public void onResponse(@NonNull Call<CustomerProfile> call, @NonNull Response<CustomerProfile> response) {
-                CustomerProfile customerProfile = response.body();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<CustomerProfile> call, @NonNull Throwable t) {
-
-            }
-        });*/
     }
 }

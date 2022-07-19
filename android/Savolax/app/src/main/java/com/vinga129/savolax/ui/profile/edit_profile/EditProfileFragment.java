@@ -2,12 +2,11 @@ package com.vinga129.savolax.ui.profile.edit_profile;
 
 import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
-import android.content.res.Resources;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.EditText;
 import androidx.lifecycle.ViewModelProvider;
 import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
@@ -43,13 +42,19 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
 
         // Set camera button to open camera fragment
         addImageBinding.buttonTakePhoto.setOnClickListener(
-                __ -> ((MainActivity) activity).requestCameraPermission());
+                __ ->  {
+                    addImageViewModel.setDestinationForResult(R.id.image_to_edit_profile);
+                    ((MainActivity) activity).requestCameraPermission();
+                });
 
         editProfileViewModel.getBioResult().observe(getViewLifecycleOwner(), getBioResult -> {
-            if (getBioResult.getError() != null)
-                makeWarning(getContext(), binding.container, "Error retrieving bio data");
-            else if (getBioResult.getSuccess() != null) {
-                Objects.requireNonNull(binding.fieldBio.getEditText()).setText(getBioResult.getSuccess());
+            EditText editText = Objects.requireNonNull(binding.fieldBio.getEditText());
+            if (!(editText.getText().toString().equals(""))) {
+                if (getBioResult.getError() != null)
+                    makeWarning(getContext(), binding.container, "Error retrieving bio data");
+                else if (getBioResult.getSuccess() != null) {
+                    Objects.requireNonNull(binding.fieldBio.getEditText()).setText(getBioResult.getSuccess());
+                }
             }
         });
 
@@ -71,9 +76,8 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
             public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.accept) {
                     try {
-                        Customer customer = addFormData(Customer.class);
+                        Customer customer = formDataToClass(Customer.class);
                         if (imageSelected) {
-                            System.out.println("go");
                             editProfileViewModel
                                     .editProfileWithImage(addImageViewModel.getCapturedImage().getValue(), customer);
                         } else
@@ -96,18 +100,15 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
         editProfileViewModel.getEditProfileResult().observe(getViewLifecycleOwner(), editProfileResult -> {
             if (editProfileResult.getError() != null && editProfileResult.getError().getErrorMap() != null)
                 showErrors(editProfileResult.getError().getErrorMap());
-            else {
-                System.out.println("dddddd");
+            else if (editProfileResult.isSuccess())
                 navController.navigate(EditProfileFragmentDirections.toProfileAfterEdit());
-            }
         });
-
-
     }
 
     public void onDestroyView() {
         super.onDestroyView();
 
         ((MainActivity) requireActivity()).finishActionMode();
+        addImageViewModel.showAddPhoto();
     }
 }

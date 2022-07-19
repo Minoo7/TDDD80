@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="post"
+            type="com.vinga129.savolax.retrofit.rest_objects.Post" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:padding="8dp"
+        app:cardCornerRadius="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_post"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                app:loadBackgroundUrl="@{post.imageUrl}">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_mini"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#80FFFFFF"
+                        app:cardCornerRadius="5dp">
+
+                        <RelativeLayout
+                            android:id="@+id/clickable_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="7.5dp"
+                            app:layout_constraintTop_toBottomOf="@+id/text_title">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/image_profile_pic"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:error="@{@drawable/ic_round_person_24}"
+                                app:imageUrl="@{post.customer.imageUrl}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                                tools:ignore="ImageContrastCheck"
+                                tools:src="@tools:sample/avatars" />
+
+                            <TextView
+                                android:id="@+id/text_post_username2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                android:layout_toEndOf="@+id/image_profile_pic"
+                                android:text="@{post.customer.username}"
+                                tools:text="rafeb3233" />
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/text_post_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:shadowColor="@color/white"
+                        android:shadowRadius="5"
+                        android:text="@{post.type}"
+                        android:textColor="@color/orange"
+                        android:textSize="20sp"
+                        tools:text="Review" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/text_post_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:shadowColor="@color/white"
+                    android:shadowRadius="2"
+                    android:text="@{post.title}"
+                    android:textColor="@android:color/black"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    tools:text="Post title" />
+
+                <TextView
+                    android:id="@+id/text_post_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{post.content}"
+                    android:textSize="23sp"
+                    tools:text="Post content" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

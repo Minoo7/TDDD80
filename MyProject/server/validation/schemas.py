@@ -1,5 +1,6 @@
 import collections
 import re
+from datetime import datetime
 
 from .. import groups, app, ValidationError, session, s3
 from . import custom_fields
@@ -21,13 +22,6 @@ ma = Marshmallow(app)
 
 # --- Nice imports ---
 SQLAlchemyAutoSchema = ma.SQLAlchemyAutoSchema
-
-
-"""class formats:
-	Follower = lambda: CustomerSchema(only=["id", "username"])
-	# Like = lambda: LikeSchema(only=["id"])
-"""
-
 formats = collections.namedtuple("TupleOfCustomFormats", ("Follower"))(lambda: CustomerSchema(only=["id", "username"]))
 
 
@@ -50,6 +44,10 @@ def setup_schemas():
 setup_schemas()
 
 
+class BaseSchema(SQLAlchemyAutoSchema):
+	id = fields.Int()
+
+
 class PostSchema(SQLAlchemyAutoSchema):
 	Meta = Post.__marshmallow__().Meta
 
@@ -69,6 +67,11 @@ class PostSchema(SQLAlchemyAutoSchema):
 		if not ('content' in data or 'image_id' in data):
 			raise ValidationError("Either content or an image is required")
 
+	@post_load
+	def add_created_at(self, data, **kwargs):
+		data['created_at'] = datetime.now()
+		return data
+
 	@post_dump
 	def add_image_reference(self, data, **kwargs):
 		image_id_ = data.pop('image_id', None)
@@ -83,10 +86,6 @@ class PostSchema(SQLAlchemyAutoSchema):
 			)
 			data['image_url'] = url
 		return data
-
-
-class BaseSchema(SQLAlchemyAutoSchema):
-	id = fields.Int()
 
 
 class CustomerSchema(BaseSchema):

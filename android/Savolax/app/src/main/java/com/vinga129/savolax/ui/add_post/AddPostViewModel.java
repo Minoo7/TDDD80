@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.JsonObject;
 import com.vinga129.savolax.data.ResultHolder;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;
@@ -29,12 +30,14 @@ import retrofit2.HttpException;
 
 public class AddPostViewModel extends AndroidViewModel {
 
-    private LiveData<String[]> post_types = new LiveData<String[]>(
+    private final LiveData<String[]> post_types = new LiveData<String[]>(
             groups.enumToStrings(groups.PostTypes.values(),
                     groups.PostTypes::name)) {
     };
-    // ** mutable -^?
-    private final MutableLiveData<ResultHolder<Boolean>> addPostResult = new MutableLiveData<>();
+
+    private final MutableLiveData<JsonObject> formData = new MutableLiveData<>();
+
+    private final MutableLiveData<ResultHolder<?>> addPostResult = new MutableLiveData<>();
 
     public AddPostViewModel(@NonNull final Application application) {
         super(application);
@@ -44,33 +47,42 @@ public class AddPostViewModel extends AndroidViewModel {
         return post_types;
     }
 
-    public LiveData<ResultHolder<Boolean>> getAddPostResult() {
+    public LiveData<JsonObject> getFormData() {
+        return formData;
+    }
+
+    public void setFormData(JsonObject formData) {
+        System.out.println("dddddddddddd did");
+        this.formData.setValue(formData);
+    }
+
+    public LiveData<ResultHolder<?>> getAddPostResult() {
         return addPostResult;
     }
 
+    private final CompletableObserver onAddPost = new CompletableObserver() {
+        @Override
+        public void onSubscribe(final Disposable d) {
+        }
+
+        @Override
+        public void onComplete() {
+            addPostResult.setValue(new ResultHolder<>());
+        }
+
+        @Override
+        public void onError(final Throwable e) {
+            System.out.println("onError!");
+            if (e instanceof HttpException) {
+                addPostResult.setValue(parseHttpError((HttpException) e));
+            }
+        }
+    };
+
     public void addPost(Post post) {
         // Execute completable and handle response
-        PostRepository.getInstance().uploadPost(post).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith(
-                new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(final Disposable d) {}
-
-                    @Override
-                    public void onComplete() {
-                        System.out.println("onComplete!");
-                        // ??
-                        Boolean data = new Success<Boolean>(Boolean.TRUE).getData();
-                        addPostResult.setValue(new ResultHolder<>(data));
-                    }
-
-                    @Override
-                    public void onError(final Throwable e) {
-                        System.out.println("onError!");
-                        if (e instanceof HttpException) {
-                            addPostResult.setValue(parseHttpError((HttpException) e));
-                        }
-                    }
-                });
+        PostRepository.getInstance().uploadPost(post).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(onAddPost);
     }
 
     public void addPostWithImage(Bitmap bitmap, Post post) {
@@ -84,8 +96,10 @@ public class AddPostViewModel extends AndroidViewModel {
                 .flatMapCompletable(integerResult -> {
                     int image_id = ((Success<Integer>) integerResult).getData();
                     post.setImage_id(image_id);
-                    addPost(post);
-                    return null;
+                    // addPost(post);
+                    return PostRepository.getInstance().uploadPost(post);
                 });
+
+        addPost.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith(onAddPost);
     }
 }

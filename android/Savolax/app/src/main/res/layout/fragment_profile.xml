@@ -11,7 +11,7 @@
 
         <variable
             name="adapter"
-            type="com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter" />
+            type="com.vinga129.savolax.ui.profile.PostPreviewsRecyclerAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,7 @@
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             app:error="@{@drawable/blank_profile_picture}"
             app:imageUrl="@{viewmodel.customerProfile.imageUrl}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -202,17 +202,18 @@
             android:id="@+id/recycler_post_previews"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
             app:setAdapter="@{adapter}"
-            app:submitList="@{viewmodel.customerProfile.posts}"
             app:spanCount="2"
+            app:submitList="@{viewmodel.customerProfile.posts}"
             tools:listitem="@layout/post_preview_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

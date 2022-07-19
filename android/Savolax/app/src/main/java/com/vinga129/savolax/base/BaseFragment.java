@@ -34,9 +34,6 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
             bundle = getArguments();
             contentId = AnnotationUtil.check(this);
             activity = requireActivity();
-            if (activity instanceof MainActivity)
-                navController = ((MainActivity) activity).getNavController();
-            user = UserRepository.getINSTANCE();
         }
     }
 
@@ -46,9 +43,14 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
             @Nullable Bundle savedInstanceState) {
         if (binding == null) {
             binding = DataBindingUtil.inflate(inflater, contentId, container, false);
-            // requireActivity().invalidateOptionsMenu();
+
+            if (activity instanceof MainActivity)
+                navController = ((MainActivity) activity).getNavController();
+            user = UserRepository.getINSTANCE();
+
             initFragment();
         }
+
         return binding.getRoot();
     }
 

@@ -6,15 +6,16 @@ import com.vinga129.savolax.MobileNavigationDirections;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
+import com.vinga129.savolax.base.BaseRecyclerAdapter;
 import com.vinga129.savolax.custom.CustomNullableIntegerArgument;
 import com.vinga129.savolax.databinding.FragmentProfileBinding;
+import com.vinga129.savolax.databinding.PostPreviewItemBinding;
 import com.vinga129.savolax.ui.post.PostViewModel;
-import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
 import com.vinga129.savolax.retrofit.rest_objects.Post;
 
 @AnnotationContentId(contentId = R.layout.fragment_profile)
 public class ProfileFragment extends BaseFragment<FragmentProfileBinding>
-        implements PostPreviewsRecyclerAdapter.OnItemListener {
+        implements BaseRecyclerAdapter.OnItemListener {
 
     private PostPreviewsRecyclerAdapter adapter;
     private ProfileViewModel profileViewModel;
@@ -32,21 +33,22 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding>
             binding.buttonFollowOrEdit.setOnClickListener(__ -> editProfile());
         }
 
-        profileViewModel = new ViewModelProvider(this, new ProfileViewModelFactory(1))
+        profileViewModel = new ViewModelProvider(this, new ProfileViewModelFactory(user.getId()))
                 .get(ProfileViewModel.class);
-        binding.setLifecycleOwner(this);
+        profileViewModel.loadData(user.getId());
+        // binding.setLifecycleOwner(this);
+
+        /*profileViewModel.getCustomerProfile().observe(getViewLifecycleOwner(), __ -> {
+            binding.setViewmodel(profileViewModel);
+        });*/
         binding.setViewmodel(profileViewModel);
         adapter = new PostPreviewsRecyclerAdapter(this);
         binding.setAdapter(adapter);
     }
 
-
-
     @Override
     public void onItemClick(int pos, Object data) {
-        PostViewModel postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
-        postViewModel.init((Post) data);
-        navController.navigate(MobileNavigationDirections.moveToSpecificFragment());
+        navController.navigate(MobileNavigationDirections.moveToSpecificPost((Post) data));
     }
 
     private void editProfile() {

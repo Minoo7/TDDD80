@@ -1,19 +1,15 @@
 package com.vinga129.savolax.ui.profile;
 
-import android.app.Application;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.databinding.ObservableField;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 import com.vinga129.savolax.base.BaseRecyclerAdapter;
-import com.vinga129.savolax.ui.profile.post_preview.PostPreviewsRecyclerAdapter;
 import com.vinga129.savolax.retrofit.NetworkViewModel;
 import com.vinga129.savolax.retrofit.rest_objects.CustomerProfile;
 
@@ -22,30 +18,27 @@ import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 @SuppressWarnings({"FieldMayBeFinal"})
 public class ProfileViewModel extends NetworkViewModel {
 
-    private MutableLiveData<CustomerProfile> customerProfile = new MutableLiveData<>();
+    private ObservableField<CustomerProfile> customerProfile = new ObservableField<>();
 
     public ProfileViewModel(int customerId) {
-        loadData(customerId);
+        // loadData(customerId);
     }
 
-    public LiveData<CustomerProfile> getCustomerProfile() {
+    public ObservableField<CustomerProfile> getCustomerProfile() {
         return customerProfile;
     }
 
     public void loadData(int customerId) {
+        System.out.println("loading...");
         restAPI.getCustomerProfile(customerId).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(
                         new DisposableSingleObserver<CustomerProfile>() {
                             @Override
                             public void onSuccess(final CustomerProfile value) {
-                                customerProfile.setValue(value);
+                                customerProfile.set(value);
                             }
 
                             @Override

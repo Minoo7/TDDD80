@@ -17,11 +17,10 @@ public class UserRepository {
     public static UserRepository INSTANCE;
 
     private static RestAPI restAPI;
-    private MutableLiveData<User> userLiveData;
+    private User user;
 
     private UserRepository() {
         restAPI = Controller.getInstance().getRestAPI();
-        userLiveData = new MutableLiveData<>(new User(1));
     }
 
     public static UserRepository getINSTANCE() {
@@ -30,13 +29,18 @@ public class UserRepository {
         return INSTANCE;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public void updateData(String apiKey) {
         restAPI.getUpdated().enqueue(new Callback<User>() {
             @EverythingIsNonNull
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.body() != null)
-                    userLiveData.postValue(response.body());
+                    ;
+                    //user.postValue(response.body());
             }
 
             @EverythingIsNonNull
@@ -46,11 +50,11 @@ public class UserRepository {
         });
     }
 
-    public LiveData<User> getUserLiveData() {
-        return userLiveData;
+    public User getUser() {
+        return user;
     }
 
     public int getId() {
-        return Objects.requireNonNull(getUserLiveData().getValue()).getId();
+        return user.getId();
     }
 }

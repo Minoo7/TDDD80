@@ -17,6 +17,7 @@
     <color name="shrine_pink_900">#442C2E</color>
 
     <color name="required">#B3B71C1C</color>
+    <color name="message">@android:color/holo_blue_light</color>
     <color name="warning">@android:color/holo_orange_light</color>
 
     <color name="shrineColor">#FEDBD0</color>

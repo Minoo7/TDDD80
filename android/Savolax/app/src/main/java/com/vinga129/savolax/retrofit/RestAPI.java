@@ -11,6 +11,7 @@ import com.vinga129.savolax.retrofit.rest_objects.Post;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -45,8 +46,11 @@ public interface RestAPI {
     Single<Map<String, String>> uploadImage(@Path("id") int id, @Part MultipartBody.Part file);
     //Single<Map<String, String>> uploadImage(@Path("id") int id, @Body MultipartBody body);
 
+    @GET("customers/{id}/feed")
+    Single<List<Post>> getFeed(@Path("id") int id);
+
     @GET("customers/{id}/mini")
-    Call<MiniCustomer> getCustomerAsMini(@Path("id") int id);
+    Single<MiniCustomer> getCustomerAsMini(@Path("id") int id);
 
     @POST("posts")
     Completable uploadPost(@Body Post post);
@@ -55,10 +59,10 @@ public interface RestAPI {
     Call<Post> getPost(@Path("id") int id);
 
     @POST("posts/{id}/likes")
-    Call<Map<String, String>> likePost(@Path("id") int id);
+    Completable likePost(@Path("id") int id);
 
-    @DELETE("posts/{id}/likes/{like_id}")
-    Call<Map<String, String>> deleteLike(@Path("id") int id, @Path("like_id") int like_id);
+    @DELETE("posts/{id}/unlike")
+    Completable deleteLike(@Path("id") int id);
 
     @GET("test")
     Call<ProductG> getTest();

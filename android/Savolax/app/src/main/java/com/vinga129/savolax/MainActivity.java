@@ -47,19 +47,26 @@ public class MainActivity extends AppCompatActivity {
     private View navHostFragment;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
         sContextReference = new WeakReference<>(getApplicationContext());
         Controller.getInstance().init(getContext());
         // navHostFragment = binding.navHostFragmentActivityMain;
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         navHostFragment = findViewById(R.id.nav_host_fragment_activity_main);
 
         //Bottom Navigation
-        BottomNavigationView bottomNav = binding.navView;
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        BottomNavigationView bottomNav = binding.navView;
         NavigationUI.setupWithNavController(bottomNav, navController);
 
         // Appbar
@@ -68,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home,
-                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_other, R.id.navigation_profile)
+                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_more, R.id.navigation_profile)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
@@ -187,6 +194,11 @@ public class MainActivity extends AppCompatActivity {
                     actionMode.finish();
                     actionMode = null;
                 });
+    }
+
+    public void setCallBackWithTitle(ActionMode.Callback callback, String title) {
+        setCallBack(callback);
+        actionMode.setTitle(title);
     }
 
     public void finishActionMode() {

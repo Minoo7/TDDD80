@@ -42,25 +42,27 @@ public class EditProfileViewModel extends NetworkAndroidViewModel {
         return editProfileResult;
     }
 
+    private final CompletableObserver onEditProfile = new CompletableObserver() {
+        @Override
+        public void onSubscribe(final Disposable d) {
+        }
+
+        @Override
+        public void onComplete() {
+            editProfileResult.setValue(new ResultHolder<>());
+        }
+
+        @Override
+        public void onError(final Throwable e) {
+            if (e instanceof HttpException) {
+                editProfileResult.setValue(parseHttpError((HttpException) e));
+            }
+        }
+    };
+
     public void editProfile(Customer customer) {
         restAPI.updateCustomer(UserRepository.getINSTANCE().getId(), customer).subscribeOn(Schedulers.io()).observeOn(
-                AndroidSchedulers.mainThread()).subscribeWith(new CompletableObserver() {
-            @Override
-            public void onSubscribe(final Disposable d) {
-            }
-
-            @Override
-            public void onComplete() {
-                editProfileResult.setValue(new ResultHolder<>(null));
-            }
-
-            @Override
-            public void onError(final Throwable e) {
-                if (e instanceof HttpException) {
-                    editProfileResult.setValue(parseHttpError((HttpException) e));
-                }
-            }
-        });
+                AndroidSchedulers.mainThread()).subscribeWith(onEditProfile);
     }
 
     public void editProfileWithImage(Bitmap bitmap, Customer customer) {
@@ -72,9 +74,11 @@ public class EditProfileViewModel extends NetworkAndroidViewModel {
         Completable editCustomer = addImage.flatMapCompletable(integerResult -> {
             int image_id = ((Success<Integer>) integerResult).getData();
             customer.setImage_id(image_id);
-            editProfile(customer);
-            return null;
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith();
+            // editProfile(customer);
+            return restAPI.updateCustomer(UserRepository.getINSTANCE().getId(), customer);
+        });
+
+        editCustomer.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith(onEditProfile);
     }
 
     private void getBioData() {

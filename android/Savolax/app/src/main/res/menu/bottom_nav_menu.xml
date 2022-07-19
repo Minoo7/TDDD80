@@ -17,7 +17,7 @@
         android:title="@string/title_post" />
 
     <item
-        android:id="@+id/navigation_other"
+        android:id="@+id/navigation_more"
         android:icon="@drawable/ic_baseline_more_horiz_24"
         android:title="@string/title_more" />
 

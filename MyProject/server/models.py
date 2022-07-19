@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import *
-from sqlalchemy.orm import relationship, sessionmaker, deferred
+from sqlalchemy.orm import relationship
 
 from MyProject.server import groups, Model
 from sqlalchemy.dialects.postgresql import ENUM
@@ -16,7 +15,6 @@ class TokenBlocklist(Model):
 	id = Column(Integer, primary_key=True)
 	jti = Column(String(36), nullable=False)
 	created_at = Column(DateTime, nullable=False)
-
 
 TokenBlocklist._validation = False
 
@@ -66,7 +64,7 @@ class Customer(User):
 	"""
 	__tablename__ = "customers"
 	customer_number = Column(String(6), unique=True, nullable=False)
-	# image_id = Column(Integer, ForeignKey('images.id'))
+	image_id = Column(Integer, ForeignKey('images.id'))
 	phone_number = Column(String(20), unique=True, nullable=False)
 	business_type = Column(ENUM(groups.BusinessTypes), nullable=False)
 	organization_number = Column(String(11), unique=True, nullable=False)
@@ -107,12 +105,14 @@ class Customer(User):
 			only=["username", "image_id", "business_type", "business_name", "followers", "following", "posts", "bio"]).dump(self)
 
 	def get_mini(self):
-		return self.__schema__(only=["id", "username", "image_url"]).dump(self)
+		return self.__schema__(only=["id", "username", "image_id"]).dump(self)
 
 	def get_feed(self):
-		return Post.__schema__(many=True).dump(
-			Post.query.join(follower_table, (follower_table.c.following_id == Post.customer_id)).filter(
-				follower_table.c.customer_id == self.id).order_by(Post.created_at).all())
+		following_posts = Post.query.join(follower_table, (follower_table.c.following_id == Post.customer_id)).filter(
+				follower_table.c.customer_id == self.id)
+		self_posts = Post.query.filter_by(customer_id=self.id)
+		posts_to_show = following_posts.union(self_posts).order_by(desc(Post.created_at)).all()
+		return Post.__schema__(many=True).dump(posts_to_show)
 
 
 follower_table = Table(
@@ -159,7 +159,7 @@ class Comment(Model):
 	post_id = Column(Integer, ForeignKey('posts.id'), nullable=False)
 	customer_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
 	content = Column(String(120), nullable=False)
-	created_at = Column(DateTime(), default=datetime.now(), nullable=False)
+	created_at = Column(DateTime(), nullable=False)
 
 
 class Post(Model):

@@ -1,9 +1,5 @@
-# routes..
 import ast
-import os
 from datetime import datetime, timezone
-from traceback import format_exc
-
 import boto3 as boto3
 import werkzeug
 from flask import request, jsonify, abort, url_for
@@ -34,8 +30,6 @@ def home():
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-# CREATE own decorator which sets which methods need jwt_required, later..
 
 @app.route("/<int:num>", methods=[GET])
 @jwt_required()
@@ -183,6 +177,7 @@ def image(customer_id, image_id):
 
 # https://www.moesif.com/blog/technical/api-design/REST-API-Design-Best-Practices-for-Sub-and-Nested-Resources/
 # Using security approach for images - not using user_id as parameter for images
+# write that using mvvm in android
 # or ?
 
 
@@ -222,7 +217,6 @@ def feed(customer_id):
 @require_id_exists()
 def profile(customer_id):
 	if request.method == GET:
-		print(find(Customer, customer_id).get_profile())
 		return jsonify(find(Customer, customer_id).get_profile()), 200
 
 
@@ -259,12 +253,21 @@ def likes(post_id):
 		return jsonify(message="Successfully liked post"), 201
 
 
-@app.route("/posts/<int:post_id>/likes/<int:like_id>", methods=[DELETE])
+"""@app.route("/posts/<int:post_id>/likes/<int:like_id>", methods=[DELETE])
 @jwt_required()
 @require_ownership(customer_id=['like_id'], post_id=['like_id'])
 def like(post_id, like_id):
 	if request.method == DELETE:
 		delete_obj(Like, like_id)
+		return jsonify(message="Successfully deleted like"), 200"""
+
+
+@app.route("/posts/<int:post_id>/unlike", methods=[DELETE])
+@jwt_required()
+def unlike(post_id):
+	if request.method == DELETE:
+		json = dict(post_id=post_id, customer_id=get_jwt_identity())
+		delete_obj(Like, **json)
 		return jsonify(message="Successfully deleted like"), 200
 
 
@@ -312,21 +315,6 @@ def handle_bad_request(e):
 	return jsonify(str(e).split(':')[1][1:]), 400
 
 
-"""@app.errorhandler(HTTPException)
-def handle_exception(e):
-	Return JSON instead of HTML for HTTP errors."""
-# start with the correct headers and status code from the error
-"""response = e.get_response()
-	# replace the body with JSON
-	response.data = json.dumps({
-		"code": e.code,
-		"name": e.name,
-		"description": e.description,
-	})
-	response.content_type = "application/json"
-return response"""
-
-
 @app.errorhandler(404)
 def resource_not_found(e):
 	return jsonify(str(e)), 404
@@ -335,15 +323,3 @@ def resource_not_found(e):
 @app.errorhandler(ValueError)
 def handle_value_error(e):
 	return jsonify(str(e)), 404
-
-
-@app.route("/cheese")
-def get_one_cheese():
-	resource = "get_resource()"
-
-	if resource is None:
-		abort(404, description="Resource not found")
-
-	return jsonify(resource)
-
-# return jsonify([msg.to_dict() for msg in Message.query.all()]), 200"""

@@ -68,8 +68,14 @@ public class HelperUtil {
         return new Gson().toJsonTree(properValue);
     }
 
-    public static void makeWarning(Context context, View view, String message) {
-        TSnackbar warning = TSnackbar.make(view, message, TSnackbar.LENGTH_LONG);
+    public static void makeMessage(Context context, View view, String text) {
+        TSnackbar message = TSnackbar.make(view, text, TSnackbar.LENGTH_LONG);
+        Paris.styleBuilder(message.getView()).backgroundTint(ContextCompat.getColor(context, R.color.message)).apply();
+        message.show();
+    }
+
+    public static void makeWarning(Context context, View view, String text) {
+        TSnackbar warning = TSnackbar.make(view, text, TSnackbar.LENGTH_LONG);
         Paris.styleBuilder(warning.getView()).backgroundTint(ContextCompat.getColor(context, R.color.warning))
                 .apply();
         warning.show();

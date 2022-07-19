@@ -10,25 +10,20 @@ import retrofit2.HttpException;
 public class ResultHolder<T> {
 
     @Nullable
+    protected boolean succeeded = false;
+    @Nullable
     protected T success;
     @Nullable
     protected Error error;
-    /*@Nullable
-    private Map<String, List<String>> errorMap;
 
-    @Nullable
-    private int errorCode;
-    @Nullable
-    private String errorMessage;
-
-    public ResultHolder(@Nullable Map<String, List<String>> errorMap) {
-        this.errorMap = errorMap;
+    public ResultHolder() {
+        this.succeeded = true;
     }
 
-    /*public ResultHolder(int errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
-    }*/
+    @Nullable
+    public boolean isSuccess() {
+        return succeeded;
+    }
 
     public ResultHolder(@Nullable T success) {
         this.success = success;
@@ -47,12 +42,4 @@ public class ResultHolder<T> {
         return error;
     }
 
-    /*@Nullable
-    public Map<String, List<String>> getErrorMap() {
-        return errorMap;
-    }
-
-    public String getError() {
-        return (errorCode != 0) ? errorCode + ": " + errorMessage : null;
-    }*/
 }

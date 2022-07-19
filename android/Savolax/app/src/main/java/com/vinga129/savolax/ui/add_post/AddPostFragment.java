@@ -5,8 +5,10 @@ import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.widget.Button;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.GetContent;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
@@ -19,11 +21,8 @@ import com.vinga129.savolax.retrofit.rest_objects.Post;
 import com.vinga129.savolax.retrofit.rest_objects.groups;
 import com.vinga129.savolax.retrofit.rest_objects.groups.PostTypes;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @AnnotationContentId(contentId = R.layout.fragment_add_post)
 public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> {
@@ -44,7 +43,11 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         addImageBinding.setViewmodel(addImageViewModel);
         binding.setPostTypes(groups.enumToStrings(PostTypes.values(), PostTypes::name));
         // binding.setLifecycleOwner(this);
-        binding.setLifecycleOwner(getViewLifecycleOwner());
+        // binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        setButtonAvailability(binding.buttonPublish, true);
+        //binding.buttonPublish.setBackgroundColor(R.color);
+        //ContextCompat.getColor(context, R.color.message)
 
         // imageSelected true if capturedImage is set
         addImageViewModel.getCapturedImage().observe(getViewLifecycleOwner(),
@@ -52,7 +55,16 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
 
         // Set camera button to open camera fragment
         addImageBinding.buttonTakePhoto.setOnClickListener(
-                __ -> ((MainActivity) activity).requestCameraPermission());
+                __ -> {
+                    try {
+                        addPostViewModel.setFormData(saveFormData());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    addImageViewModel.setDestinationForResult(R.id.to_add_post);
+                    ((MainActivity) activity).requestCameraPermission();
+                }
+        );
 
         // Initialize result launcher for adding photos from camera roll
         ActivityResultLauncher<String> mGetContent = registerForActivityResult(new GetContent(),
@@ -68,6 +80,7 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                         e.printStackTrace();
                     }
                 });
+
         addImageBinding.buttonAddPhoto.setOnClickListener(
                 __ -> mGetContent.launch(SELECT_IMAGE));
 
@@ -76,38 +89,52 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                 __ -> addImageViewModel.showAddPhoto());
 
         // Initialize form
-        formViews.addAll(Arrays.asList(binding.fieldTitle, binding.fieldPostType, binding.fieldPostType));
-
-        addPostViewModel.getAddPostResult().observe(getViewLifecycleOwner(), booleanResultHolder -> {
-            if (booleanResultHolder == null)
-                return;
-            if (booleanResultHolder.getError() != null && booleanResultHolder.getError().getErrorMap() != null) {
-                Map<String, List<String>> errorMap = booleanResultHolder.getError().getErrorMap();
-                formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
-                        .forEach(f -> Objects.requireNonNull(f.getEditText())
-                                .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
-            }
-            if (booleanResultHolder.getSuccess() != null) {
-                makeWarning(requireContext(), binding.container, "success");
-            }
-        });
+        formViews.addAll(Arrays.asList(binding.fieldTitle, binding.fieldPostType, binding.fieldPostType, binding.fieldBio));
 
         binding.buttonPublish.setOnClickListener(__ -> {
             try {
-                Post post = addFormData(Post.class);
+                Post post = formDataToClass(Post.class);
                 if (imageSelected)
                     addPostViewModel.addPostWithImage(addImageViewModel.getCapturedImage().getValue(), post);
                 else
                     addPostViewModel.addPost(post);
+                setButtonAvailability(binding.buttonPublish, false);
             } catch (IOException e) {
                 makeWarning(requireContext(), binding.container, e.getMessage());
             }
         });
+
+        addPostViewModel.getAddPostResult().observe(getViewLifecycleOwner(), addPostResult -> {
+            if (addPostResult == null)
+                return;
+            if (addPostResult.getError() != null && addPostResult.getError().getErrorMap() != null) {
+                showErrors(addPostResult.getError().getErrorMap());
+                setButtonAvailability(binding.buttonPublish, true);
+            }
+            if (addPostResult.isSuccess()) {
+                requireActivity().getViewModelStore().clear();
+                navController.navigate(R.id.moveToHomeFragment);
+            }
+        });
+
+        addPostViewModel.getFormData().observe(getViewLifecycleOwner(), this::restoreFormData);
     }
 
-    @Override
+    private void setButtonAvailability(Button button, boolean value) {
+        if (value) {
+            button.setClickable(true);
+            button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.orange));
+        }
+        else {
+            button.setClickable(false);
+            button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.divider_grey));
+        }
+    }
+
+    //@Override
     public void onDestroyView() {
         super.onDestroyView();
         addImageViewModel.showAddPhoto();
+        // formViews = new ArrayList<>();
     }
 }

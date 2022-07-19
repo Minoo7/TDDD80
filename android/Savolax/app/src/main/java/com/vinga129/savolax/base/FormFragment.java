@@ -18,27 +18,42 @@ public abstract class FormFragment<T, B extends ViewDataBinding> extends BaseFra
 
     protected List<CustomTextInputLayout> formViews = new ArrayList<>();
 
-    public T addFormData(Class<T> _class) throws IOException {
+    public T formDataToClass(Class<T> _class) throws IOException {
         JsonObject formData = new JsonObject();
-
         for (CustomTextInputLayout formView : formViews) {
             JsonElement value = properFormValue(formView);
-            System.out.println(",: " + formView.getKey() + ", " + value);
-            System.out.println("jens");
             if (value.isJsonNull() && formView.isRequired())
                 throw new IOException("Required fields can not be empty");
             formData.add(formView.getKey(), value);
         }
 
-
         Gson gson = new Gson();
-        System.out.println("formData: " + formData);
         return gson.fromJson(gson.toJson(formData), _class);
+    }
+
+    public JsonObject saveFormData() throws IOException {
+        JsonObject formData = new JsonObject();
+        for (CustomTextInputLayout formView : formViews) {
+            JsonElement value = properFormValue(formView);;
+            formData.add(formView.getKey(), value);
+        }
+        return formData;
     }
 
     protected void showErrors(Map<String, List<String>> errorMap) {
         formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
                 .forEach(f -> Objects.requireNonNull(f.getEditText())
                         .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
+    }
+
+    /*protected void recoverSave(Map<String, String> formData) {
+        formViews.stream().filter(field -> formData.containsKey(field.getKey())).collect(Collectors.toSet())
+                .forEach(f -> Objects.requireNonNull(f.getEditText())
+                        .setText(Objects.requireNonNull(formData.get(f.getKey()))));
+    }*/
+
+    protected void restoreFormData(JsonObject formData) {
+        System.out.println("HEJEJEJEJ");
+        System.out.println(formData);
     }
 }

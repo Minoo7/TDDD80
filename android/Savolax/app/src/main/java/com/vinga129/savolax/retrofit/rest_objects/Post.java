@@ -1,9 +1,10 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
 import androidx.annotation.Nullable;
+import java.io.Serializable;
 import java.util.List;
 
-public class Post {
+public class Post implements Serializable {
     @Nullable
     private Integer id;
     private Integer customer_id;
@@ -16,6 +17,22 @@ public class Post {
     private List<Like> likes;
     private List<Comment> comments;
 
+    private MiniCustomer customer;
+
+    public MiniCustomer getCustomer() {
+        return customer;
+    }
+
+
+    public void setCustomer(MiniCustomer customer) {
+        this.customer = customer;
+    }
+
+    public Post withCustomer(MiniCustomer customer) {
+        this.customer = customer;
+        return this;
+    }
+
     public int getImage_id() {
         return image_id;
     }
@@ -25,7 +42,6 @@ public class Post {
     }
 
     public int getId() {
-        //return id;
         return 1;
     }
 

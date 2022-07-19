@@ -1,42 +1,42 @@
 package com.vinga129.savolax.ui.home;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import androidx.navigation.Navigation;
+import com.vinga129.savolax.MainActivity;
+import com.vinga129.savolax.MobileNavigationDirections;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
+import com.vinga129.savolax.base.BaseRecyclerAdapter;
 import com.vinga129.savolax.databinding.FragmentHomeBinding;
+import com.vinga129.savolax.databinding.PostItemBinding;
+import com.vinga129.savolax.retrofit.rest_objects.Post;
+import com.vinga129.savolax.ui.post.PostViewModel;
+import com.vinga129.savolax.ui.profile.PostPreviewsRecyclerAdapter;
+import com.vinga129.savolax.ui.profile.ProfileFragmentDirections;
 
 @AnnotationContentId(contentId = R.layout.fragment_home)
-public class HomeFragment extends BaseFragment<FragmentHomeBinding> {
+public class HomeFragment extends BaseFragment<FragmentHomeBinding>
+        implements BaseRecyclerAdapter.OnItemListener {
+
+    private PostItemRecyclerAdapter adapter;
+    private HomeViewModel homeViewModel;
 
     @Override
     protected void initFragment() {
-        HomeViewModel homeViewModel =
+        homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel.loadData(user.getId());
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
+        binding.setViewmodel(homeViewModel);
+        adapter = new PostItemRecyclerAdapter(this);
+        binding.setAdapter(adapter);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public void onItemClick(int pos, Object data) {
+        if (navController == null)
+            navController = ((MainActivity) requireActivity()).getNavController();
+        navController.navigate(MobileNavigationDirections.moveToSpecificPost((Post) data));
     }
 }

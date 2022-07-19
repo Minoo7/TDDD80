@@ -48,15 +48,22 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_post"
-        android:name="com.vinga129.savolax.ui.post.PostFragmentOld"
+        android:name="com.vinga129.savolax.ui.post.PostFragment"
         android:label="PostFragment">
         <action
             android:id="@+id/toPostProfile"
             app:destination="@id/navigation_profile" />
+        <argument
+            android:name="post"
+            app:argType="com.vinga129.savolax.retrofit.rest_objects.Post" />
     </fragment>
 
     <action
-        android:id="@+id/moveToSpecificFragment"
+        android:id="@+id/moveToHomeFragment"
+        app:destination="@id/navigation_home" />
+
+    <action
+        android:id="@+id/moveToSpecificPost"
         app:destination="@id/navigation_post" />
 
     <action
@@ -85,7 +92,8 @@
             android:defaultValue="false" />
         <action
             android:id="@+id/to_image_result"
-            app:destination="@id/navigation_image_result" />
+            app:destination="@id/navigation_image_result"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/navigation_image_result"
@@ -98,6 +106,9 @@
         <action
             android:id="@+id/to_add_post"
             app:destination="@id/navigation_add_post" />
+        <action
+            android:id="@+id/image_to_edit_profile"
+            app:destination="@id/navigation_editProfile" />
     </fragment>
     <fragment
         android:id="@+id/navigation_editProfile"

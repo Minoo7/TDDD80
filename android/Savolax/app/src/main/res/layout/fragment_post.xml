@@ -6,26 +6,22 @@
     <data>
 
         <variable
-            name="current"
-            type="com.vinga129.savolax.ui.later.UserRepository" />
-
-        <variable
-            name="BindingUtil"
-            type="com.vinga129.savolax.util.BindingUtils" />
-
-        <variable
             name="viewmodel"
             type="com.vinga129.savolax.ui.post.PostViewModel" />
 
         <variable
+            name="post"
+            type="com.vinga129.savolax.retrofit.rest_objects.Post" />
+
+        <variable
             name="fragment"
-            type="com.vinga129.savolax.ui.post.PostFragmentOld" />
+            type="com.vinga129.savolax.ui.post.PostFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.post.PostFragmentOld">
+        tools:context=".ui.post.PostFragment">
 
         <TextView
             android:id="@+id/text_type"
@@ -33,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@{String.valueOf(viewmodel.post.type)}"
+            android:text="@{String.valueOf(post.type)}"
             android:textColor="@color/orange"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +43,7 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:text="@{viewmodel.post.title}"
+            android:text="@{post.title}"
             android:textAlignment="viewStart"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +67,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 app:error="@{@drawable/ic_round_person_24}"
-                app:imageUrl="@{viewmodel.post.imageUrl}"
+                app:imageUrl="@{post.imageUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -100,7 +96,7 @@
             android:minHeight="200dp"
             android:scaleType="fitXY"
             app:error="@{@drawable/image1}"
-            app:imageUrl="@{viewmodel.post.imageUrl}"
+            app:imageUrl="@{post.imageUrl}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clickable_profile"
@@ -112,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/activity_vertical_margin"
             android:layout_marginTop="8dp"
-            android:text="@{viewmodel.post.createdAt}"
+            android:text="@{post.createdAt}"
             android:textColor="@color/orange"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_post_image"
@@ -128,16 +124,18 @@
             android:background="@drawable/like_check"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            app:myLikeButton="@{viewmodel.post.isLikedBy(current.id)}"
-            app:checkedColor="@{@color/orange}"
             android:textOff=""
             android:textOn=""
             android:onCheckedChanged="@{fragment.likeButtonAction}"
+            android:checked="@={viewmodel.liked}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_date"
             tools:ignore="TouchTargetSizeCheck" />
 
         <!--@color/orange-->
+
+        <!--        app:myLikeButton="@{post.isLikedBy()}"
+            app:checkedColor="@{@color/orange}"-->
 
         <!--android:checked="false"-->
 
@@ -149,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:clickable="true"
-            android:text="@{String.valueOf(viewmodel.post.likes.size())}"
+            android:text="@{String.valueOf(post.likes.size())}"
             app:layout_constraintBottom_toBottomOf="@+id/button_like"
             app:layout_constraintStart_toEndOf="@+id/button_like"
             app:layout_constraintTop_toTopOf="@+id/button_like"
@@ -163,10 +161,11 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="8dp"
             android:clickable="true"
-            android:onClick="@{() -> fragment.showLikesWindow()}"
             app:layout_constraintStart_toEndOf="@+id/text_likes"
             app:layout_constraintTop_toBottomOf="@+id/text_date"
             tools:ignore="TouchTargetSizeCheck">
+
+            <!--   android:onClick="@{() -> fragment.showLikesWindow()}"-->
 
             <ImageView
                 android:id="@+id/image_comment"
@@ -182,7 +181,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@+id/image_comment"
-                android:text="@{String.valueOf(viewmodel.post.comments.size())}"
+                android:text="@{String.valueOf(post.comments.size())}"
                 tools:text="56" />
         </RelativeLayout>
 
@@ -193,7 +192,7 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:text="@{viewmodel.post.content}"
+            android:text="@{post.content}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/button_like"

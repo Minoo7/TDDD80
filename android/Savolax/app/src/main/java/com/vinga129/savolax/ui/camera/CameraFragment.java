@@ -94,7 +94,8 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
 
     private Bitmap rotateBitmap(Bitmap bitmap) {
         Matrix matrixForRotation = new Matrix();
-        matrixForRotation.postRotate(90);
+        int degrees = (lensFacing == CameraSelector.LENS_FACING_BACK) ? 90 : 270;
+        matrixForRotation.postRotate(degrees);
 
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrixForRotation, true);
     }

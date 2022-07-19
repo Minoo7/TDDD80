@@ -2,15 +2,11 @@ package com.vinga129.savolax.retrofit;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import com.vinga129.savolax.other.NetworkReceiver;
 import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient.Builder;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -77,22 +73,5 @@ public class Controller {
 
             return chain.proceed(newRequest);
         }
-    }
-
-    public <T> void doNetwork(Call<T> call, Callback<T> callBack) {
-        call.enqueue(callBack);
-    }
-
-    public <T> void doNetworkCall(NetworkReceiver receiver, Call<T> call) {
-        call.enqueue(new Callback<T>() {
-            @Override
-            public void onResponse(@NonNull Call<T> call, @NonNull Response<T> response) {
-                receiver.onNetworkReceived(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<T> call, @NonNull Throwable t) {
-            }
-        });
     }
 }

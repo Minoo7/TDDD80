@@ -17,12 +17,12 @@ import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
 import com.vinga129.savolax.databinding.FragmentLoginBinding;
+import com.vinga129.savolax.ui.later.User;
+import com.vinga129.savolax.ui.later.UserRepository;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @AnnotationContentId(contentId = R.layout.fragment_login)
 public class LoginFragment extends FormFragment<Map<String, String>, FragmentLoginBinding> {
@@ -49,12 +49,16 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
             if (loginResult.getError() != null)
                 makeWarning(requireContext(), binding.container, loginResult.getError().getError());
             if (loginResult.getSuccess() != null) {
-
+                // Save JWT Token
                 SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("JWT_KEY", loginResult.getSuccess().getJWT_KEY());
                 editor.apply();
 
+                // Set current user
+                UserRepository.getINSTANCE().setUser(new User(loginResult.getSuccess().getUserId()));
+
+                // Go to MainActivity
                 Intent intent = new Intent(requireActivity(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
                 intent.putExtra("first_login", loginResult.getSuccess().getFirstLogin());
@@ -67,7 +71,7 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
             try {
                 binding.loading.setVisibility(View.VISIBLE);
                 Class<Map<String, String>> clazz = (Class<Map<String, String>>) (Class) Map.class;
-                loginViewModel.login(addFormData(clazz));
+                loginViewModel.login(formDataToClass(clazz));
             } catch (IOException e) {
                 makeWarning(requireContext(), binding.container, e.getMessage());
             }

@@ -17,8 +17,6 @@ S
 #.idea/sonarlint/issuestore/index.pb,9\f\9fe84ebb15faf917b7def6236dba604453cc61e0
 x
 Handroid/Savolax/app/src/main/java/com/vinga129/savolax/MainActivity.java,d\e\de1fcd87f7e8132e9d94565a2d749a28956b9bd4
-Ÿ
-oandroid/Savolax/app/src/main/java/com/vinga129/savolax/ui/profile/post_preview/PostPreviewsRecyclerAdapter.java,b\4\b4100f8d17d02834520c335bdf0ae56109f90877
 P
  android/Savolax/app/build.gradle,8\9\893248207f412806494ab905fb92b22003eb7b05
 `
@@ -29,5 +27,3 @@ M
 Procfile,b\c\bc3c68e880d1a01632bce79f69dd1387c7ba9c54
 E
 MyProject/__init__.py,8\9\89b6f02f9d7bf9038c09abc1ab911fea3677fdf6
-H
-MyProject/server/main.py,9\7\97a086caeb6c95391d21616d6d044183c24004f3

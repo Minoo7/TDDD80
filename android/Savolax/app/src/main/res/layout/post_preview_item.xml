@@ -21,10 +21,10 @@
         <LinearLayout
             android:id="@+id/layout_post"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="95dp"
             android:orientation="vertical"
-            app:loadBackgroundUrl="@{post.imageUrl}"
-            android:padding="10dp">
+            android:padding="10dp"
+            app:loadBackgroundUrl="@{post.imageUrl}">
 
             <TextView
                 android:id="@+id/text_post_title"
@@ -32,19 +32,19 @@
                 android:layout_height="wrap_content"
                 android:shadowColor="@color/white"
                 android:shadowRadius="5"
-                android:textColor="@android:color/black"
                 android:text="@{post.title}"
+                android:textColor="@android:color/black"
                 android:textSize="28sp"
                 android:textStyle="bold"
-                tools:text="Holiday Name" />
+                tools:text="Post title" />
 
             <TextView
                 android:id="@+id/text_post_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="23sp"
                 android:text="@{post.content}"
-                tools:text="Holiday Date" />
+                android:textSize="23sp"
+                tools:text="Post content" />
 
         </LinearLayout>
 
