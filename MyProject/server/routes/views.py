@@ -267,7 +267,8 @@ def like(post_id, like_id):
 def unlike(post_id):
 	if request.method == DELETE:
 		json = dict(post_id=post_id, customer_id=get_jwt_identity())
-		delete_obj(Like, **json)
+		like_id = find_by(Like, **json).id
+		delete_obj(Like, like_id)
 		return jsonify(message="Successfully deleted like"), 200
 
 
@@ -288,7 +289,7 @@ def comments(post_id):
 def comment(post_id, comment_id):
 	if request.method == DELETE:
 		delete_obj(Comment, comment_id)
-		return jsonify(message="Successfully deleted like"), 200
+		return jsonify(message="Successfully deleted comment"), 200
 
 
 @app.route("/customers/<int:customer_id>/likes", methods=[GET])

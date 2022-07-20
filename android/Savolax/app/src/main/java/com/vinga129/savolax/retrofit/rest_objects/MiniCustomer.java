@@ -1,6 +1,8 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
-public class MiniCustomer {
+import java.io.Serializable;
+
+public class MiniCustomer implements Serializable {
     private int id;
     private String username;
     private String imageUrl;

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="comment"
+            type="com.vinga129.savolax.retrofit.rest_objects.Comment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/comment_pic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
+            app:error="@{@drawable/ic_round_person_24}"
+            app:imageUrl="@{comment.customer.imageUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            tools:ignore="ImageContrastCheck"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/comment_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fragment_horizontal_margin"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/comment_pic"
+            app:layout_constraintTop_toTopOf="@+id/comment_pic"
+            tools:text="rafeb3233  Wow!, What a great post. I love it, it is really amazing." />
+
+        <TextView
+            android:id="@+id/comment_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            android:layout_marginTop="4dp"
+            android:text="@{com.vinga129.savolax.util.BindingUtils.convertDateToFriendlyFormat(comment.created_at)}"
+            android:textColor="#A3A3A3"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/comment_pic"
+            app:layout_constraintTop_toBottomOf="@+id/comment_text"
+            tools:ignore="TextContrastCheck"
+            tools:text="2022-09-13 23:59" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

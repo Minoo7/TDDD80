@@ -64,6 +64,9 @@ public interface RestAPI {
     @DELETE("posts/{id}/unlike")
     Completable deleteLike(@Path("id") int id);
 
+    @POST("posts/{id}/comments")
+    Completable addComment(@Path("id") int id, @Body Comment comment);
+
     @GET("test")
     Call<ProductG> getTest();
 }

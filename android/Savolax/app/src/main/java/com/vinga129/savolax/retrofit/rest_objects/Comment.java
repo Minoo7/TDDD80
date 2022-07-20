@@ -1,17 +1,64 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
-public class Comment {
-    private int id;
+import android.os.Parcel;
+import android.os.Parcelable;
+import androidx.annotation.Nullable;
+import java.io.Serializable;
+
+public class Comment extends RestObject implements Parcelable {
     private int customer_id;
     private String content;
     private String created_at;
 
-    public int getId() {
-        return id;
+    private MiniCustomer customer;
+
+    protected Comment(Parcel in) {
+        id = in.readInt();
+        customer_id = in.readInt();
+        content = in.readString();
+        created_at = in.readString();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Comment(String content) {
+        this.content = content;
+    }
+
+    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
+        @Override
+        public Comment createFromParcel(Parcel in) {
+            return new Comment(in);
+        }
+
+        @Override
+        public Comment[] newArray(int size) {
+            return new Comment[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(final Parcel parcel, final int i) {
+        parcel.writeInt(id);
+        parcel.writeInt(customer_id);
+        parcel.writeString(content);
+        parcel.writeString(created_at);
+    }
+
+    public MiniCustomer getCustomer() {
+        return customer;
+    }
+
+    public Comment withCustomer(MiniCustomer customer) {
+        this.customer = customer;
+        return this;
+    }
+
+    public void setCustomer(final MiniCustomer customer) {
+        this.customer = customer;
     }
 
     public int getCustomer_id() {

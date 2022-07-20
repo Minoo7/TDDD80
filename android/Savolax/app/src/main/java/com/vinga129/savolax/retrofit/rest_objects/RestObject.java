@@ -1,11 +1,10 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
-public abstract class RestObject {
-    protected int id;
+import androidx.annotation.Nullable;
 
-    /*public RestObject(int id) {
-        this.id = id;
-    }*/
+public abstract class RestObject {
+    @Nullable
+    protected int id;
 
     public int getId() {
         return id;

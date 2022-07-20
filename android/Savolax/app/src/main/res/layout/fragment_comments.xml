@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.vinga129.savolax.ui.comments.CommentsViewModel" />
+
+        <variable
+            name="adapter"
+            type="com.vinga129.savolax.ui.comments.CommentRecyclerAdapter" />
+
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.comments.CommentsFragment" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.comments.CommentsFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_comments"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/comment_new"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setAdapter="@{adapter}"
+            app:spanCount="1"
+            app:submitList="@{viewmodel.comments}"
+            tools:listitem="@layout/comment_item" />
+
+        <EditText
+            android:id="@+id/comment_new"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:background="@null"
+            android:hint="@string/add_a_comment"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLength="120"
+            android:padding="15dp"
+            android:textColorHint="#757575"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/send_comment"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/send_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/post_comment"
+            android:onClick="@{() -> fragment.addComment()}"
+            android:padding="10dp"
+            android:tint="@color/orange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comment_new"
+            app:srcCompat="@drawable/ic_baseline_send_24"
+            tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

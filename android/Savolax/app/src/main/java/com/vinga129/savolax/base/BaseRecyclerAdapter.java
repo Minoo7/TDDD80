@@ -34,6 +34,13 @@ public abstract class BaseRecyclerAdapter<B extends ViewDataBinding>
         notifyDataSetChanged();
     }
 
+    public void addData(Object data) {
+        if (dataList != null) {
+            dataList.add(data);
+            notifyItemInserted(dataList.size() - 1);
+        }
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {

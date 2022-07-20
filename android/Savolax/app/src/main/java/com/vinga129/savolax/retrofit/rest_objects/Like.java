@@ -4,10 +4,6 @@ public class Like extends RestObject {
     private int customer_id;
     private int post_id;
 
-    /*public Like(int id) {
-        super(id);
-    }*/
-
     public int getCustomer_id() {
         return customer_id;
     }

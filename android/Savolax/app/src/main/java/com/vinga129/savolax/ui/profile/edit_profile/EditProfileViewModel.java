@@ -4,14 +4,14 @@ import static com.vinga129.savolax.util.HelperUtil.parseHttpError;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import androidx.databinding.ObservableField;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.vinga129.savolax.data.AddImageRepository;
 import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Success;
 import com.vinga129.savolax.data.ResultHolder;
-import com.vinga129.savolax.retrofit.NetworkAndroidViewModel;
-import com.vinga129.savolax.retrofit.NetworkViewModel;
+import com.vinga129.savolax.base.NetworkAndroidViewModel;
 import com.vinga129.savolax.retrofit.rest_objects.Customer;
 import com.vinga129.savolax.retrofit.rest_objects.CustomerProfile;
 import com.vinga129.savolax.ui.later.UserRepository;
@@ -26,11 +26,11 @@ import retrofit2.HttpException;
 
 public class EditProfileViewModel extends NetworkAndroidViewModel {
 
-    private final MutableLiveData<ResultHolder<String>> bioResult = new MutableLiveData<>();
+    private final ObservableField<String> currentBio = new ObservableField<>();
     private final MutableLiveData<ResultHolder<?>> editProfileResult = new MutableLiveData<>();
 
-    public LiveData<ResultHolder<String>> getBioResult() {
-        return bioResult;
+    public ObservableField<String> getCurrentBio() {
+        return currentBio;
     }
 
     public EditProfileViewModel(Application application) {
@@ -78,24 +78,13 @@ public class EditProfileViewModel extends NetworkAndroidViewModel {
             return restAPI.updateCustomer(UserRepository.getINSTANCE().getId(), customer);
         });
 
-        editCustomer.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribeWith(onEditProfile);
+        editCustomer.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(onEditProfile);
     }
 
     private void getBioData() {
-        restAPI.getCustomerProfile(UserRepository.getINSTANCE().getId()).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(
-                new DisposableSingleObserver<CustomerProfile>() {
-                    @Override
-                    public void onSuccess(final CustomerProfile value) {
-                        bioResult.setValue(new ResultHolder<>(value.getBio()));
-                    }
-
-                    @Override
-                    public void onError(final Throwable e) {
-                        if (e instanceof HttpException) {
-                            bioResult.setValue(parseHttpError((HttpException) e));
-                        }
-                    }
-                });
+        restAPI.getCustomerProfile(user.getId())
+                .doOnSuccess(customerProfile -> currentBio.set(customerProfile.getBio()))
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
     }
 }

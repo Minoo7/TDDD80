@@ -2,6 +2,7 @@ package com.vinga129.savolax.ui.login;
 
 import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,12 +25,14 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
+@SuppressLint("NonConstantResourceId")
 @AnnotationContentId(contentId = R.layout.fragment_login)
 public class LoginFragment extends FormFragment<Map<String, String>, FragmentLoginBinding> {
 
     private LoginViewModel loginViewModel;
 
     @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected void initFragment() {
         loginViewModel = new ViewModelProvider(this)
                 .get(LoginViewModel.class);

@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.vinga129.savolax.ui.profile.edit_profile.EditProfileViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -41,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textLongMessage"
+                android:text="@{viewmodel.currentBio}"
                 tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
         </com.vinga129.savolax.custom.CustomTextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

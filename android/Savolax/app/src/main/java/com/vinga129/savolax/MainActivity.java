@@ -205,4 +205,8 @@ public class MainActivity extends AppCompatActivity {
         if (actionMode != null)
             actionMode.finish();
     }
+
+    public ActivityMainBinding getBinding() {
+        return binding;
+    }
 }

@@ -227,8 +227,14 @@ class CommentSchema(SQLAlchemyAutoSchema):
 	Meta = Comment.__marshmallow__().Meta
 
 	content = fields.Str(validate=validate.Length(max=120), required=True)
+	created_at = fields.DateTime(dump_only=True)
 	post_id = custom_fields.post_id()
 	customer_id = custom_fields.customer_id()
+
+	@post_load
+	def add_created_at(self, data, **kwargs):
+		data['created_at'] = datetime.now()
+		return data
 
 
 class LikeSchema(BaseSchema):

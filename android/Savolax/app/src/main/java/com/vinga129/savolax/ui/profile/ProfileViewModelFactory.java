@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 public class ProfileViewModelFactory implements ViewModelProvider.Factory {
-
     private final int customerId;
 
     public ProfileViewModelFactory(int customerId) {

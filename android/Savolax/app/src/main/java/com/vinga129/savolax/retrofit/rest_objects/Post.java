@@ -23,7 +23,6 @@ public class Post implements Serializable {
         return customer;
     }
 
-
     public void setCustomer(MiniCustomer customer) {
         this.customer = customer;
     }
@@ -42,7 +41,7 @@ public class Post implements Serializable {
     }
 
     public int getId() {
-        return 1;
+        return id;
     }
 
     public int getCustomerId() {
@@ -112,6 +111,6 @@ public class Post implements Serializable {
     // Help methods
 
     public boolean isLikedBy(int customer_id) {
-        return likes.stream().anyMatch(mini -> mini.getId() == customer_id);
+        return likes.stream().anyMatch(mini -> mini.getCustomer_id() == customer_id);
     }
 }

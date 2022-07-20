@@ -7,34 +7,38 @@ import android.widget.CompoundButton;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import androidx.navigation.Navigation;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
 import com.vinga129.savolax.databinding.FragmentPostBinding;
+import com.vinga129.savolax.retrofit.rest_objects.Comment;
 import com.vinga129.savolax.retrofit.rest_objects.Post;
+import java.util.List;
 
 @AnnotationContentId(contentId = R.layout.fragment_post)
 public class PostFragment extends BaseFragment<FragmentPostBinding> {
 
     private PostViewModel postViewModel;
+    private Post post;
 
     @Override
     protected void initFragment() {
-        postViewModel = new ViewModelProvider(requireActivity()).get(PostViewModel.class);
+        post = PostFragmentArgs.fromBundle(getArguments()).getPost();
+
+        postViewModel = new PostViewModel(post.getCustomerId(), post.getLikes().size());
 
         binding.setViewmodel(postViewModel);
-
-        Post post = PostFragmentArgs.fromBundle(getArguments()).getPost();
 
         binding.setPost(post);
         binding.setFragment(this);
 
-        postViewModel.loadMiniCustomer(post.getCustomerId());
-        //postViewModel
-          //      .initLikeValue(post.getLikes().stream().anyMatch(mini -> mini.getId() == user.getId()), post.getId());
-
-        // binding.setBindingUtil(new BindingUtils());
-
+        postViewModel
+                .initLikeValue(hasLikedPost(), post.getId());
+        System.out.println("kabbaaaa");
+        System.out.println(post.getId());
+        System.out.println(hasLikedPost());
+        System.out.println(post.getLikes());
     }
 
     public void showLikesWindow() {
@@ -52,5 +56,13 @@ public class PostFragment extends BaseFragment<FragmentPostBinding> {
         /*ProfileViewModel profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.init(1); // post customer id
         Navigation.findNavController(view).navigate(PostFragmentDirections.toPostProfile());*/
+    }
+
+    public void navigateToPostComments() {
+        navController.navigate(PostFragmentDirections.toComments(post.getComments().toArray(new Comment[0]), post.getId()));
+    }
+
+    public boolean hasLikedPost() {
+        return post.isLikedBy(user.getId());
     }
 }

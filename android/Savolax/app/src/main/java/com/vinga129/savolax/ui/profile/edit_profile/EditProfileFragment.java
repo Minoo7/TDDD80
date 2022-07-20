@@ -47,17 +47,6 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
                     ((MainActivity) activity).requestCameraPermission();
                 });
 
-        editProfileViewModel.getBioResult().observe(getViewLifecycleOwner(), getBioResult -> {
-            EditText editText = Objects.requireNonNull(binding.fieldBio.getEditText());
-            if (!(editText.getText().toString().equals(""))) {
-                if (getBioResult.getError() != null)
-                    makeWarning(getContext(), binding.container, "Error retrieving bio data");
-                else if (getBioResult.getSuccess() != null) {
-                    Objects.requireNonNull(binding.fieldBio.getEditText()).setText(getBioResult.getSuccess());
-                }
-            }
-        });
-
         formViews.add(binding.fieldBio);
 
         ActionMode.Callback callback = new Callback() {

@@ -2,6 +2,7 @@ package com.vinga129.savolax.ui.home;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import androidx.navigation.ui.NavigationUI;
 import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.MobileNavigationDirections;
 import com.vinga129.savolax.R;
@@ -19,17 +20,10 @@ import com.vinga129.savolax.ui.profile.ProfileFragmentDirections;
 public class HomeFragment extends BaseFragment<FragmentHomeBinding>
         implements BaseRecyclerAdapter.OnItemListener {
 
-    private PostItemRecyclerAdapter adapter;
-    private HomeViewModel homeViewModel;
-
     @Override
     protected void initFragment() {
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        homeViewModel.loadData(user.getId());
-
-        binding.setViewmodel(homeViewModel);
-        adapter = new PostItemRecyclerAdapter(this);
+        binding.setViewmodel(new HomeViewModel(user.getId()));
+        PostItemRecyclerAdapter adapter = new PostItemRecyclerAdapter(this);
         binding.setAdapter(adapter);
     }
 
@@ -38,5 +32,14 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
         if (navController == null)
             navController = ((MainActivity) requireActivity()).getNavController();
         navController.navigate(MobileNavigationDirections.moveToSpecificPost((Post) data));
+
+        //((MainActivity) requireActivity()).getBinding().navView.getMenu().findItem(R.id.)
+        //NavigationUI.onNavDestinationSelected()
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
     }
 }

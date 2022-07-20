@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 app:dropDownItems="@{postTypes}"
-                tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
+                tools:ignore="LabelFor,SpeakableTextPresentCheck,TextContrastCheck" />
 
         </com.vinga129.savolax.custom.CustomTextInputLayout>
 

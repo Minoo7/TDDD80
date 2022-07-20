@@ -5,17 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import com.vinga129.savolax.MainActivity;
-import com.vinga129.savolax.R;
-import com.vinga129.savolax.ui.later.User;
 import com.vinga129.savolax.ui.later.UserRepository;
 
 public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {

@@ -28,19 +28,6 @@ public class PostItemRecyclerAdapter extends BaseRecyclerAdapter<PostItemBinding
         Post post = (Post) data;
         binding.setPost(post);
 
-        /*Controller.getInstance().getRestAPI().getCustomerAsMini(post.getCustomerId()).subscribeOn(Schedulers.io()).observeOn(
-                AndroidSchedulers.mainThread()).subscribeWith(new DisposableSingleObserver<MiniCustomer>() {
-            @Override
-            public void onSuccess(final MiniCustomer value) {
-                binding.setMiniCustomer(value);
-            }
-
-            @Override
-            public void onError(final Throwable e) {
-
-            }
-        });*/
-
         if (post.getImageUrl() == null) {
             // binding.layoutPost.setLayoutH
             //Paris.styleBuilder(binding.layoutPost).layoutHeight(LayoutParams.WRAP_CONTENT);

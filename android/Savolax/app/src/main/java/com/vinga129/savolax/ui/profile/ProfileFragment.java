@@ -33,9 +33,10 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding>
             binding.buttonFollowOrEdit.setOnClickListener(__ -> editProfile());
         }
 
+        //profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel = new ViewModelProvider(this, new ProfileViewModelFactory(user.getId()))
                 .get(ProfileViewModel.class);
-        profileViewModel.loadData(user.getId());
+        //profileViewModel.loadData(user.getId());
         // binding.setLifecycleOwner(this);
 
         /*profileViewModel.getCustomerProfile().observe(getViewLifecycleOwner(), __ -> {

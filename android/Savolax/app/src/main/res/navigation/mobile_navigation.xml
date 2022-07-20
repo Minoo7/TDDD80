@@ -21,8 +21,7 @@
         android:id="@+id/navigation_add_post"
         android:name="com.vinga129.savolax.ui.add_post.AddPostFragment"
         android:label="@string/title_post"
-        tools:layout="@layout/fragment_add_post" >
-    </fragment>
+        tools:layout="@layout/fragment_add_post"></fragment>
 
     <fragment
         android:id="@+id/navigation_more"
@@ -39,9 +38,9 @@
             app:destination="@id/navigation_post" />
         <argument
             android:name="customerId"
+            android:defaultValue="@null"
             app:argType="com.vinga129.savolax.custom.CustomNullableIntegerArgument"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/to_edit_profile"
             app:destination="@id/navigation_editProfile" />
@@ -49,13 +48,19 @@
     <fragment
         android:id="@+id/navigation_post"
         android:name="com.vinga129.savolax.ui.post.PostFragment"
-        android:label="PostFragment">
+        android:label="Post">
         <action
             android:id="@+id/toPostProfile"
             app:destination="@id/navigation_profile" />
         <argument
             android:name="post"
             app:argType="com.vinga129.savolax.retrofit.rest_objects.Post" />
+        <argument
+            android:name="ShowBottomNav"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/to_comments"
+            app:destination="@id/navigation_comments" />
     </fragment>
 
     <action
@@ -99,7 +104,7 @@
         android:id="@+id/navigation_image_result"
         android:name="com.vinga129.savolax.ui.camera.image_result.ImageResultFragment"
         android:label="fragment_image_result"
-        tools:layout="@layout/fragment_image_result" >
+        tools:layout="@layout/fragment_image_result">
         <argument
             android:name="ShowBottomNav"
             android:defaultValue="false" />
@@ -113,10 +118,24 @@
     <fragment
         android:id="@+id/navigation_editProfile"
         android:name="com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragment"
-        android:label="EditProfileFragment" >
+        android:label="EditProfileFragment">
         <action
             android:id="@+id/to_profile_after_edit"
             app:destination="@id/navigation_profile" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_comments"
+        android:name="com.vinga129.savolax.ui.comments.CommentsFragment"
+        android:label="Comments">
+        <argument
+            android:name="comments"
+            app:argType="com.vinga129.savolax.retrofit.rest_objects.Comment[]" />
+        <argument
+            android:name="ShowBottomNav"
+            android:defaultValue="false" />
+        <argument
+            android:name="postId"
+            app:argType="integer" />
     </fragment>
 
 </navigation>
