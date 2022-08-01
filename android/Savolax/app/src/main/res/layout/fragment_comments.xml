@@ -7,21 +7,21 @@
 
         <variable
             name="viewmodel"
-            type="com.vinga129.savolax.ui.comments.CommentsViewModel" />
+            type="com.vinga129.savolax.ui.post.comments.CommentsViewModel" />
 
         <variable
             name="adapter"
-            type="com.vinga129.savolax.ui.comments.CommentRecyclerAdapter" />
+            type="com.vinga129.savolax.ui.post.comments.CommentRecyclerAdapter" />
 
         <variable
             name="fragment"
-            type="com.vinga129.savolax.ui.comments.CommentsFragment" />
+            type="com.vinga129.savolax.ui.post.comments.CommentsFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.comments.CommentsFragment">
+        tools:context=".ui.post.comments.CommentsFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_comments"
@@ -62,11 +62,11 @@
             android:contentDescription="@string/post_comment"
             android:onClick="@{() -> fragment.addComment()}"
             android:padding="10dp"
-            android:tint="@color/orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/comment_new"
             app:srcCompat="@drawable/ic_baseline_send_24"
-            tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck" />
+            tools:ignore="SpeakableTextPresentCheck,ImageContrastCheck"
+            app:tint="@color/orange" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

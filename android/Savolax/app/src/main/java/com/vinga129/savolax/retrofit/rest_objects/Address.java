@@ -1,6 +1,7 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
-public class Address {
+@SuppressWarnings("unused")
+public class Address extends RestObject{
     private String address_type;
     private String street;
     private String city;

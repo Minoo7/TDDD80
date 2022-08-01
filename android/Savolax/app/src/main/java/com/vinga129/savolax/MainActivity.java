@@ -1,38 +1,29 @@
 package com.vinga129.savolax;
 
+import static com.vinga129.savolax.util.BindingUtils.booleanToVisibility;
+
 import android.Manifest;
-import android.Manifest.permission;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import android.view.View;
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuProvider;
-import androidx.navigation.NavController.OnDestinationChangedListener;
-import androidx.navigation.NavDestination;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.vinga129.savolax.databinding.ActivityMainBinding;
 import com.vinga129.savolax.retrofit.Controller;
-
-import com.vinga129.savolax.ui.add_post.AddPostFragmentDirections;
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,27 +66,21 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home,
-                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_more, R.id.navigation_profile)
+                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_more, R.id.navigation_my_profile)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         // Add listener for navigation events to hide Appbar and/or BottomNav for certain fragments
         navController.addOnDestinationChangedListener(
                 (controller, destination, arguments) -> {
-                    boolean showAppBar = true;
-                    boolean showBottomNav = true;
+                    int showAppBar = View.VISIBLE;
+                    int showBottomNav = View.VISIBLE;
                     if (arguments != null) {
-                        showAppBar = arguments.getBoolean("ShowAppBar", true);
-                        showBottomNav = arguments.getBoolean("ShowBottomNav", true);
+                        showAppBar = booleanToVisibility(arguments.getBoolean("ShowAppBar", true));
+                        showBottomNav = booleanToVisibility(arguments.getBoolean("ShowBottomNav", true));
                     }
-                    if (showAppBar)
-                        appBar.setVisibility(View.VISIBLE);
-                    else
-                        appBar.setVisibility(View.GONE);
-                    if (showBottomNav)
-                        bottomNav.setVisibility(View.VISIBLE);
-                    else
-                        bottomNav.setVisibility(View.GONE);
+                    appBar.setVisibility(showAppBar);
+                    bottomNav.setVisibility(showBottomNav);
                 }
         );
 

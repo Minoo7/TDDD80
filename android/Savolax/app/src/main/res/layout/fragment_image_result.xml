@@ -14,7 +14,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.camera.image_result.ImageResultFragment">
+        tools:context=".ui.camera.ImageResultFragment">
 
         <ImageView
             android:id="@+id/image_result"

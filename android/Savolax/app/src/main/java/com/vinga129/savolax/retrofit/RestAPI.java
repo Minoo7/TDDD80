@@ -1,19 +1,16 @@
 package com.vinga129.savolax.retrofit;
 
+import com.vinga129.savolax.other.User;
+import com.vinga129.savolax.retrofit.rest_objects.Address;
 import com.vinga129.savolax.retrofit.rest_objects.Comment;
 import com.vinga129.savolax.retrofit.rest_objects.Customer;
-import com.vinga129.savolax.ui.later.User;
-import com.vinga129.savolax.ui.products.ProductG;
-import com.vinga129.savolax.retrofit.rest_objects.Address;
 import com.vinga129.savolax.retrofit.rest_objects.CustomerProfile;
 import com.vinga129.savolax.retrofit.rest_objects.MiniCustomer;
 import com.vinga129.savolax.retrofit.rest_objects.Post;
-
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import java.util.List;
 import java.util.Map;
-
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -67,6 +64,17 @@ public interface RestAPI {
     @POST("posts/{id}/comments")
     Completable addComment(@Path("id") int id, @Body Comment comment);
 
-    @GET("test")
-    Call<ProductG> getTest();
+    @POST("customers/{id}/following")
+    Completable follow(@Path("id") int id, @Body Map<String, Integer> follow_id);
+
+    @DELETE("customers/{id}/following/{follow_id}")
+    Completable unfollow(@Path("id") int id, @Path("follow_id") int follow_id);
+    //    @DELETE("customers/{id_to_unfollow}/following")
+    //    Completable unfollow(@Path("id_to_unfollow") int id_to_unfollow);
+
+    @POST("logout")
+    Completable logout();
+
+    @GET("customers/mini")
+    Single<List<MiniCustomer>> getAllCustomersAsMini();
 }

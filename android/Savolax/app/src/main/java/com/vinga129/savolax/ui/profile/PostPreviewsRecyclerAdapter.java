@@ -11,7 +11,7 @@ import com.vinga129.savolax.retrofit.rest_objects.Post;
 import java.util.ArrayList;
 
 @AnnotationContentId(contentId = R.layout.post_preview_item)
-public class PostPreviewsRecyclerAdapter extends BaseRecyclerAdapter<PostPreviewItemBinding> {
+public class PostPreviewsRecyclerAdapter extends BaseRecyclerAdapter<Post, PostPreviewItemBinding> {
 
     public PostPreviewsRecyclerAdapter(@Nullable OnItemListener onItemListener) {
         super(new ArrayList<>(), onItemListener);

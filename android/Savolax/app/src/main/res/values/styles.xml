@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
@@ -12,6 +12,21 @@
         <item name="android:translationZ">3dp</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
+    <style name="MyOutLineButton" parent="@style/Widget.Material3.Button.OutlinedButton">
+        <item name="android:elevation">3dp</item>
+        <item name="android:translationZ">3dp</item>
+    </style>
+    
+    <style name="FollowButtonOn" parent="MyOutLineButton">
+        <item name="android:textColor">@color/black</item>
+    </style>
+    
+    <style name="FollowButtonOff" parent="MyButton">
+        <item name="backgroundTint">@color/blue</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Base.Widget.AppCompat.ActionMode" parent="">

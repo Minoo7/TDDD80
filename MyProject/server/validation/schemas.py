@@ -211,6 +211,8 @@ class AddressSchema(SQLAlchemyAutoSchema):
 		d = re.match("^[åäöÅÄÖA-Za-z_]+ [0-9]+$", value)
 		if not (len(value) <= 95 and d):
 			raise ValidationError("improper address")
+		if obj_with_attr_exists(Address, 'street', value):
+			raise ValidationError("Address with this street already exists")
 
 	@validator('city')
 	def validate_city(self, value):
@@ -243,11 +245,6 @@ class LikeSchema(BaseSchema):
 	post_id = custom_fields.post_id()
 	customer_id = custom_fields.customer_id()
 
-	"""@validates_schema
-	def validate_schema(self, data, **kwargs):
-		if not ('post_id' in data and 'customer_id' in data):
-			raise ValidationError("Either content or an image is required")"""
-
 
 class ImageReferenceSchema(SQLAlchemyAutoSchema):
 	Meta = ImageReference.__marshmallow__().Meta
@@ -256,7 +253,6 @@ class ImageReferenceSchema(SQLAlchemyAutoSchema):
 
 	@validator('path')
 	def validate_path(self, value):
-		# add validation of proper path...
 		if len(value) > 120:
 			raise ValidationError("length of path can at max be 120 characters long")
 

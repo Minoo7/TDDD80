@@ -13,14 +13,12 @@ import com.vinga129.savolax.data.Result.Success;
 import com.vinga129.savolax.data.ResultHolder;
 import com.vinga129.savolax.base.NetworkAndroidViewModel;
 import com.vinga129.savolax.retrofit.rest_objects.Customer;
-import com.vinga129.savolax.retrofit.rest_objects.CustomerProfile;
-import com.vinga129.savolax.ui.later.UserRepository;
+import com.vinga129.savolax.other.UserRepository;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
@@ -67,7 +65,7 @@ public class EditProfileViewModel extends NetworkAndroidViewModel {
 
     public void editProfileWithImage(Bitmap bitmap, Customer customer) {
         // Upload image from bitmap
-        Single<Result<Integer>> addImage = AddImageRepository.getInstance().uploadImage(getApplication(), bitmap);
+        Single<Result> addImage = AddImageRepository.getInstance().uploadImage(getApplication(), bitmap);
 
         // Get image id uploaded image
         // Edit profile

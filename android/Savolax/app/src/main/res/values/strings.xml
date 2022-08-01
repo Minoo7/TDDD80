@@ -122,5 +122,9 @@
     <string name="title_profile">Profile</string>
     <string name="add_a_comment">Add a comment...</string>
     <string name="post_comment">Post comment</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="account">Account</string>
+    <string name="log_out">Log out</string>
+    <string name="settings">Settings</string>
 </resources>
 

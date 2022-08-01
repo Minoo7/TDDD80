@@ -13,7 +13,6 @@ import com.vinga129.savolax.data.Result.Success;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import java.io.IOException;
 import java.util.Map;
 import retrofit2.HttpException;
 
@@ -25,13 +24,14 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
+    @SuppressWarnings("unchecked")
     public void login(Map<String, String> _login) {
         LoginRepository.getInstance().login(_login).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(
-                        new DisposableSingleObserver<Result<LoggedInUserView>>() {
+                        new DisposableSingleObserver<Result>() {
                             @Override
-                            public void onSuccess(final Result<LoggedInUserView> value) {
+                            public void onSuccess(final Result value) {
                                 LoggedInUserView data = ((Success<LoggedInUserView>) value).getData();
                                 loginResult.setValue(new ResultHolder<>(data));
                             }

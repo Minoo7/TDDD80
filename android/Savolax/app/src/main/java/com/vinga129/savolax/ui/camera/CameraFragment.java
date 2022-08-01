@@ -19,7 +19,6 @@ import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
 import com.vinga129.savolax.databinding.FragmentCameraBinding;
 import com.vinga129.savolax.other.AddImageViewModel;
-import com.vinga129.savolax.ui.add_post.AddPostViewModel;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -31,7 +30,6 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
     private ImageCapture imageCapture;
 
     private PreviewView previewView;
-    private ImageButton captureButton;
 
     private AddImageViewModel addImageViewModel;
 
@@ -40,7 +38,7 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
     @Override
     protected void initFragment() {
         previewView = binding.cameraView;
-        captureButton = binding.buttonCapture;
+        ImageButton captureButton = binding.buttonCapture;
 
         addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
 
@@ -106,8 +104,6 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
             public void onCaptureSuccess(@NonNull ImageProxy image) {
                 addImageViewModel.setCapturedImage(imageProxyToBitmap(image));
                 navController.navigate(CameraFragmentDirections.toImageResult());
-                // navController.navigate(CameraFragmentDirections.toImageViewerFragment());
-                // main.updateLocation();
             }
         });
     }

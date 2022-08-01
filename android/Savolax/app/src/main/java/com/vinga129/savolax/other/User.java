@@ -1,4 +1,4 @@
-package com.vinga129.savolax.ui.later;
+package com.vinga129.savolax.other;
 
 public class User {
     private int id;

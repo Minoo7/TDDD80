@@ -2,11 +2,10 @@ package com.vinga129.savolax.retrofit.rest_objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import java.io.Serializable;
 
+@SuppressWarnings("unused")
 public class Comment extends RestObject implements Parcelable {
-    private int customer_id;
+    private Integer customer_id;
     private String content;
     private String created_at;
 
@@ -42,7 +41,8 @@ public class Comment extends RestObject implements Parcelable {
 
     @Override
     public void writeToParcel(final Parcel parcel, final int i) {
-        parcel.writeInt(id);
+        if (id != null)
+            parcel.writeInt(id);
         parcel.writeInt(customer_id);
         parcel.writeString(content);
         parcel.writeString(created_at);

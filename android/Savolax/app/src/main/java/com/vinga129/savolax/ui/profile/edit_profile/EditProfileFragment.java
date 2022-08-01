@@ -1,38 +1,36 @@
 package com.vinga129.savolax.ui.profile.edit_profile;
 
-import static com.vinga129.savolax.util.HelperUtil.makeWarning;
-
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import androidx.lifecycle.ViewModelProvider;
 import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
+import com.vinga129.savolax.custom.CustomNullableIntegerArgument;
 import com.vinga129.savolax.databinding.FragmentEditProfileBinding;
 import com.vinga129.savolax.databinding.LayoutAddImageBinding;
 import com.vinga129.savolax.other.AddImageViewModel;
 import com.vinga129.savolax.retrofit.rest_objects.Customer;
+import com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragmentDirections.ToProfileAfterEdit;
 import java.io.IOException;
-import java.util.Objects;
 
 @AnnotationContentId(contentId = R.layout.fragment_edit_profile)
 public class EditProfileFragment extends FormFragment<Customer, FragmentEditProfileBinding> {
 
-    private LayoutAddImageBinding addImageBinding;
     private AddImageViewModel addImageViewModel;
     private EditProfileViewModel editProfileViewModel;
     private boolean imageSelected = false;
 
     @Override
     protected void initFragment() {
-        addImageBinding = binding.layoutAddImage;
+        LayoutAddImageBinding addImageBinding = binding.layoutAddImage;
 
         addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
-        editProfileViewModel = new ViewModelProvider(this).get(EditProfileViewModel.class);
+        editProfileViewModel = new ViewModelProvider(this, new EditProfileViewModelFactory(
+                requireActivity().getApplication())).get(EditProfileViewModel.class);
 
         addImageBinding.setViewmodel(addImageViewModel);
 
@@ -89,8 +87,11 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
         editProfileViewModel.getEditProfileResult().observe(getViewLifecycleOwner(), editProfileResult -> {
             if (editProfileResult.getError() != null && editProfileResult.getError().getErrorMap() != null)
                 showErrors(editProfileResult.getError().getErrorMap());
-            else if (editProfileResult.isSuccess())
-                navController.navigate(EditProfileFragmentDirections.toProfileAfterEdit());
+            else if (editProfileResult.isSuccess()) {
+                ToProfileAfterEdit action = EditProfileFragmentDirections.toProfileAfterEdit().setCustomerId(new CustomNullableIntegerArgument(
+                        user.getId()));
+                navController.navigate(action);
+            }
         });
     }
 

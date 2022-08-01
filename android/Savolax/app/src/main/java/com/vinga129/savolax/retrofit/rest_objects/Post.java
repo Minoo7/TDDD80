@@ -1,12 +1,10 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
-import androidx.annotation.Nullable;
 import java.io.Serializable;
 import java.util.List;
 
-public class Post implements Serializable {
-    @Nullable
-    private Integer id;
+@SuppressWarnings("unused")
+public class Post extends RestObject implements Serializable {
     private Integer customer_id;
     private String image_url;
     private Integer image_id;
@@ -38,10 +36,6 @@ public class Post implements Serializable {
 
     public void setImage_id(final int image_id) {
         this.image_id = image_id;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getCustomerId() {

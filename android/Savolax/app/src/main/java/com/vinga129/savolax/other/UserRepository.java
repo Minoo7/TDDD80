@@ -1,12 +1,7 @@
-package com.vinga129.savolax.ui.later;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+package com.vinga129.savolax.other;
 
 import com.vinga129.savolax.retrofit.Controller;
 import com.vinga129.savolax.retrofit.RestAPI;
-
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;

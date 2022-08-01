@@ -14,8 +14,6 @@ import com.vinga129.savolax.retrofit.rest_objects.Address;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import java.io.IOException;
-import java.util.Objects;
 import retrofit2.HttpException;
 
 public class AddressViewModel extends ViewModel {
@@ -26,12 +24,14 @@ public class AddressViewModel extends ViewModel {
         return addressResult;
     }
 
+    @SuppressWarnings("unchecked")
     public void addAddress(Address address) {
-        AddressRepository.getInstance().addAddress(address).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        AddressRepository.getInstance().addAddress(address).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(
-                        new DisposableSingleObserver<Result<AddressUserView>>() {
+                        new DisposableSingleObserver<Result>() {
                             @Override
-                            public void onSuccess(final Result<AddressUserView> value) {
+                            public void onSuccess(final Result value) {
                                 AddressUserView data = ((Success<AddressUserView>) value).getData();
                                 addressResult.setValue(new ResultHolder<>(data));
                             }

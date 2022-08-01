@@ -10,11 +10,16 @@
             type="com.vinga129.savolax.ui.home.HomeViewModel" />
 
         <variable
-            name="adapter"
+            name="postItemAdapter"
             type="com.vinga129.savolax.ui.home.PostItemRecyclerAdapter" />
+
+        <variable
+            name="miniCustomersAdapter"
+            type="com.vinga129.savolax.other.MiniCustomersRecyclerAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.home.HomeFragment">
@@ -24,14 +29,28 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:scrollbars="vertical"
+            android:visibility="@{!viewmodel.showSearch}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setAdapter="@{adapter}"
+            app:setAdapter="@{postItemAdapter}"
             app:spanCount="1"
             app:submitList="@{viewmodel.posts}"
             tools:listitem="@layout/post_item" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_mini_customers"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{viewmodel.showSearch}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:setAdapter="@{miniCustomersAdapter}"
+            tools:listitem="@layout/mini_customer_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

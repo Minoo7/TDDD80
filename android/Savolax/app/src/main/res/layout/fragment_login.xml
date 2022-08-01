@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.login.LoginFragment" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -12,43 +19,6 @@
         android:paddingRight="@dimen/fragment_horizontal_margin"
         android:paddingTop="@dimen/fragment_vertical_margin"
         tools:context=".ui.login.LoginFragment">
-
-        <!--<EditText
-            android:id="@+id/username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="96dp"
-            android:autofillHints="@string/prompt_email"
-            android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:selectAllOnFocus="true"
-            android:textColorHint="#757575"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="TouchTargetSizeCheck" />
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:autofillHints="@string/prompt_password"
-            android:hint="@string/prompt_password"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:selectAllOnFocus="true"
-            android:textColorHint="#757575"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username"
-            tools:ignore="TouchTargetSizeCheck" />
-        -->
 
         <com.vinga129.savolax.custom.CustomTextInputLayout
             android:id="@+id/username"
@@ -92,6 +62,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:afterTextChanged="@{() -> login.setEnabled(true)}"
                 android:inputType="textPassword"
                 tools:ignore="TextContrastCheck" />
         </com.vinga129.savolax.custom.CustomTextInputLayout>
@@ -106,6 +77,7 @@
             android:layout_marginStart="48dp"
             android:layout_marginTop="16dp"
             android:enabled="false"
+            android:onClick="@{() -> fragment.login()}"
             android:text="@string/action_sign_in_short"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -119,6 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginEnd="48dp"
+            android:onClick="@{() -> fragment.register()}"
             android:layout_marginStart="48dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/action_register"

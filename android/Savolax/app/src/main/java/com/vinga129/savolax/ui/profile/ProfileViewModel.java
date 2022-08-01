@@ -1,76 +1,44 @@
 package com.vinga129.savolax.ui.profile;
 
-import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import androidx.databinding.BindingAdapter;
+import androidx.databinding.Observable;
+import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
-import androidx.recyclerview.widget.RecyclerView;
-import com.squareup.picasso.Picasso;
-import com.vinga129.savolax.base.BaseRecyclerAdapter;
-import com.vinga129.savolax.base.NetworkViewModel;
+import com.vinga129.savolax.base.NetworkBaseObservable;
 import com.vinga129.savolax.retrofit.rest_objects.CustomerProfile;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import java.util.List;
+import java.util.Collections;
 
-public class ProfileViewModel extends NetworkViewModel {
+public class ProfileViewModel extends NetworkBaseObservable {
 
     private final int customerId;
 
-    private final ObservableField<CustomerProfile> customerProfile = new ObservableField<>();
-
-    public ObservableField<CustomerProfile> getCustomerProfile() {
-        restAPI.getCustomerProfile(customerId)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(this.customerProfile::set).subscribe();
-        return customerProfile;
-    }
+    public final ObservableBoolean following = new ObservableBoolean();
+    public final ObservableField<CustomerProfile> customerProfile = new ObservableField<>();
 
     public ProfileViewModel(int customerId) {
         this.customerId = customerId;
+
+        restAPI.getCustomerProfile(customerId).doOnSuccess(customerProfile -> {
+            this.customerProfile.set(customerProfile);
+            if (user.getId() != customerId)
+                initFollowing(customerProfile.isFollowedBy(user.getId()));
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
     }
 
-    /*public void loadData(int customerId) {
-        restAPI.getCustomerProfile(customerId)
-                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(this.customerProfile::set).subscribe();
-    }*/
-
-    @BindingAdapter({"imageUrl", "error"})
-    public static void loadImage(ImageView view, String url, Drawable error) {
-        Picasso.get().load(url).error(error).into(view);
-        if (url == null) {
-            view.setImageDrawable(error);
-        }
-    }
-
-    @BindingAdapter("setAdapter")
-    public static void setAdapter(RecyclerView recyclerView, PostPreviewsRecyclerAdapter adapter) {
-        recyclerView.setAdapter(adapter);
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @BindingAdapter("submitList")
-    public static <T> void submitList(RecyclerView recyclerView, List<T> items) {
-        if (recyclerView.getAdapter() instanceof BaseRecyclerAdapter && recyclerView.getAdapter() != null)
-            ((BaseRecyclerAdapter) recyclerView.getAdapter()).updateData(items);
-    }
-
-    @BindingAdapter("loadBackgroundUrl")
-    public static void setBackground(LinearLayout linearLayout, String imageUrl) {
-        if (imageUrl != null) {
-            ImageView img = new ImageView(linearLayout.getContext());
-            Picasso.get().load(imageUrl).into(img, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    linearLayout.setBackground(img.getDrawable());
-                }
-
-                @Override
-                public void onError(Exception e) {
-                }
-            });
-        }
+    private void initFollowing(boolean value) {
+        following.set(value);
+        following.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(final Observable sender, final int propertyId) {
+                boolean value = ((ObservableBoolean) sender).get();
+                if (value)
+                    restAPI.follow(user.getId(), Collections.singletonMap("customer_id", customerId))
+                            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+                else
+                    restAPI.unfollow(user.getId(), customerId)
+                            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+            }
+        });
     }
 }

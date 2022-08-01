@@ -7,11 +7,14 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/circleimage.xml" value="0.276" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/colored_like.xml" value="0.2875" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/container_outline.xml" value="0.3165" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_account_circle_24.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_add_shopping_cart_black_24dp.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.26" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_add_a_photo_24.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_add_photo_alternate_24.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_business_24.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.1" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.158" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.1065" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_baseline_more_horiz_24.xml" value="0.1" />
@@ -20,6 +23,7 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.14" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.2985" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.2985" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_outline_account_circle_24.xml" value="0.177" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_round_add_box_24.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_round_person_24.xml" value="0.15" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/drawable/ic_round_shopping_cart_24.xml" value="0.1" />
@@ -47,7 +51,8 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_image_result.xml" value="0.27291666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_login.xml" value="0.27291666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_main.xml" value="0.27291666666666664" />
-        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_more.xml" value="0.27291666666666664" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_more.xml" value="0.34782608695652173" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_my_profile.xml" value="0.20599409033347404" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_notifications.xml" value="0.25" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_other.xml" value="0.30833333333333335" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_post.xml" value="0.2685851318944844" />
@@ -60,12 +65,15 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/layout_add_image.xml" value="0.27291666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/list_item.xml" value="0.42916666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/middle_sheet.xml" value="0.2861111111111111" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/mini_customer_item.xml" value="0.4" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/post_item.xml" value="0.264" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/post_preview_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/test.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/bottom_nav_menu.xml" value="0.42916666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/contextual_action_bar.xml" value="0.27291666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/image_result.xml" value="0.27291666666666664" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/search_customers.xml" value="0.20599409033347404" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/test_bar.xml" value="0.20599409033347404" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/top_app_bar.xml" value="0.27291666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/menu/top_app_bar2.xml" value="0.1" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2985" />

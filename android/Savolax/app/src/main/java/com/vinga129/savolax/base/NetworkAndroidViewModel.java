@@ -4,8 +4,8 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import com.vinga129.savolax.retrofit.Controller;
 import com.vinga129.savolax.retrofit.RestAPI;
-import com.vinga129.savolax.ui.later.User;
-import com.vinga129.savolax.ui.later.UserRepository;
+import com.vinga129.savolax.other.User;
+import com.vinga129.savolax.other.UserRepository;
 
 public abstract class NetworkAndroidViewModel extends AndroidViewModel {
 
@@ -20,6 +20,4 @@ public abstract class NetworkAndroidViewModel extends AndroidViewModel {
         restAPI = controller.getRestAPI();
         user = UserRepository.INSTANCE.getUser();
     }
-
-    //public abstract void loadData();
 }

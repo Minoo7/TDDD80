@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.profile.ProfileFragment" />
 
         <variable
             name="viewmodel"
@@ -38,9 +42,9 @@
             android:id="@+id/text_business_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/text_margin"
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/text_margin"
             android:text="@{viewmodel.customerProfile.businessName}"
             android:textAlignment="center"
             android:textSize="20sp"
@@ -54,9 +58,9 @@
             android:id="@+id/text_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/text_margin"
             android:layout_marginStart="@dimen/text_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/text_margin"
             android:text="@{viewmodel.customerProfile.username}"
             android:textAlignment="center"
             android:textSize="16sp"
@@ -70,9 +74,9 @@
             android:id="@+id/layout_info_table"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="32dp"
             android:baselineAligned="false"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -154,9 +158,9 @@
             android:id="@+id/frameBioContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="32dp"
             android:background="@drawable/container_outline"
             android:elevation="2dp"
             android:outlineAmbientShadowColor="@color/black"
@@ -176,19 +180,44 @@
 
         </FrameLayout>
 
-        <Button
-            android:id="@+id/button_follow_or_edit"
-            style="@style/MyButton"
+        <FrameLayout
+            android:id="@+id/container_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_height="48dp"
             android:layout_marginEnd="32dp"
-            android:text="@string/follow"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/frameBioContainer" />
-        <!--android:backgroundTint="@color/blue"-->
+            app:layout_constraintTop_toBottomOf="@+id/frameBioContainer">
+
+            <Button
+                android:id="@+id/button_edit"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_profile"
+                android:textColor="@color/black"
+                android:visibility="@{viewmodel.customerProfile.id == com.vinga129.savolax.other.UserRepository.INSTANCE.id}"
+                tools:ignore="DuplicateClickableBoundsCheck"
+                tools:visibility="gone" />
+
+            <ToggleButton
+                android:id="@+id/button_follow"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_margin="0dp"
+                android:backgroundTint="@color/orange"
+                android:onClick="@{() -> fragment.editProfile()}"
+                android:checked="@={viewmodel.following}"
+                android:visibility="@{viewmodel.customerProfile.id != com.vinga129.savolax.other.UserRepository.INSTANCE.id}"
+                android:textOff="@string/follow"
+                android:textOn="@string/following"
+                app:styleOff="@{com.vinga129.savolax.R.style.FollowButtonOff}"
+                app:styleOn="@{com.vinga129.savolax.R.style.FollowButtonOn}"
+                tools:visibility="gone" />
+
+        </FrameLayout>
 
         <View
             android:id="@+id/divider"
@@ -196,7 +225,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button_follow_or_edit" />
+            app:layout_constraintTop_toBottomOf="@id/container_button" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_post_previews"

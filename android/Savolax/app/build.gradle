@@ -16,6 +16,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    lintOptions {
+        disable 'NonConstantResourceId'
+        disable 'SimpleDateFormat'
+    }
+
     buildTypes {
         release {
             minifyEnabled false

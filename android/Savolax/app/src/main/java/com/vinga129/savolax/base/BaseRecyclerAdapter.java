@@ -1,40 +1,39 @@
 package com.vinga129.savolax.base;
 
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewbinding.ViewBinding;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseRecyclerAdapter<B extends ViewDataBinding>
-        extends RecyclerView.Adapter<BaseRecyclerAdapter<B>.ViewHolder> {
+public abstract class BaseRecyclerAdapter<T, B extends ViewDataBinding>
+        extends RecyclerView.Adapter<BaseRecyclerAdapter<T, B>.ViewHolder> {
 
-    protected List<Object> dataList;
+    protected List<T> dataList;
     protected B binding;
     protected int contentId;
     protected final OnItemListener onItemListener;
 
-    public BaseRecyclerAdapter(List<Object> dataList, @Nullable OnItemListener onItemListener) {
+    public BaseRecyclerAdapter(List<T> dataList, @Nullable OnItemListener onItemListener) {
         this.dataList = dataList;
         if (contentId == 0)
             contentId = AnnotationUtil.check(this);
         this.onItemListener = onItemListener;
     }
 
-    public void updateData(List<Object> dataList) {
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<T> dataList) {
         this.dataList = dataList != null ? dataList : new ArrayList<>();
         notifyDataSetChanged();
     }
 
-    public void addData(Object data) {
+    public void addData(T data) {
         if (dataList != null) {
             dataList.add(data);
             notifyItemInserted(dataList.size() - 1);

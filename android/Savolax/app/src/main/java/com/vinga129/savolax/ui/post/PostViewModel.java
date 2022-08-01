@@ -1,27 +1,20 @@
 package com.vinga129.savolax.ui.post;
 
 import androidx.databinding.Observable;
-import androidx.databinding.Observable.OnPropertyChangedCallback;
 import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import com.vinga129.savolax.base.NetworkBaseObservable;
-import com.vinga129.savolax.base.NetworkViewModel;
-import com.vinga129.savolax.retrofit.rest_objects.MiniCustomer;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class PostViewModel extends NetworkBaseObservable {
-    private final int customerId;
 
     private final ObservableBoolean liked = new ObservableBoolean();
     private final ObservableInt likeAmount = new ObservableInt();
 
-    public PostViewModel(int customerId, int likeAmount) {
-        this.customerId = customerId;
-
+    public PostViewModel(int likeAmount) {
         this.likeAmount.set(likeAmount);
     }
 

@@ -92,7 +92,10 @@ class Customer(User):
 		self.following.append(follow_customer)
 
 	def unfollow(self, follow_customer):
-		self.following.pop(follow_customer, None)
+		print("yoo")
+		print(follow_customer)
+		print(follow_customer.id)
+		self.following.remove(follow_customer)
 
 	def has_address(self, address_type: groups.AddressTypes):
 		if address_type == groups.AddressTypes.Home:
@@ -102,7 +105,7 @@ class Customer(User):
 
 	def get_profile(self):
 		return self.__schema__(
-			only=["username", "image_id", "business_type", "business_name", "followers", "following", "posts", "bio"]).dump(self)
+			only=["id", "username", "image_id", "business_type", "business_name", "followers", "following", "posts", "bio"]).dump(self)
 
 	def get_mini(self):
 		return self.__schema__(only=["id", "username", "image_id"]).dump(self)

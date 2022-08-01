@@ -12,7 +12,7 @@ import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import com.vinga129.savolax.MainActivity;
-import com.vinga129.savolax.ui.later.UserRepository;
+import com.vinga129.savolax.other.UserRepository;
 
 public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
 
@@ -33,7 +33,6 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
         }
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public abstract class BaseFragment<B extends ViewDataBinding> extends Fragment {
 
             initFragment();
         }
-
         return binding.getRoot();
     }
 

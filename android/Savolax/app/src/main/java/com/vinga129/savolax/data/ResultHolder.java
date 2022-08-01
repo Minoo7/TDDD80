@@ -1,15 +1,10 @@
 package com.vinga129.savolax.data;
 
 import androidx.annotation.Nullable;
-import com.vinga129.savolax.data.Result;
 import com.vinga129.savolax.data.Result.Error;
-import java.util.List;
-import java.util.Map;
-import retrofit2.HttpException;
 
 public class ResultHolder<T> {
 
-    @Nullable
     protected boolean succeeded = false;
     @Nullable
     protected T success;
@@ -20,7 +15,6 @@ public class ResultHolder<T> {
         this.succeeded = true;
     }
 
-    @Nullable
     public boolean isSuccess() {
         return succeeded;
     }
@@ -38,6 +32,7 @@ public class ResultHolder<T> {
         this.error = error;
     }
 
+    @Nullable
     public Error getError() {
         return error;
     }

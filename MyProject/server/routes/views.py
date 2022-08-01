@@ -2,7 +2,7 @@ import ast
 from datetime import datetime, timezone
 import boto3 as boto3
 import werkzeug
-from flask import request, jsonify, abort, url_for
+from flask import request, jsonify, abort
 from flask_bcrypt import check_password_hash
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity, get_jwt
 from werkzeug.exceptions import HTTPException
@@ -29,17 +29,6 @@ def home():
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@app.route("/<int:num>", methods=[GET])
-@jwt_required()
-def test_env_id(num):
-	return jsonify(message=get_jwt_identity()), 200
-
-
-@app.route("/test", methods=[GET])
-def test():
-	return jsonify({"username": "usrname"}), 200
 
 
 @jwt.token_in_blocklist_loader
@@ -90,6 +79,13 @@ def customers():
 	if request.method == POST:
 		_customer = create_obj(Customer, request.json)
 		return jsonify(message="Successfully created customer", customer_number=_customer.customer_number), 201
+
+
+@app.route("/customers/mini", methods=[GET])
+def customers_mini():
+	if request.method == GET:
+		mini_customers = [customer.get_mini() for customer in Customer.query.all()]
+		return jsonify(mini_customers), 200
 
 
 @app.route("/customers/<int:customer_id>", methods=[GET, PUT, DELETE])
@@ -203,6 +199,15 @@ def unfollow(customer_id, follow_id):
 		# find(Customer, customer_id).unfollow(find(Customer, follow_id))
 		session.commit()
 		return jsonify(message=f"Successfully unfollowed user: ({follow_id})"), 200
+
+"""@app.route("/customers/<int:customer_id_to_unfollow>/following", methods=[DELETE])
+@jwt_required()
+@require_id_exists()
+def unfollow(customer_id_to_unfollow):
+	if request.method == DELETE:
+		Customer.query.get(get_jwt_identity()).unfollow(Customer.query.get(customer_id_to_unfollow))
+		session.commit()
+		return jsonify(message=f"Successfully unfollowed user: ({customer_id_to_unfollow})"), 200"""
 
 
 @app.route("/customers/<int:customer_id>/feed", methods=[GET])

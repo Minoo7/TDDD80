@@ -1,38 +1,38 @@
 package com.vinga129.savolax.ui.more;
 
-import androidx.lifecycle.ViewModelProvider;
-
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import com.vinga129.savolax.LoginActivity;
+import com.vinga129.savolax.R;
+import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
+import com.vinga129.savolax.base.BaseFragment;
+import com.vinga129.savolax.data.LoginRepository;
 import com.vinga129.savolax.databinding.FragmentMoreBinding;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-public class MoreFragment extends Fragment {
-
-    private FragmentMoreBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
-        MoreViewModel moreViewModel =
-                new ViewModelProvider(this).get(MoreViewModel.class);
-
-        binding = FragmentMoreBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        //final TextView textView = binding.textOther;
-        //otherViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
+@AnnotationContentId(contentId = R.layout.fragment_more)
+public class MoreFragment extends BaseFragment<FragmentMoreBinding> {
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    protected void initFragment() {
+        binding.setFragment(this);
+    }
+
+    public void logout() {
+        LoginRepository.getInstance().logout().doOnComplete(() -> {
+            // Save JWT Token
+            SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.remove("JWT_KEY");
+            editor.apply();
+
+            // Go to LoginActivity
+            Intent intent = new Intent(requireActivity(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(intent);
+            requireActivity().finish();
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
     }
 }

@@ -1,5 +1,6 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
+@SuppressWarnings("unused")
 public class Like extends RestObject {
     private int customer_id;
     private int post_id;

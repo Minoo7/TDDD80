@@ -14,6 +14,7 @@ public class AnnotationUtil {
         int contentId();
     }
 
+    @SuppressWarnings("ConstantConditions")
     // check if contentId annotation is present in class
     public static int check(Object class_) {
         if (!class_.getClass().isAnnotationPresent(AnnotationContentId.class))

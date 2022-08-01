@@ -13,7 +13,6 @@ import com.vinga129.savolax.retrofit.rest_objects.Customer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import java.io.IOException;
 import retrofit2.HttpException;
 
 public class RegisterViewModel extends ViewModel {
@@ -27,9 +26,9 @@ public class RegisterViewModel extends ViewModel {
     public void register(Customer customer) {
         RegisterRepository.getInstance().register(customer).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribeWith(
-                new DisposableSingleObserver<Result<RegisteredUserView>>() {
+                new DisposableSingleObserver<Result>() {
                     @Override
-                    public void onSuccess(final Result<RegisteredUserView> value) {
+                    public void onSuccess(final Result value) {
                         RegisteredUserView data = ((Success<RegisteredUserView>) value).getData();
                         registerResult.setValue(new ResultHolder<>(data));
                     }

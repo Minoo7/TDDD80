@@ -19,20 +19,20 @@ public class RegisterRepository {
         return instance;
     }
 
-    public Single<Result<RegisteredUserView>> register(Customer customer) {
+    public Single<Result> register(Customer customer) {
         return RegisterDataSource.register(customer);
     }
 
     public static class RegisterDataSource {
 
-        public static Single<Result<RegisteredUserView>> register(Customer customer) {
+        public static Single<Result> register(Customer customer) {
             return Controller.getInstance().getNoAuthAPI().createCustomer(customer).flatMap(
                     stringStringMap -> parseResult(customer, stringStringMap));
         }
 
-        private static Single<Result<RegisteredUserView>> parseResult(Customer customer,
+        private static Single<Result> parseResult(Customer customer,
                 Map<String, String> responseMap) {
-            return Single.just(new Result.Success<RegisteredUserView>(
+            return Single.just(new Result.Success<>(
                     new RegisteredUserView(customer.getUsername(), customer.getEmail(),
                             responseMap.get("customer_number"))));
         }

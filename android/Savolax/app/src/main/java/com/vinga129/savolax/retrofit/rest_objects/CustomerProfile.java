@@ -1,14 +1,15 @@
 package com.vinga129.savolax.retrofit.rest_objects;
 
 import java.util.List;
+import java.util.Objects;
 
-public class CustomerProfile {
+@SuppressWarnings("unused")
+public class CustomerProfile extends RestObject {
     private String username;
     private String business_name;
     private groups.BusinessTypes business_type;
     private String bio;
     private String image_url;
-
     public String getImage_url() {
         return image_url;
     }
@@ -20,6 +21,11 @@ public class CustomerProfile {
     private List<MiniCustomer> followers;
     private List<MiniCustomer> following;
     private List<Post> posts;
+
+    public boolean isFollowedBy(int customer_id) {
+        return followers.stream().anyMatch(mini -> Objects.requireNonNull(mini.getId()) == customer_id);
+    }
+
 
     public String getUsername() {
         return username;

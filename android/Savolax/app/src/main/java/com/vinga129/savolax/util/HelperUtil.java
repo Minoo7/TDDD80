@@ -11,10 +11,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.vinga129.savolax.MobileNavigationDirections;
+import com.vinga129.savolax.MobileNavigationDirections.MoveToProfile;
 import com.vinga129.savolax.R;
-import com.vinga129.savolax.data.ResultHolder;
+import com.vinga129.savolax.custom.CustomNullableIntegerArgument;
 import com.vinga129.savolax.custom.CustomTextInputLayout;
 import com.vinga129.savolax.data.Result.Error;
+import com.vinga129.savolax.data.ResultHolder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -129,5 +132,10 @@ public class HelperUtil {
             System.out.println("Couldn't write bitmap");
             return null;
         }
+    }
+
+    public static MoveToProfile moveToProfileAction(int id) {
+        CustomNullableIntegerArgument arg = new CustomNullableIntegerArgument(id);
+        return MobileNavigationDirections.moveToProfile().setCustomerId(arg);
     }
 }

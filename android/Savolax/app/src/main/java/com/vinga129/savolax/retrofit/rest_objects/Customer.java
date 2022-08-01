@@ -2,7 +2,8 @@ package com.vinga129.savolax.retrofit.rest_objects;
 
 import androidx.annotation.Nullable;
 
-public class Customer {
+@SuppressWarnings("unused")
+public class Customer extends RestObject {
 
     private String username;
     private String password;

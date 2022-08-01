@@ -31,29 +31,9 @@ public abstract class FormFragment<T, B extends ViewDataBinding> extends BaseFra
         return gson.fromJson(gson.toJson(formData), _class);
     }
 
-    public JsonObject saveFormData() throws IOException {
-        JsonObject formData = new JsonObject();
-        for (CustomTextInputLayout formView : formViews) {
-            JsonElement value = properFormValue(formView);;
-            formData.add(formView.getKey(), value);
-        }
-        return formData;
-    }
-
     protected void showErrors(Map<String, List<String>> errorMap) {
         formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
                 .forEach(f -> Objects.requireNonNull(f.getEditText())
                         .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
-    }
-
-    /*protected void recoverSave(Map<String, String> formData) {
-        formViews.stream().filter(field -> formData.containsKey(field.getKey())).collect(Collectors.toSet())
-                .forEach(f -> Objects.requireNonNull(f.getEditText())
-                        .setText(Objects.requireNonNull(formData.get(f.getKey()))));
-    }*/
-
-    protected void restoreFormData(JsonObject formData) {
-        System.out.println("HEJEJEJEJ");
-        System.out.println(formData);
     }
 }

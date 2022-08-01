@@ -21,33 +21,27 @@ import com.vinga129.savolax.retrofit.rest_objects.Post;
 import com.vinga129.savolax.retrofit.rest_objects.groups;
 import com.vinga129.savolax.retrofit.rest_objects.groups.PostTypes;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @AnnotationContentId(contentId = R.layout.fragment_add_post)
 public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> {
 
-    private LayoutAddImageBinding addImageBinding;
     private AddPostViewModel addPostViewModel;
     private AddImageViewModel addImageViewModel;
-    public static final int PICK_FILE = 99;
     private static final String SELECT_IMAGE = "image/*";
     private boolean imageSelected = false;
 
     @Override
     protected void initFragment() {
-        addImageBinding = binding.layoutAddImage;
+        LayoutAddImageBinding addImageBinding = binding.layoutAddImage;
 
-        addPostViewModel = new ViewModelProvider(requireActivity()).get(AddPostViewModel.class);
+        addPostViewModel = new ViewModelProvider(this,
+                new AddPostViewModelFactory(requireActivity().getApplication())).get(AddPostViewModel.class);
         addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
         addImageBinding.setViewmodel(addImageViewModel);
         binding.setPostTypes(groups.enumToStrings(PostTypes.values(), PostTypes::name));
-        // binding.setLifecycleOwner(this);
-        // binding.setLifecycleOwner(getViewLifecycleOwner());
 
         setButtonAvailability(binding.buttonPublish, true);
-        //binding.buttonPublish.setBackgroundColor(R.color);
-        //ContextCompat.getColor(context, R.color.message)
 
         // imageSelected true if capturedImage is set
         addImageViewModel.getCapturedImage().observe(getViewLifecycleOwner(),
@@ -56,11 +50,6 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         // Set camera button to open camera fragment
         addImageBinding.buttonTakePhoto.setOnClickListener(
                 __ -> {
-                    try {
-                        addPostViewModel.setFormData(saveFormData());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     addImageViewModel.setDestinationForResult(R.id.to_add_post);
                     ((MainActivity) activity).requestCameraPermission();
                 }
@@ -89,7 +78,8 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                 __ -> addImageViewModel.showAddPhoto());
 
         // Initialize form
-        formViews.addAll(Arrays.asList(binding.fieldTitle, binding.fieldPostType, binding.fieldPostType, binding.fieldBio));
+        formViews.addAll(Arrays
+                .asList(binding.fieldTitle, binding.fieldPostType, binding.fieldPostType, binding.fieldBio));
 
         binding.buttonPublish.setOnClickListener(__ -> {
             try {
@@ -116,25 +106,20 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                 navController.navigate(R.id.moveToHomeFragment);
             }
         });
-
-        addPostViewModel.getFormData().observe(getViewLifecycleOwner(), this::restoreFormData);
     }
 
     private void setButtonAvailability(Button button, boolean value) {
         if (value) {
             button.setClickable(true);
             button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.orange));
-        }
-        else {
+        } else {
             button.setClickable(false);
             button.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.divider_grey));
         }
     }
 
-    //@Override
     public void onDestroyView() {
         super.onDestroyView();
         addImageViewModel.showAddPhoto();
-        // formViews = new ArrayList<>();
     }
 }

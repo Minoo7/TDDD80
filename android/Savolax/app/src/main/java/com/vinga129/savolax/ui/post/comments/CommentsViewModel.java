@@ -1,4 +1,4 @@
-package com.vinga129.savolax.ui.comments;
+package com.vinga129.savolax.ui.post.comments;
 
 import android.util.Pair;
 import androidx.databinding.ObservableField;

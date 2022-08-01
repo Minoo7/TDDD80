@@ -1,7 +1,5 @@
-package com.vinga129.savolax.ui.comments;
+package com.vinga129.savolax.ui.post.comments;
 
-import android.annotation.SuppressLint;
-import android.util.DisplayMetrics;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
@@ -13,7 +11,6 @@ import io.reactivex.schedulers.Schedulers;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressLint("NonConstantResourceId")
 @AnnotationContentId(contentId = R.layout.fragment_comments)
 public class CommentsFragment extends BaseFragment<FragmentCommentsBinding> {
 
@@ -37,6 +34,8 @@ public class CommentsFragment extends BaseFragment<FragmentCommentsBinding> {
         String commentText = binding.commentNew.getText().toString().trim();
 
         if (!commentText.equals("")) {
+            binding.commentNew.getText().clear();
+            
             Comment comment = new Comment(commentText);
             commentsViewModel.addComment(comment);
             showCommentInList(comment);

@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.google.gson.JsonObject;
 import com.vinga129.savolax.data.AddImageRepository;
 import com.vinga129.savolax.data.PostRepository;
 import com.vinga129.savolax.data.Result;
@@ -25,20 +24,10 @@ import retrofit2.HttpException;
 
 public class AddPostViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<JsonObject> formData = new MutableLiveData<>();
-
     private final MutableLiveData<ResultHolder<?>> addPostResult = new MutableLiveData<>();
 
     public AddPostViewModel(@NonNull final Application application) {
         super(application);
-    }
-
-    public LiveData<JsonObject> getFormData() {
-        return formData;
-    }
-
-    public void setFormData(JsonObject formData) {
-        this.formData.setValue(formData);
     }
 
     public LiveData<ResultHolder<?>> getAddPostResult() {
@@ -68,9 +57,10 @@ public class AddPostViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread()).subscribeWith(onAddPost);
     }
 
+    @SuppressWarnings("unchecked")
     public void addPostWithImage(Bitmap bitmap, Post post) {
         // Upload image from bitmap
-        Single<Result<Integer>> addImage = AddImageRepository.getInstance()
+        Single<Result> addImage = AddImageRepository.getInstance()
                 .uploadImage(getApplication(), bitmap);
 
         // Use uploaded image and add to post

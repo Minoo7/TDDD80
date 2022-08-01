@@ -1,4 +1,4 @@
-package com.vinga129.savolax.ui.camera.image_result;
+package com.vinga129.savolax.ui.camera;
 
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
@@ -33,6 +33,7 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
                 return false;
             }
 
+            @SuppressWarnings("ConstantConditions")
             @Override
             public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.accept) {
@@ -44,7 +45,8 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
             }
 
             @Override
-            public void onDestroyActionMode(final ActionMode actionMode) {}
+            public void onDestroyActionMode(final ActionMode actionMode) {
+            }
         };
 
         ((MainActivity) requireActivity()).setCallBackWithTitle(callback, "Selected photo");
