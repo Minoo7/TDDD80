@@ -5,6 +5,7 @@ import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.view.View;
 import android.widget.Button;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.GetContent;
@@ -28,8 +29,9 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
 
     private AddPostViewModel addPostViewModel;
     private AddImageViewModel addImageViewModel;
-    private static final String SELECT_IMAGE = "image/*";
+    public static final String SELECT_IMAGE = "image/*";
     private boolean imageSelected = false;
+    private String currentLocation;
 
     @Override
     protected void initFragment() {
@@ -37,9 +39,17 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
 
         addPostViewModel = new ViewModelProvider(this,
                 new AddPostViewModelFactory(requireActivity().getApplication())).get(AddPostViewModel.class);
+
         addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
         addImageBinding.setViewmodel(addImageViewModel);
         binding.setPostTypes(groups.enumToStrings(PostTypes.values(), PostTypes::name));
+
+        PostLocationViewModel postLocationViewModel = new ViewModelProvider(requireActivity())
+                .get(PostLocationViewModel.class);
+        binding.setLocationViewModel(postLocationViewModel);
+        postLocationViewModel.getLocation().observe(getViewLifecycleOwner(), s -> currentLocation = s);
+
+        ((MainActivity) activity).requestLocationPermission();
 
         setButtonAvailability(binding.buttonPublish, true);
 
@@ -84,11 +94,14 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         binding.buttonPublish.setOnClickListener(__ -> {
             try {
                 Post post = formDataToClass(Post.class);
+                if (currentLocation != null && !currentLocation.isEmpty())
+                    post.setLocation(currentLocation);
                 if (imageSelected)
                     addPostViewModel.addPostWithImage(addImageViewModel.getCapturedImage().getValue(), post);
                 else
                     addPostViewModel.addPost(post);
                 setButtonAvailability(binding.buttonPublish, false);
+                binding.loading.setVisibility(View.VISIBLE);
             } catch (IOException e) {
                 makeWarning(requireContext(), binding.container, e.getMessage());
             }
@@ -102,8 +115,9 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                 setButtonAvailability(binding.buttonPublish, true);
             }
             if (addPostResult.isSuccess()) {
+                binding.loading.setVisibility(View.GONE);
                 requireActivity().getViewModelStore().clear();
-                navController.navigate(R.id.moveToHomeFragment);
+                navController.navigate(AddPostFragmentDirections.toHome());
             }
         });
     }

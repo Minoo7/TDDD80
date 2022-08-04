@@ -32,6 +32,13 @@ public class BindingUtils {
         view.setImageBitmap(img);
     }
 
+    @BindingAdapter("android:src")
+    public static void setImageViewSrc(ImageView view, String url) {
+        Picasso.get().load(url).into(view);
+        if (url == null)
+            view.setVisibility(View.GONE);
+    }
+
     @BindingAdapter({"android:checked", "uncheckedColor", "checkedColor"})
     public static void setToggleButtonColor(ToggleButton button, boolean checked, int uncheckedColor,
             int checkedColor) {
@@ -101,7 +108,6 @@ public class BindingUtils {
         view.setVisibility(booleanToVisibility(value));
     }
 
-    // Used in profileFragment
 
     @BindingAdapter({"imageUrl", "error"})
     public static void loadImage(ImageView view, String url, Drawable error) {

@@ -111,7 +111,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:onClick="@{() -> fragment.showFollowers()}"
+                android:orientation="vertical"
+                tools:ignore="TouchTargetSizeCheck">
 
                 <TextView
                     android:id="@+id/text_followers_number"
@@ -134,7 +137,10 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:onClick="@{() -> fragment.showFollowing()}"
+                android:orientation="vertical"
+                tools:ignore="TouchTargetSizeCheck">
 
                 <TextView
                     android:id="@+id/text_following_number"
@@ -196,6 +202,7 @@
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> fragment.editProfile()}"
                 android:text="@string/edit_profile"
                 android:textColor="@color/black"
                 android:visibility="@{viewmodel.customerProfile.id == com.vinga129.savolax.other.UserRepository.INSTANCE.id}"
@@ -208,7 +215,6 @@
                 android:layout_height="48dp"
                 android:layout_margin="0dp"
                 android:backgroundTint="@color/orange"
-                android:onClick="@{() -> fragment.editProfile()}"
                 android:checked="@={viewmodel.following}"
                 android:visibility="@{viewmodel.customerProfile.id != com.vinga129.savolax.other.UserRepository.INSTANCE.id}"
                 android:textOff="@string/follow"

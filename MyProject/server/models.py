@@ -187,6 +187,7 @@ class Post(Model):
 	type = Column(ENUM(groups.PostTypes), nullable=False)
 	created_at = Column(DateTime(), default=datetime.now(), nullable=False)
 	updated_at = Column(DateTime())
+	location = Column(String(255))
 	likes = relationship("Like", backref="post", uselist=True)
 	comments = relationship("Comment", backref="post", uselist=True)
 

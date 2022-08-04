@@ -1,7 +1,5 @@
 package com.vinga129.savolax.ui.home;
 
-import static com.vinga129.savolax.util.HelperUtil.moveToProfileAction;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,16 +11,15 @@ import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
 import com.vinga129.savolax.MainActivity;
-import com.vinga129.savolax.MobileNavigationDirections;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
 import com.vinga129.savolax.base.BaseRecyclerAdapter;
+import com.vinga129.savolax.custom.CustomNullableIntegerArgument;
 import com.vinga129.savolax.databinding.FragmentHomeBinding;
 import com.vinga129.savolax.other.MiniCustomersRecyclerAdapter;
 import com.vinga129.savolax.retrofit.rest_objects.MiniCustomer;
 import com.vinga129.savolax.retrofit.rest_objects.Post;
-import com.vinga129.savolax.ui.register.RegisterViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +30,19 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
     private List<MiniCustomer> allCustomers;
     private MiniCustomersRecyclerAdapter miniCustomersRecyclerAdapter;
 
-    @SuppressWarnings("ConstantConditions")
+    //@SuppressWarnings("ConstantConditions")
     @Override
     protected void initFragment() {
         HomeViewModel homeViewModel = new HomeViewModel(user.getId());
         binding.setViewmodel(homeViewModel);
         PostItemRecyclerAdapter postItemRecyclerAdapter = new PostItemRecyclerAdapter(this);
+        if (navController == null)
+            reInitNavController();
         miniCustomersRecyclerAdapter = new MiniCustomersRecyclerAdapter((pos, data) -> {
             if (navController == null)
                 reInitNavController();
-            navController.popBackStack();
-            navController.navigate(moveToProfileAction(((MiniCustomer) data).getId()));
+            navController.navigate(HomeFragmentDirections.toProfile()
+                    .setCustomerId(new CustomNullableIntegerArgument(((MiniCustomer) data).getId())));
         });
 
         binding.setMiniCustomersAdapter(miniCustomersRecyclerAdapter);
@@ -130,7 +129,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
     public void onItemClick(int pos, Object data) {
         if (navController == null)
             reInitNavController();
-        navController.navigate(MobileNavigationDirections.moveToSpecificPost((Post) data));
+        navController.navigate(HomeFragmentDirections.toPost((Post) data));
     }
 
     private void reInitNavController() {

@@ -46,7 +46,7 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
 
-        binding.buttonSwitch.setOnClickListener((View) -> flipCamera());
+        binding.setFragment(this);
 
         initCamera();
     }
@@ -108,7 +108,7 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
         });
     }
 
-    private void flipCamera() {
+    public void flipCamera() {
         lensFacing = (lensFacing == CameraSelector.LENS_FACING_BACK) ? CameraSelector.LENS_FACING_FRONT
                 : CameraSelector.LENS_FACING_BACK;
         openCamera();

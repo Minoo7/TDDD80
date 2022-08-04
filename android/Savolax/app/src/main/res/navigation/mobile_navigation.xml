@@ -5,14 +5,121 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@+id/navigation_home">
 
+    <include app:graph="@navigation/camera_navigation" />
+
+    <navigation
+        android:id="@+id/nested_post"
+        app:startDestination="@id/navigation_post">
+
+        <argument
+            android:name="post"
+            app:argType="com.vinga129.savolax.retrofit.rest_objects.Post" />
+        <fragment
+            android:id="@+id/navigation_post"
+            android:name="com.vinga129.savolax.ui.post.PostFragment"
+            android:label="Post">
+            <action
+                android:id="@+id/to_post"
+                app:destination="@id/nested_profile" />
+            <argument
+                android:name="post"
+                app:argType="com.vinga129.savolax.retrofit.rest_objects.Post" />
+            <argument
+                android:name="ShowBottomNav"
+                android:defaultValue="false" />
+            <action
+                android:id="@+id/to_comments"
+                app:destination="@id/navigation_comments" />
+        </fragment>
+        <fragment
+            android:id="@+id/navigation_comments"
+            android:name="com.vinga129.savolax.ui.post.comments.CommentsFragment"
+            android:label="Comments">
+            <argument
+                android:name="comments"
+                app:argType="com.vinga129.savolax.retrofit.rest_objects.Comment[]" />
+            <argument
+                android:name="ShowBottomNav"
+                android:defaultValue="false" />
+            <argument
+                android:name="postId"
+                app:argType="integer" />
+        </fragment>
+    </navigation>
+
+    <navigation
+        android:id="@+id/nested_profile"
+        app:startDestination="@id/navigation_profile">
+
+        <argument
+            android:name="customerId"
+            android:defaultValue="@null"
+            app:argType="com.vinga129.savolax.custom.CustomNullableIntegerArgument"
+            app:nullable="true" />
+
+        <fragment
+            android:id="@+id/navigation_profile"
+            android:name="com.vinga129.savolax.ui.profile.ProfileFragment"
+            android:label="@string/title_profile">
+            <argument
+                android:name="customerId"
+                android:defaultValue="@null"
+                app:argType="com.vinga129.savolax.custom.CustomNullableIntegerArgument"
+                app:nullable="true" />
+            <action
+                android:id="@+id/to_list_of_customers"
+                app:destination="@id/navigation_list_of_customers_fragment" />
+            <action
+                android:id="@+id/to_edit_profile"
+                app:destination="@id/navigation_editProfile" />
+            <action
+                android:id="@+id/to_post"
+                app:destination="@id/nested_post" />
+        </fragment>
+        <fragment
+            android:id="@+id/navigation_editProfile"
+            android:name="com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragment"
+            android:label="EditProfileFragment">
+            <argument
+                android:name="ShowBottomNav"
+                android:defaultValue="false" />
+            <action
+                android:id="@+id/to_profile"
+                app:destination="@id/navigation_profile" />
+        </fragment>
+        <fragment
+            android:id="@+id/navigation_list_of_customers_fragment"
+            android:name="com.vinga129.savolax.ui.profile.ListOfCustomersFragment"
+            android:label="@string/my_label">
+            <argument
+                android:name="label"
+                app:argType="string" />
+            <argument
+                android:name="customers"
+                app:argType="com.vinga129.savolax.retrofit.rest_objects.MiniCustomer[]" />
+            <argument
+                android:name="ShowBottomNav"
+                android:defaultValue="false" />
+            <action
+                android:id="@+id/to_profile"
+                app:destination="@id/navigation_profile" />
+        </fragment>
+    </navigation>
+
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.vinga129.savolax.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_home_to_navigation_profile"
-            app:destination="@id/navigation_profile" />
+            android:id="@+id/to_post"
+            app:destination="@id/nested_post" />
+        <action
+            android:id="@+id/to_add_address"
+            app:destination="@id/navigation_address" />
+        <action
+            android:id="@+id/to_profile"
+            app:destination="@id/nested_profile" />
     </fragment>
 
     <fragment
@@ -25,7 +132,11 @@
         android:id="@+id/navigation_add_post"
         android:name="com.vinga129.savolax.ui.add_post.AddPostFragment"
         android:label="@string/title_post"
-        tools:layout="@layout/fragment_add_post" />
+        tools:layout="@layout/fragment_add_post">
+        <action
+            android:id="@+id/to_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_more"
@@ -33,59 +144,25 @@
         android:label="@string/title_more"
         tools:layout="@layout/fragment_more" />
 
-    <fragment
-        android:id="@+id/navigation_profile"
-        android:name="com.vinga129.savolax.ui.profile.ProfileFragment"
-        android:label="@string/title_profile">
-        <action
-            android:id="@+id/toPost"
-            app:destination="@id/navigation_post" />
-        <argument
-            android:name="customerId"
-            android:defaultValue="@null"
-            app:argType="com.vinga129.savolax.custom.CustomNullableIntegerArgument"
-            app:nullable="true" />
-        <action
-            android:id="@+id/to_edit_profile"
-            app:destination="@id/navigation_editProfile" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_post"
-        android:name="com.vinga129.savolax.ui.post.PostFragment"
-        android:label="Post">
-        <action
-            android:id="@+id/toPostProfile"
-            app:destination="@id/navigation_profile" />
-        <argument
-            android:name="post"
-            app:argType="com.vinga129.savolax.retrofit.rest_objects.Post" />
-        <argument
-            android:name="ShowBottomNav"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/to_comments"
-            app:destination="@id/navigation_comments" />
-    </fragment>
-
     <action
+        android:id="@+id/to_camera"
+        app:destination="@id/camera_navigation" />
+
+    <!--<action
         android:id="@+id/moveToHomeFragment"
         app:destination="@id/navigation_home" />
 
     <action
         android:id="@+id/moveToSpecificPost"
-        app:destination="@id/navigation_post" />
+        app:destination="@id/navigation" />
 
     <action
         android:id="@+id/moveToAddressFragment"
         app:destination="@id/navigation_address" />
 
     <action
-        android:id="@+id/moveToCameraFragment"
-        app:destination="@id/navigation_camera" />
-
-    <action
         android:id="@+id/moveToProfile"
-        app:destination="@id/navigation_profile" />
+        app:destination="@id/nested_profile" />-->
 
     <fragment
         android:id="@+id/navigation_address"
@@ -95,59 +172,20 @@
             android:name="ShowBottomNav"
             android:defaultValue="false" />
     </fragment>
-
-    <fragment
-        android:id="@+id/navigation_camera"
-        android:name="com.vinga129.savolax.ui.camera.CameraFragment"
-        android:label="CameraFragment">
-        <argument
-            android:name="ShowBottomNav"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/to_image_result"
-            app:destination="@id/navigation_image_result"
-            app:enterAnim="@anim/nav_default_enter_anim" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_image_result"
-        android:name="com.vinga129.savolax.ui.camera.ImageResultFragment"
-        android:label="fragment_image_result"
-        tools:layout="@layout/fragment_image_result">
-        <argument
-            android:name="ShowBottomNav"
-            android:defaultValue="false" />
-        <action
-            android:id="@+id/to_add_post"
-            app:destination="@id/navigation_add_post" />
-        <action
-            android:id="@+id/image_to_edit_profile"
-            app:destination="@id/navigation_editProfile" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_editProfile"
-        android:name="com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragment"
-        android:label="EditProfileFragment">
-        <action
-            android:id="@+id/to_profile_after_edit"
-            app:destination="@id/navigation_profile" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_comments"
-        android:name="com.vinga129.savolax.ui.post.comments.CommentsFragment"
-        android:label="Comments">
-        <argument
-            android:name="comments"
-            app:argType="com.vinga129.savolax.retrofit.rest_objects.Comment[]" />
-        <argument
-            android:name="ShowBottomNav"
-            android:defaultValue="false" />
-        <argument
-            android:name="postId"
-            app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/navigation_my_profile"
-        android:name="com.vinga129.savolax.ui.profile.my_profile.MyProfileFragment"
-        android:label="@string/title_profile" />
+    <action
+        android:id="@+id/start_home"
+        app:destination="@id/navigation_home" />
+    <action
+        android:id="@+id/start_products"
+        app:destination="@id/navigation_products" />
+    <action
+        android:id="@+id/start_add_post"
+        app:destination="@id/navigation_add_post" />
+    <action
+        android:id="@+id/start_more"
+        app:destination="@id/navigation_more" />
+    <action
+        android:id="@+id/start_profile"
+        app:destination="@id/nested_profile" />
 
 </navigation>

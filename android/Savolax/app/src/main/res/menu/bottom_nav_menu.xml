@@ -22,7 +22,7 @@
         android:title="@string/title_more" />
 
     <item
-        android:id="@+id/navigation_my_profile"
+        android:id="@+id/nested_profile"
         android:icon="@drawable/ic_round_person_24"
         android:title="@string/title_profile" />
 

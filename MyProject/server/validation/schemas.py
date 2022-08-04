@@ -57,6 +57,7 @@ class PostSchema(SQLAlchemyAutoSchema):
 	content = fields.Str(validate=validate.Length(max=120))
 	type = EnumField(groups.PostTypes, required=True)
 	created_at = fields.DateTime(dump_only=True)
+	location = fields.Str(validate=validate.Length(max=255))
 
 	# relationships:
 	likes = fields.Nested(lambda: LikeSchema, dump_only=True, many=True)

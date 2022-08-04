@@ -14,6 +14,7 @@ public class Post extends RestObject implements Serializable {
     private String created_at;
     private List<Like> likes;
     private List<Comment> comments;
+    private String location;
 
     private MiniCustomer customer;
 
@@ -100,6 +101,14 @@ public class Post extends RestObject implements Serializable {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(final String location) {
+        this.location = location;
     }
 
     // Help methods

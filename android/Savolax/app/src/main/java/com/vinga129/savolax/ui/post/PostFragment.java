@@ -1,7 +1,5 @@
 package com.vinga129.savolax.ui.post;
 
-import static com.vinga129.savolax.util.HelperUtil.moveToProfileAction;
-
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
@@ -14,6 +12,7 @@ public class PostFragment extends BaseFragment<FragmentPostBinding> {
 
     private Post post;
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void initFragment() {
         post = PostFragmentArgs.fromBundle(getArguments()).getPost();
@@ -29,18 +28,17 @@ public class PostFragment extends BaseFragment<FragmentPostBinding> {
                 .initLikeValue(hasLikedPost(), post.getId());
     }
 
-    public void showLikesWindow() {
-
-    }
-
     public void navigateToPostUser() {
         //fix multiple backstacks instead of popbackstack!
-        navController.popBackStack();
-        navController.navigate(moveToProfileAction(post.getCustomerId()));
+        //navController.popBackStack();
+        //navController.navigate(moveToProfileAction(post.getCustomerId()));
+        navController.navigate(PostFragmentDirections.toPost());
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void navigateToPostComments() {
-        navController.navigate(PostFragmentDirections.toComments(post.getComments().toArray(new Comment[0]), post.getId()));
+        navController.navigate(
+                PostFragmentDirections.toComments(post.getComments().toArray(new Comment[0]), post.getId()));
     }
 
     public boolean hasLikedPost() {

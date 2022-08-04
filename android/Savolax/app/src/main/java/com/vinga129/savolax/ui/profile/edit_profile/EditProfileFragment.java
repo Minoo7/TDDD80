@@ -9,12 +9,10 @@ import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.FormFragment;
-import com.vinga129.savolax.custom.CustomNullableIntegerArgument;
 import com.vinga129.savolax.databinding.FragmentEditProfileBinding;
 import com.vinga129.savolax.databinding.LayoutAddImageBinding;
 import com.vinga129.savolax.other.AddImageViewModel;
 import com.vinga129.savolax.retrofit.rest_objects.Customer;
-import com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragmentDirections.ToProfileAfterEdit;
 import java.io.IOException;
 
 @AnnotationContentId(contentId = R.layout.fragment_edit_profile)
@@ -40,7 +38,7 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
 
         // Set camera button to open camera fragment
         addImageBinding.buttonTakePhoto.setOnClickListener(
-                __ ->  {
+                __ -> {
                     addImageViewModel.setDestinationForResult(R.id.image_to_edit_profile);
                     ((MainActivity) activity).requestCameraPermission();
                 });
@@ -88,9 +86,7 @@ public class EditProfileFragment extends FormFragment<Customer, FragmentEditProf
             if (editProfileResult.getError() != null && editProfileResult.getError().getErrorMap() != null)
                 showErrors(editProfileResult.getError().getErrorMap());
             else if (editProfileResult.isSuccess()) {
-                ToProfileAfterEdit action = EditProfileFragmentDirections.toProfileAfterEdit().setCustomerId(new CustomNullableIntegerArgument(
-                        user.getId()));
-                navController.navigate(action);
+                navController.navigate(EditProfileFragmentDirections.toProfile());
             }
         });
     }

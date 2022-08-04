@@ -9,6 +9,7 @@ def reset_db():
 
 
 if __name__ == "__main__":
-	#reset_db()
+	reset_db()
+	#db.create_all()
 	app.debug = True
 	app.run(host='0.0.0.0', port=5080, debug=True)

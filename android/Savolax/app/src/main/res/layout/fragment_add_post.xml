@@ -8,6 +8,10 @@
         <variable
             name="postTypes"
             type="String[]" />
+        
+        <variable
+            name="locationViewModel"
+            type="com.vinga129.savolax.ui.add_post.PostLocationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -100,6 +104,18 @@
                 tools:ignore="TextContrastCheck" />
         </com.vinga129.savolax.custom.CustomTextInputLayout>
 
+        <TextView
+            android:id="@+id/text_location_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
+            android:layout_marginTop="@dimen/fragment_vertical_margin"
+            android:text="@string/location_is_sent"
+            android:textStyle="bold"
+            android:visibility="@{locationViewModel.showLocationInfo}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/field_bio" />
+
         <Button
             android:id="@+id/button_publish"
             android:layout_width="wrap_content"
@@ -111,6 +127,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/field_bio"
             app:layout_constraintVertical_bias="0.75" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="64dp"
+            android:layout_marginTop="64dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

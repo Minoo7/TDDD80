@@ -95,24 +95,37 @@
             android:maxHeight="400dp"
             android:minHeight="200dp"
             android:scaleType="fitXY"
-            app:error="@{@drawable/image1}"
-            app:imageUrl="@{post.imageUrl}"
+            android:src="@{post.imageUrl}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/clickable_profile"
             tools:src="@drawable/image4" />
 
-        <TextView
-            android:id="@+id/text_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_vertical_margin"
+        <LinearLayout
+            android:id="@+id/container_date_location"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/fragment_horizontal_margin"
             android:layout_marginTop="8dp"
-            android:text="@{com.vinga129.savolax.util.BindingUtils.convertDateToFriendlyFormat(post.createdAt)}"
-            android:textColor="@color/orange"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image_post_image"
-            tools:text="Date: 2022-05-14" />
+            app:layout_constraintTop_toBottomOf="@+id/image_post_image">
+
+            <TextView
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{com.vinga129.savolax.util.BindingUtils.convertDateToFriendlyFormat(post.createdAt)}"
+                android:textColor="@color/orange"
+                tools:text="Date: 2022-05-14" />
+
+            <TextView
+                android:id="@+id/text_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{post.location}"
+                tools:text="Gothenburg" />
+        </LinearLayout>
 
         <ToggleButton
             android:id="@+id/button_like"
@@ -129,7 +142,7 @@
             app:uncheckedColor="@{android.graphics.Color.GRAY}"
             app:checkedColor="@{@color/orange}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_date"
+            app:layout_constraintTop_toBottomOf="@+id/container_date_location"
             tools:ignore="TouchTargetSizeCheck" />
 
         <!--@color/orange-->
@@ -163,7 +176,7 @@
             android:onClick="@{() -> fragment.navigateToPostComments()}"
             android:clickable="true"
             app:layout_constraintStart_toEndOf="@+id/text_likes"
-            app:layout_constraintTop_toBottomOf="@+id/text_date"
+            app:layout_constraintTop_toBottomOf="@+id/container_date_location"
             tools:ignore="TouchTargetSizeCheck">
 
             <!--   android:onClick="@{() -> fragment.showLikesWindow()}"-->

@@ -7,12 +7,17 @@ import com.vinga129.savolax.base.BaseRecyclerAdapter;
 import com.vinga129.savolax.databinding.MiniCustomerItemBinding;
 import com.vinga129.savolax.retrofit.rest_objects.MiniCustomer;
 import java.util.ArrayList;
+import java.util.List;
 
 @AnnotationContentId(contentId = R.layout.mini_customer_item)
 public class MiniCustomersRecyclerAdapter extends BaseRecyclerAdapter<MiniCustomer, MiniCustomerItemBinding> {
 
     public MiniCustomersRecyclerAdapter(@Nullable OnItemListener onItemListener) {
         super(new ArrayList<>(), onItemListener);
+    }
+
+    public MiniCustomersRecyclerAdapter(List<MiniCustomer> miniCustomers, @Nullable OnItemListener onItemListener) {
+        super(miniCustomers, onItemListener);
     }
 
     @Override

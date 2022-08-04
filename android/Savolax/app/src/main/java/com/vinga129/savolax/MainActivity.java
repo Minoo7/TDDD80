@@ -1,30 +1,46 @@
 package com.vinga129.savolax;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY;
 import static com.vinga129.savolax.util.BindingUtils.booleanToVisibility;
 
 import android.Manifest;
+import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.vinga129.savolax.databinding.ActivityMainBinding;
 import com.vinga129.savolax.retrofit.Controller;
+import com.vinga129.savolax.ui.add_post.PostLocationViewModel;
+import com.vinga129.savolax.ui.home.HomeFragmentDirections;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +50,13 @@ public class MainActivity extends AppCompatActivity {
     private static WeakReference<Context> sContextReference;
     private NavController navController;
     private ActionMode actionMode;
+    private FusedLocationProviderClient fusedLocationClient;
+    private Geocoder geocoder;
+    private PostLocationViewModel postLocationViewModel;
 
     private View navHostFragment;
+    private BottomNavigationView bottomNav;
+    private final List<Integer> bottomNavItems = new ArrayList<>();
 
     @Override
     protected void onStart() {
@@ -48,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         sContextReference = new WeakReference<>(getApplicationContext());
         Controller.getInstance().init(getContext());
-        // navHostFragment = binding.navHostFragmentActivityMain;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -57,8 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
         //Bottom Navigation
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        BottomNavigationView bottomNav = binding.navView;
-        NavigationUI.setupWithNavController(bottomNav, navController);
+        bottomNav = binding.navView;
+        for (int i = 0; i < bottomNav.getMenu().size(); i++)
+            bottomNavItems.add(bottomNav.getMenu().getItem(i).getItemId());
+        //NavigationUI.setupWithNavController(bottomNav, navController);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        geocoder = new Geocoder(this, Locale.getDefault());
+        postLocationViewModel = new ViewModelProvider(this).get(PostLocationViewModel.class);
 
         // Appbar
         Toolbar appBar = binding.topAppBar;
@@ -66,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home,
-                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_more, R.id.navigation_my_profile)
+                R.id.navigation_products, R.id.navigation_add_post, R.id.navigation_more, R.id.nested_profile)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
@@ -81,12 +107,50 @@ public class MainActivity extends AppCompatActivity {
                     }
                     appBar.setVisibility(showAppBar);
                     bottomNav.setVisibility(showBottomNav);
+
+                    // update bottomNav to match
+                    if (bottomNavItems.contains(destination.getId())) {
+                        bottomNav.getMenu().getItem(bottomNavItems.indexOf(destination.getId())).setChecked(true);
+                    } /*else if (destination.getId() == R.id.navigation_profile && arguments != null
+                            && (((CustomNullableIntegerArgument) arguments.getSerializable("customerId")) == null)
+                            || ((CustomNullableIntegerArgument) arguments.getSerializable("customerId")).getValue()
+                            != UserRepository.getINSTANCE().getId()) {
+                        bottomNav.getMenu().getItem(4).setChecked(true);
+                    } */
+                    else
+                        uncheckAllItems();
                 }
         );
 
+        bottomNav.setOnItemSelectedListener(item -> {
+            //uncheckAllItems();
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    navController.navigate(R.id.start_home);
+                    break;
+                case R.id.navigation_products:
+                    //setBottomNavItem(1, R.id.start_products);
+                    navController.navigate(R.id.start_products);
+                    break;
+                case R.id.navigation_add_post:
+                    //setBottomNavItem(2, R.id.start_add_post);
+                    navController.navigate(R.id.start_add_post);
+                    break;
+                case R.id.navigation_more:
+                    navController.navigate(R.id.start_more);
+                    break;
+                case R.id.nested_profile:
+                    navController.navigate(R.id.start_profile);
+                    // break;
+            }
+            System.out.println(item.getItemId());
+            System.out.println(R.id.navigation_home);
+            return false;
+        });
+
         // check if address already added, if not then go to AddAddressFragment
         if (getIntent().getBooleanExtra("first_login", false)) {
-            navController.navigate(R.id.moveToAddressFragment);
+            navController.navigate(HomeFragmentDirections.toAddAddress());
         }
 
         addMenuProvider(new MenuProvider() {
@@ -100,6 +164,23 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    public void checkBottomNavItem(int index) {
+        bottomNav.getMenu().getItem(index).setChecked(true);
+    }
+
+    private void uncheckAllItems() {
+        Menu menu = bottomNav.getMenu();
+        menu.setGroupCheckable(0, true, false);
+        for (int i = 0; i < menu.size(); i++)
+            menu.getItem(i).setChecked(false);
+        menu.setGroupCheckable(0, true, true);
+    }
+
+    private void setBottomNavItem(int index, int destination) {
+        bottomNav.getMenu().getItem(index).setChecked(true);
+        navController.navigate(destination);
     }
 
     public static Context getContext() {
@@ -133,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CAMERA) {
             // Request for camera permission.
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length == 1 && grantResults[0] == PERMISSION_GRANTED) {
                 // Permission has been granted. Start camera preview Activity.
                 startCamera();
             } else {
@@ -158,16 +239,61 @@ public class MainActivity extends AppCompatActivity {
             }).show();
 
         } else {
-            // Snackbar.make(navHostFragment, R.string.camera_unavailable, Snackbar.LENGTH_SHORT).show();
             // Request the permission. The result will be received in onRequestPermissionResult().
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private void sendLocation() {
+        fusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener(
+                location -> {
+                    try {
+                        android.location.Address address = geocoder
+                                .getFromLocation(location.getLatitude(), location.getLongitude(), 1).get(0);
+                        postLocationViewModel.setLocation(address.getAddressLine(0).split(",")[0]);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    ActivityResultLauncher<String[]> locationPermissionRequest = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                Boolean fineLocationGranted = result
+                        .getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
+                Boolean coarseLocationGranted = result
+                        .getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false);
+                if (fineLocationGranted != null
+                        && fineLocationGranted) {
+                    // Precise location access granted.
+                    sendLocation();
+                } else if (coarseLocationGranted != null
+                        && coarseLocationGranted) {
+                    // Only approximate location access granted.
+                    sendLocation();
+                } else {
+                    // No location access granted.
+                    postLocationViewModel.setLocation("");
+                }
+            }
+    );
+
+    public void requestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
+            sendLocation();
+        } else {
+            locationPermissionRequest.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            });
+        }
+    }
+
     private void startCamera() {
-        navController.navigate(R.id.moveToCameraFragment);
-        // navController.navigate(R.id.moveToCameraFragment);
+        //navController.navigate(R.id.to_camera);
+        navController.navigate(MobileNavigationDirections.toCamera());
     }
 
     public void setCallBack(ActionMode.Callback callback) {
