@@ -62,6 +62,7 @@
             android:text="@string/no_following_info"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="@{viewmodel.showNoFollowingInfoText}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

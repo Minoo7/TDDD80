@@ -34,10 +34,11 @@ public class AddressFragment extends FormFragment<Address, FragmentAddressBindin
                 AddressTypes::name));
 
         // temp
-        binding.fieldAddressType.getEditText().setText("Home");
+        /*binding.fieldAddressType.getEditText().setText("Home");
         binding.fieldStreet.getEditText().setText("Landsvagen 13");
         binding.fieldCity.getEditText().setText("Stockholm");
         binding.fieldZipCode.getEditText().setText("19571");
+         */
 
         formViews.addAll(Arrays
                 .asList(binding.fieldAddressType, binding.fieldStreet, binding.fieldCity, binding.fieldZipCode,

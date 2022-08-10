@@ -33,7 +33,7 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
                 BusinessTypes::name));
 
         // temp
-        binding.fieldUsername.getEditText().setText("rafeb3233");
+        /*binding.fieldUsername.getEditText().setText("rafeb3233");
         binding.fieldFirstName.getEditText().setText("Rafeb");
         binding.fieldLastName.getEditText().setText("Laban");
         binding.fieldEmail.getEditText().setText("rafeb3233@gmail.com");
@@ -44,6 +44,8 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
         binding.fieldOrganizationNumber.getEditText().setText("12345678911");
         binding.fieldBio.getEditText().setText("hello this is our bio");
         binding.fieldPassword.getEditText().setText("goodPass123");
+
+         */
 
         formViews.addAll(Arrays
                 .asList(binding.fieldUsername, binding.fieldFirstName, binding.fieldLastName, binding.fieldEmail,

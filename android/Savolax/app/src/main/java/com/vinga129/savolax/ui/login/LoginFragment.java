@@ -39,8 +39,8 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
         binding.setFragment(this);
 
         // temp
-        binding.username.getEditText().setText("rafeb3233");
-        binding.password.getEditText().setText("goodPass123");
+        //binding.username.getEditText().setText("rafeb3233");
+        //binding.password.getEditText().setText("goodPass123");
 
         loginViewModel.getLoginResult().observe(getViewLifecycleOwner(), loginResult -> {
             if (loginResult == null)

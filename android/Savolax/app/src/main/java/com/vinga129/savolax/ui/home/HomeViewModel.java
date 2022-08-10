@@ -16,7 +16,7 @@ public class HomeViewModel extends NetworkBaseObservable {
     private final ObservableBoolean showSearch = new ObservableBoolean(false);
     private final ObservableField<List<Post>> posts = new ObservableField<>();
 
-    //private final ObservableBoolean showNoFollowingInfoText = new ObservableBoolean(false);
+    public final ObservableBoolean showNoFollowingInfoText = new ObservableBoolean(false);
 
     public HomeViewModel(int customerId) {
         loadData(customerId);
@@ -38,9 +38,10 @@ public class HomeViewModel extends NetworkBaseObservable {
                         Pair::new)
                 .toList()
                 .doOnSuccess(pairs -> posts.set(pairs.stream()
-                        .map(pair -> pair.first.withCustomer(pair.second)).collect(Collectors.toList()))).doAfterSuccess(pairs -> {
-                            if (pairs == null)
-                                System.out.println("FINNA GOOOOOOOO");
+                        .map(pair -> pair.first.withCustomer(pair.second)).collect(Collectors.toList())))
+                .doAfterSuccess(pairs -> {
+                    if (pairs.isEmpty())
+                        showNoFollowingInfoText.set(true);
                 })
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
 
