@@ -80,6 +80,8 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2985" />
         <entry key="app/src/main/res/layout/fragment_add_post.xml" value="0.24322916666666666" />
         <entry key="app/src/main/res/layout/fragment_address.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3802083333333333" />
+        <entry key="app/src/main/res/layout/fragment_post.xml" value="0.35778985507246375" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.335" />
       </map>
     </option>

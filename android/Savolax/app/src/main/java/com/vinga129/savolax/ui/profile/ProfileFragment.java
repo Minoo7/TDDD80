@@ -28,9 +28,8 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding>
         }
 
         int customerId = (arg == null) ? user.getId() : arg.getValue();
-        if (customerId == user.getId()) {
+        if (customerId == user.getId())
             ((MainActivity) requireActivity()).checkBottomNavItem(4);
-        }
 
         binding.setFragment(this);
         // if customerId is the same as logged in customer id

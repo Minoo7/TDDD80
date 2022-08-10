@@ -1,6 +1,5 @@
 package com.vinga129.savolax.util;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -9,7 +8,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.paris.Paris;
@@ -32,7 +30,7 @@ public class BindingUtils {
         view.setImageBitmap(img);
     }
 
-    @BindingAdapter("android:src")
+    @BindingAdapter("imageUrl")
     public static void setImageViewSrc(ImageView view, String url) {
         Picasso.get().load(url).into(view);
         if (url == null)
@@ -77,10 +75,6 @@ public class BindingUtils {
         Paris.styleBuilder(view)
                 .backgroundTint(color)
                 .apply();
-    }
-
-    public static void changeBackgroundTint(Context context, View view, int color) {
-        changeBackgroundTint(view, ContextCompat.getColor(context, color));
     }
 
     public static String convertDateToFriendlyFormat(String text) {
