@@ -79,3 +79,7 @@ Start server and connect app via url to the server.
 Create virtual python environment and install requirements with: `pip -r requirements.txt`  
 Open MyProject/server as a project in **PyCharm**.  
 Run server via MyProject/server/run.py
+
+## Coverage
+A coverage report for the python server can be found under MyProject/server/coverage.  
+Open index.html to view the report.
