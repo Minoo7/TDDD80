@@ -109,14 +109,8 @@ public class MainActivity extends AppCompatActivity {
                     bottomNav.setVisibility(showBottomNav);
 
                     // update bottomNav to match
-                    if (bottomNavItems.contains(destination.getId())) {
+                    if (bottomNavItems.contains(destination.getId()))
                         bottomNav.getMenu().getItem(bottomNavItems.indexOf(destination.getId())).setChecked(true);
-                    } /*else if (destination.getId() == R.id.navigation_profile && arguments != null
-                            && (((CustomNullableIntegerArgument) arguments.getSerializable("customerId")) == null)
-                            || ((CustomNullableIntegerArgument) arguments.getSerializable("customerId")).getValue()
-                            != UserRepository.getINSTANCE().getId()) {
-                        bottomNav.getMenu().getItem(4).setChecked(true);
-                    } */
                     else
                         uncheckAllItems();
                 }
@@ -176,11 +170,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < menu.size(); i++)
             menu.getItem(i).setChecked(false);
         menu.setGroupCheckable(0, true, true);
-    }
-
-    private void setBottomNavItem(int index, int destination) {
-        bottomNav.getMenu().getItem(index).setChecked(true);
-        navController.navigate(destination);
     }
 
     public static Context getContext() {
@@ -305,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
                     actionMode.finish();
                     actionMode = null;
                 });
+        //int viewId=Resources.getSystem().getIdentifier( “action_mode_close_button”, “id”,”android”);
     }
 
     public void setCallBackWithTitle(ActionMode.Callback callback, String title) {
