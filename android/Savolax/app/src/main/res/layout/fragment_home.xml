@@ -38,19 +38,33 @@
             app:setAdapter="@{postItemAdapter}"
             app:spanCount="1"
             app:submitList="@{viewmodel.posts}"
-            tools:listitem="@layout/post_item" />
+            tools:listitem="@layout/post_item"
+            tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_mini_customers"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="@{viewmodel.showSearch}"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:setAdapter="@{miniCustomersAdapter}"
-            tools:listitem="@layout/mini_customer_item" />
+            tools:listitem="@layout/mini_customer_item"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/text_search_for_customers"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/no_following_info"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3334" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
