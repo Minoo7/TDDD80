@@ -135,12 +135,12 @@ class CustomerSchema(BaseSchema):
 	@validator('first_name')
 	def validate_first_name(self, value):
 		if not self.is_valid_name(value):
-			raise ValidationError("first name: " + value + " is not a valid name")
+			raise ValidationError(value + " is not a valid name")
 
 	@validator('last_name')
 	def validate_last_name(self, value):
 		if not self.is_valid_name(value):
-			raise ValidationError("last name: " + value + " is not a valid name")
+			raise ValidationError(value + " is not a valid name")
 
 	@validator('email')
 	def validate_email(self, value):

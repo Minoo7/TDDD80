@@ -79,7 +79,7 @@
         <fragment
             android:id="@+id/navigation_editProfile"
             android:name="com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragment"
-            android:label="EditProfileFragment">
+            android:label="Edit your profile">
             <argument
                 android:name="ShowBottomNav"
                 android:defaultValue="false" />
@@ -167,7 +167,7 @@
     <fragment
         android:id="@+id/navigation_address"
         android:name="com.vinga129.savolax.ui.address.AddressFragment"
-        android:label="AddressFragment">
+        android:label="Add an adress">
         <argument
             android:name="ShowBottomNav"
             android:defaultValue="false" />

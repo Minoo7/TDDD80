@@ -12,350 +12,321 @@
         <variable
             name="genders"
             type="String[]" />
+
         <variable
             name="businessTypes"
             type="String[]" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/fragment_vertical_margin"
-        android:paddingLeft="@dimen/fragment_horizontal_margin"
-        android:paddingRight="@dimen/fragment_horizontal_margin"
-        android:paddingTop="@dimen/fragment_vertical_margin"
-        tools:context=".ui.login.LoginFragment"
-        tools:theme="@style/Theme.Shrine">
+        android:layout_height="match_parent">
 
-        <!--<EditText
-            android:id="@+id/username"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="96dp"
-            android:autofillHints="@string/prompt_email"
-            android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:selectAllOnFocus="true"
-            android:textColorHint="#757575"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="TouchTargetSizeCheck" />
-
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:autofillHints="@string/prompt_password"
-            android:hint="@string/prompt_password"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:selectAllOnFocus="true"
-            android:textColorHint="#757575"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username"
-            tools:ignore="TouchTargetSizeCheck" />-->
-
-
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:hint="@string/username"
-            app:formRequired="true"
-            app:jsonKey="username"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:startIconDrawable="@drawable/ic_round_person_24"
-            tools:ignore="ExtraText">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,TextContrastCheck" />
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_username">
+            android:paddingBottom="@dimen/fragment_vertical_margin"
+            android:paddingLeft="@dimen/fragment_horizontal_margin"
+            android:paddingRight="@dimen/fragment_horizontal_margin"
+            android:paddingTop="@dimen/fragment_vertical_margin"
+            tools:context=".ui.login.LoginFragment"
+            tools:theme="@style/Theme.Shrine">
 
             <com.vinga129.savolax.custom.CustomTextInputLayout
-                android:id="@+id/field_first_name"
-                android:layout_width="match_parent"
+                android:id="@+id/field_username"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="0.5"
-                android:hint="@string/first_name"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:hint="@string/username"
+                app:errorEnabled="true"
                 app:formRequired="true"
-                app:jsonKey="first_name"
+                app:jsonKey="username"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:startIconDrawable="@drawable/ic_round_person_24"
                 tools:ignore="ExtraText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:ignore="TextContrastCheck" />
+                    android:layout_height="match_parent"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,TextContrastCheck" />
             </com.vinga129.savolax.custom.CustomTextInputLayout>
 
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_username">
+
+                <com.vinga129.savolax.custom.CustomTextInputLayout
+                    android:id="@+id/field_first_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="0.5"
+                    android:hint="@string/first_name"
+                    app:formRequired="true"
+                    app:jsonKey="first_name"
+                    app:startIconDrawable="@drawable/ic_round_person_24"
+                    tools:ignore="ExtraText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TextContrastCheck" />
+                </com.vinga129.savolax.custom.CustomTextInputLayout>
+
+                <com.vinga129.savolax.custom.CustomTextInputLayout
+                    android:id="@+id/field_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="0.5"
+                    android:hint="@string/last_name"
+                    app:formRequired="true"
+                    app:jsonKey="last_name"
+                    app:startIconDrawable="@drawable/ic_round_person_24"
+                    tools:ignore="ExtraText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:ignore="TextContrastCheck" />
+                </com.vinga129.savolax.custom.CustomTextInputLayout>
+
+            </LinearLayout>
+
             <com.vinga129.savolax.custom.CustomTextInputLayout
-                android:id="@+id/field_last_name"
+                android:id="@+id/field_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="0.5"
-                android:hint="@string/last_name"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/email"
                 app:formRequired="true"
-                app:jsonKey="last_name"
-                app:startIconDrawable="@drawable/ic_round_person_24"
+                app:jsonKey="email"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+                app:startIconDrawable="@drawable/ic_baseline_email_24"
                 tools:ignore="ExtraText">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    tools:ignore="TextContrastCheck" />
+
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
+
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_gender"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/gender"
+                app:jsonKey="gender"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_email"
+                app:startIconDrawable="@drawable/ic_outline_circle_24">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_genders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    app:dropDownItems="@{genders}"
+                    tools:ignore="TextContrastCheck" />
+
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
+
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/phone_number"
+                app:formRequired="true"
+                app:jsonKey="phone_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_gender"
+                app:startIconDrawable="@drawable/ic_baseline_phone_24"
+                tools:ignore="ExtraText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="phone"
                     tools:ignore="TextContrastCheck" />
             </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        </LinearLayout>
-
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/email"
-            app:formRequired="true"
-            app:jsonKey="email"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-            app:startIconDrawable="@drawable/ic_baseline_email_24"
-            tools:ignore="ExtraText">
-
-            <com.google.android.material.textfield.TextInputEditText
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_business_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                tools:ignore="TextContrastCheck" />
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/business_name"
+                app:formRequired="true"
+                app:jsonKey="business_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_phone"
+                app:startIconDrawable="@drawable/ic_baseline_business_24"
+                tools:ignore="ExtraText">
 
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    tools:ignore="TextContrastCheck" />
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_gender"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/gender"
-            app:jsonKey="gender"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_email"
-            app:startIconDrawable="@drawable/ic_outline_circle_24">
-
-            <AutoCompleteTextView
-                android:id="@+id/autocomplete_genders"
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_business_type"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                app:dropDownItems="@{genders}"
-                tools:ignore="TextContrastCheck" />
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/business_type"
+                app:formRequired="true"
+                app:jsonKey="business_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_business_name"
+                app:startIconDrawable="@drawable/ic_baseline_restaurant_24">
 
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_business_types"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    app:dropDownItems="@{businessTypes}"
+                    tools:ignore="TextContrastCheck" />
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/phone_number"
-            app:formRequired="true"
-            app:jsonKey="phone_number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_gender"
-            app:startIconDrawable="@drawable/ic_baseline_phone_24"
-            tools:ignore="ExtraText">
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_organization_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="phone"
-                tools:ignore="TextContrastCheck" />
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/organization_number"
+                app:jsonKey="organization_number"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_business_type"
+                app:startIconDrawable="@drawable/ic_baseline_numbers_24"
+                tools:ignore="ExtraText">
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_business_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/business_name"
-            app:formRequired="true"
-            app:jsonKey="business_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_phone"
-            app:startIconDrawable="@drawable/ic_baseline_business_24"
-            tools:ignore="ExtraText">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    tools:ignore="TextContrastCheck" />
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_bio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                tools:ignore="TextContrastCheck" />
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/bio"
+                app:formRequired="true"
+                app:jsonKey="bio"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_organization_number"
+                app:startIconDrawable="@drawable/ic_baseline_short_text_24"
+                tools:ignore="ExtraText">
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_business_type"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/business_type"
-            app:formRequired="true"
-            app:jsonKey="business_type"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_business_name"
-            app:startIconDrawable="@drawable/ic_baseline_restaurant_24">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textLongMessage"
+                    tools:ignore="TextContrastCheck" />
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-            <AutoCompleteTextView
-                android:id="@+id/autocomplete_business_types"
+            <com.vinga129.savolax.custom.CustomTextInputLayout
+                android:id="@+id/field_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                app:dropDownItems="@{businessTypes}"
-                tools:ignore="TextContrastCheck" />
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/password"
+                app:endIconMode="password_toggle"
+                app:formRequired="true"
+                app:jsonKey="password"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_bio"
+                app:startIconDrawable="@drawable/ic_baseline_password_24"
+                tools:ignore="ExtraText">
 
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    tools:ignore="TextContrastCheck" />
+            </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_organization_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/organization_number"
-            app:jsonKey="organization_number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_business_type"
-            app:startIconDrawable="@drawable/ic_baseline_numbers_24"
-            tools:ignore="ExtraText">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/register"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:layout_gravity="start"
+                android:layout_marginEnd="48dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="32dp"
+                android:enabled="true"
+                android:text="@string/action_register"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/field_password"
                 tools:ignore="TextContrastCheck" />
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_bio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/bio"
-            app:formRequired="true"
-            app:jsonKey="bio"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_organization_number"
-            app:startIconDrawable="@drawable/ic_baseline_short_text_24"
-            tools:ignore="ExtraText">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textLongMessage"
-                tools:ignore="TextContrastCheck" />
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
+                android:layout_gravity="center"
+                android:layout_marginBottom="64dp"
+                android:layout_marginTop="64dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.3" />
 
-        <com.vinga129.savolax.custom.CustomTextInputLayout
-            android:id="@+id/field_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/password"
-            app:endIconMode="password_toggle"
-            app:formRequired="true"
-            app:jsonKey="password"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/field_bio"
-            app:startIconDrawable="@drawable/ic_baseline_password_24"
-            tools:ignore="ExtraText">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                tools:ignore="TextContrastCheck" />
-        </com.vinga129.savolax.custom.CustomTextInputLayout>
-
-        <Button
-            android:id="@+id/register"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginEnd="48dp"
-            android:layout_marginStart="48dp"
-            android:enabled="true"
-            android:text="@string/action_register"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ProgressBar
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="64dp"
-            android:layout_marginTop="64dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

@@ -32,8 +32,11 @@ public abstract class FormFragment<T, B extends ViewDataBinding> extends BaseFra
     }
 
     protected void showErrors(Map<String, List<String>> errorMap) {
+        /*
+         * For every CustomTextInputLayout with the matching key returned,  in the errorMap from the server, set the
+         * error returned from the server to the TextInputLayout.setError to display it on screen
+         */
         formViews.stream().filter(field -> errorMap.containsKey(field.getKey())).collect(Collectors.toSet())
-                .forEach(f -> Objects.requireNonNull(f.getEditText())
-                        .setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
+                .forEach(f -> f.setError(String.join(",", Objects.requireNonNull(errorMap.get(f.getKey())))));
     }
 }

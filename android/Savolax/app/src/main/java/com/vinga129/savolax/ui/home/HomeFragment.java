@@ -70,6 +70,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
 
                 searchView.setOnCloseListener(() -> {
                     homeViewModel.getShowSearch().set(false);
+                    homeViewModel.setShowNoFollowingInfoText(true);
                     return false;
                 });
 
@@ -97,6 +98,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
                     @Override
                     public boolean onMenuItemActionCollapse(final MenuItem menuItem) {
                         homeViewModel.getShowSearch().set(false);
+                        homeViewModel.setShowNoFollowingInfoText(true);
                         return true;
                     }
                 });
@@ -105,6 +107,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
             @Override
             public boolean onMenuItemSelected(@NonNull final MenuItem menuItem) {
                 homeViewModel.getShowSearch().set(true);
+                homeViewModel.getShowNoFollowingInfoText().set(false);
                 return false;
             }
         }, getViewLifecycleOwner());
