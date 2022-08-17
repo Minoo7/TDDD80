@@ -30,11 +30,11 @@ class User(Model):  # User abstract class
 	"""
 	__tablename__ = "users"
 	__abstract__ = True
-	username = Column(Text(32), unique=True, nullable=False)
-	password = Column(Text(32), nullable=False)
-	first_name = Column(Text(32))
-	last_name = Column(Text(32))
-	email = Column(Text(150), unique=True, nullable=False)
+	username = Column(Text, unique=True, nullable=False)
+	password = Column(Text, nullable=False)
+	first_name = Column(Text)
+	last_name = Column(Text)
+	email = Column(Text, unique=True, nullable=False)
 	gender = Column(ENUM(groups.Genders))
 
 
@@ -63,13 +63,13 @@ class Customer(User):
 		business_address_id
 	"""
 	__tablename__ = "customers"
-	customer_number = Column(Text(6), unique=True, nullable=False)
+	customer_number = Column(Text, unique=True, nullable=False)
 	image_id = Column(Integer, ForeignKey('images.id'))
-	phone_number = Column(Text(20), unique=True, nullable=False)
+	phone_number = Column(Text, unique=True, nullable=False)
 	business_type = Column(ENUM(groups.BusinessTypes), nullable=False)
-	organization_number = Column(Text(11), unique=True, nullable=False)
-	business_name = Column(Text(50), unique=True, nullable=False)
-	bio = Column(Text(120))
+	organization_number = Column(Text, unique=True, nullable=False)
+	business_name = Column(Text, unique=True, nullable=False)
+	bio = Column(Text)
 
 	address = relationship("Address",
 						   primaryjoin="and_(Customer.id==Address.customer_id, Address.address_type=='Home')",
