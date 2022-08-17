@@ -30,7 +30,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding>
     private List<MiniCustomer> allCustomers;
     private MiniCustomersRecyclerAdapter miniCustomersRecyclerAdapter;
 
-    //@SuppressWarnings("ConstantConditions")
     @Override
     protected void initFragment() {
         HomeViewModel homeViewModel = new HomeViewModel(user.getId());
