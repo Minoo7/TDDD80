@@ -36,7 +36,6 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
                 return false;
             }
 
-            @SuppressWarnings("ConstantConditions")
             @Override
             public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.accept) {
