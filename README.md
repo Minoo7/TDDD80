@@ -81,5 +81,5 @@ Open MyProject/server as a project in **PyCharm**.
 Run server via MyProject/server/run.py
 
 ## Coverage
-A coverage report for the python server can be found under MyProject/server/coverage.  
+A coverage report for the python server can be found under MyProject/coverage.  
 Open index.html to view the report.
