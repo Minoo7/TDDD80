@@ -102,7 +102,7 @@ class CustomerSchema(BaseSchema):
 	business_type = EnumField(groups.BusinessTypes, required=True)
 	business_name = fields.Str(required=True)
 	bio = fields.Str()
-	organization_number = fields.Int(required=True)
+	organization_number = fields.Str(required=True)
 	customer_number = fields.Str(load_default=lambda: unique_customer_number())
 	# add validation:....
 	image_id = custom_fields.FieldExistingId(class_=ImageReference)
@@ -168,7 +168,7 @@ class CustomerSchema(BaseSchema):
 
 	@validator('organization_number')
 	def validate_organization_number(self, value):
-		if len(str(value)) != 11:
+		if len(value) != 11:
 			raise ValidationError("Organization number must be 11 digits")
 		if obj_with_attr_exists(Customer, 'organization_number', value):
 			raise ValidationError("Customer with this organization_number already exists")
