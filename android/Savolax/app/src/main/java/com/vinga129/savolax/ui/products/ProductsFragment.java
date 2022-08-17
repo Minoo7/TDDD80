@@ -5,6 +5,7 @@ import android.view.ActionMode.Callback;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.lifecycle.ViewModelProvider;
+import com.vinga129.savolax.MainActivity;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
@@ -47,11 +48,13 @@ public class ProductsFragment extends BaseFragment<FragmentProductsBinding> {
             }
         };
 
-        binding.buttonItem1.setOnClickListener((View) -> {
-            ActionMode actionMode = requireActivity().startActionMode(callback);
-            actionMode.setTitle("1 selected");
-        });
+        binding.buttonItem1.setOnClickListener((View) ->
+                ((MainActivity) requireActivity()).setCallBackWithTitle(callback, "1 selected"));
     }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((MainActivity) requireActivity()).finishActionMode();
+    }
 }

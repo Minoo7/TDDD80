@@ -31,19 +31,6 @@ public class RegisterFragment extends FormFragment<Customer, FragmentRegisterBin
         binding.setBusinessTypes(groups.enumToStrings(BusinessTypes.values(),
                 BusinessTypes::name));
 
-        // temp
-        binding.fieldUsername.getEditText().setText("mango123");
-        binding.fieldFirstName.getEditText().setText("Markus");
-        binding.fieldLastName.getEditText().setText("Laban");
-        binding.fieldEmail.getEditText().setText("markus123@gmail.com");
-        binding.fieldGender.getEditText().setText("Man");
-        binding.fieldPhone.getEditText().setText("0769541211");
-        binding.fieldBusinessName.getEditText().setText("Markus House");
-        binding.fieldBusinessType.getEditText().setText("Cafe");
-        binding.fieldOrganizationNumber.getEditText().setText("12345678912");
-        binding.fieldBio.getEditText().setText("hello this is our bio");
-        binding.fieldPassword.getEditText().setText("goodPass123");
-
         registerViewModel.getRegisterResult().observe(getViewLifecycleOwner(), registerResult -> {
             registerViewModel.showProgress.set(false);
             if (registerResult.getError() != null && registerResult.getError().getErrorMap() != null)

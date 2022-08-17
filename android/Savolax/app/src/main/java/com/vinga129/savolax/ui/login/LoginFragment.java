@@ -30,11 +30,12 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
                 .get(LoginViewModel.class);
         binding.setFragment(this);
 
+        /* Auto login if token is saved: - (uncomment if desired)
         SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
         sharedPref.edit().remove("JWT_KEY").apply();
         String token = sharedPref.getString("JWT_KEY", null);
         if (token != null)
-            attemptLoginWithToken(token);
+            attemptLoginWithToken(token);*/
 
         formViews.addAll(Arrays.asList(binding.username, binding.password));
 
@@ -46,6 +47,7 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
                 makeWarning(requireContext(), binding.container, loginResult.getError().getError());
             if (loginResult.getSuccess() != null) {
                 // Save JWT Token
+                SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("JWT_KEY", loginResult.getSuccess().getToken());
                 editor.apply();

@@ -272,15 +272,6 @@ def likes(post_id):
 		return jsonify(message="Successfully liked post"), 201
 
 
-"""@app.route("/posts/<int:post_id>/likes/<int:like_id>", methods=[DELETE])
-@jwt_required()
-@require_ownership(customer_id=['like_id'], post_id=['like_id'])
-def like(post_id, like_id):
-	if request.method == DELETE:
-		delete_obj(Like, like_id)
-		return jsonify(message="Successfully deleted like"), 200"""
-
-
 @app.route("/posts/<int:post_id>/unlike", methods=[DELETE])
 @jwt_required()
 def unlike(post_id):

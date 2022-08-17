@@ -89,23 +89,6 @@ def require_json_id_exists(*outer_args):
 
 	return generate_decorator(inner)(*outer_args)
 
-"""def check_ownership(**kwargs):
-	for owner in kwargs:
-		if owner == "current":
-			owner_obj = find(Customer, get_jwt_identity())
-		else:
-			if owner not in request.view_args:
-				abort(400, "owner keyword is not inside the route address arguments")
-			if owner not in arg_class_map:
-				abort(400, "improper owner name in given")
-
-			owner_obj = find(arg_class_map.get(owner), request.view_args[owner])
-		for item in kwargs[owner]:
-			item_obj = find(arg_class_map.get(item), request.view_args[item])
-			getattr(item_obj, owner)
-			if item_obj.customer_id != owner_obj.id:
-				abort(403, f"Customer did not have permission/own to access the object")"""
-
 
 def require_hierarchy(**outer_kwargs):
 	return generate_decorator(require_hierarchy_func)(**outer_kwargs)
