@@ -8,6 +8,10 @@
         <variable
             name="viewmodel"
             type="com.vinga129.savolax.ui.profile.edit_profile.EditProfileViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.profile.edit_profile.EditProfileFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -51,5 +55,17 @@
                 android:text="@{viewmodel.currentBio}"
                 tools:ignore="TextContrastCheck,SpeakableTextPresentCheck" />
         </com.vinga129.savolax.custom.CustomTextInputLayout>
+
+        <Button
+            android:id="@+id/button_save_changes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_changes"
+            android:onClick="@{() -> fragment.saveChanges()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/field_bio"
+            app:layout_constraintVertical_bias="0.33" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

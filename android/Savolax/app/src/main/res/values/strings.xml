@@ -129,5 +129,6 @@
     <string name="location_is_sent">Location is sent</string>
     <string name="my_label">{label}</string>
     <string name="no_following_info">No users are followed.\nClick the search button above to search for users</string>
+    <string name="save_changes">Save changes</string>
 </resources>
 

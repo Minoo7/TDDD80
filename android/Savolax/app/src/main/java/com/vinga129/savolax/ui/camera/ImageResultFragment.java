@@ -15,9 +15,12 @@ import com.vinga129.savolax.other.AddImageViewModel;
 @AnnotationContentId(contentId = R.layout.fragment_image_result)
 public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding> {
 
+    private boolean accepted = false;
+    private AddImageViewModel addImageViewModel;
+
     @Override
     protected void initFragment() {
-        AddImageViewModel addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
+        addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
 
         binding.setViewmodel(addImageViewModel);
 
@@ -37,8 +40,9 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
             @Override
             public boolean onActionItemClicked(final ActionMode actionMode, final MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.accept) {
-                    addImageViewModel.showImageResult();
-                    navController.navigate(addImageViewModel.getDestinationForResult().getValue());
+                    accepted = true;
+                    navController.popBackStack();
+                    navController.popBackStack();
                     return true;
                 }
                 return false;
@@ -55,7 +59,8 @@ public class ImageResultFragment extends BaseFragment<FragmentImageResultBinding
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         ((MainActivity) requireActivity()).finishActionMode();
+        if (!accepted)
+            addImageViewModel.removeImage();
     }
 }

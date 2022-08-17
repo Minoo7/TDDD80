@@ -1,10 +1,9 @@
 package com.vinga129.savolax.data;
 
 import com.vinga129.savolax.retrofit.Controller;
-import com.vinga129.savolax.ui.register.RegisteredUserView;
 import com.vinga129.savolax.retrofit.rest_objects.Customer;
+import com.vinga129.savolax.ui.register.RegisteredUserView;
 import io.reactivex.Single;
-import java.util.Map;
 
 public class RegisterRepository {
 
@@ -27,14 +26,9 @@ public class RegisterRepository {
 
         public static Single<Result> register(Customer customer) {
             return Controller.getInstance().getNoAuthAPI().createCustomer(customer).flatMap(
-                    stringStringMap -> parseResult(customer, stringStringMap));
-        }
-
-        private static Single<Result> parseResult(Customer customer,
-                Map<String, String> responseMap) {
-            return Single.just(new Result.Success<>(
-                    new RegisteredUserView(customer.getUsername(), customer.getEmail(),
-                            responseMap.get("customer_number"))));
+                    stringStringMap -> Single.just(new Result.Success<>(
+                            new RegisteredUserView(customer.getUsername(), customer.getEmail(),
+                                    stringStringMap.get("customer_number")))));
         }
     }
 

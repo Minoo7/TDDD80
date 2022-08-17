@@ -24,6 +24,10 @@ public class LoginRepository {
         return LoginDataSource.login(_login);
     }
 
+    public Single<Result> loginWithToken(String token) {
+        return LoginDataSource.loginWithToken(token);
+    }
+
     public Completable logout() {
         return LoginDataSource.logout();
     }
@@ -36,14 +40,16 @@ public class LoginRepository {
 
         public static Single<Result> login(Map<String, String> _login) {
             return Controller.getInstance().getNoAuthAPI().login(_login)
-                    .flatMap(stringStringMap -> parseResult(_login, stringStringMap));
+                    .flatMap(LoginDataSource::parseLoginResult);
         }
 
-        private static Single<Result> parseResult(Map<String, String> _login, Map<String, String> _response) {
-            return Single.just(new Result.Success<>(
-                    new LoggedInUserView(_response.get("id"), _login.get("username"), _response.get("first_login"),
-                            _response.get("token"))
-            ));
+        public static Single<Result> loginWithToken(String token) {
+            return Controller.getInstance().getNoAuthAPI().loginWithToken("Bearer " + token)
+                    .flatMap(LoginDataSource::parseLoginResult);
+        }
+
+        public static Single<Result> parseLoginResult(LoggedInUserView loggedInUserView) {
+            return Single.just(new Result.Success<>(loggedInUserView));
         }
 
         public static Completable logout() {

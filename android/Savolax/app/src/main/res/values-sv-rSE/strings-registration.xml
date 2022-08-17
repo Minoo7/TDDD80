@@ -23,7 +23,12 @@
         <item>Annan</item>
     </string-array>
 
-    <string name="on_new_user_info">Vi har skapat ett kundnummer åt dig som kan användas för att logga in, vänligen skriv ner detta</string>
+    <string name="on_new_user_info">Vi har skapat ett kundnummer åt dig som kan användas för att logga in, vänligen skriv ner detta
+        \n Kundnummer: %1$s
+        \n ---Andra login metoder:---
+        \n användarnamn: %2$s
+        \n email: %3$s</string>
+
 
     <!-- Strings for creating new Address: -->
     <string name="address_type">Adresstyp <font color='#B3B71C1C'>*</font></string>

@@ -42,8 +42,6 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
 
         addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
 
-        captureButton.setOnClickListener((View) -> capturePhoto());
-
         cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
 
         binding.setFragment(this);
@@ -98,7 +96,7 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrixForRotation, true);
     }
 
-    private void capturePhoto() {
+    public void capturePhoto() {
         imageCapture.takePicture(getExecutor(), new ImageCapture.OnImageCapturedCallback() {
             @Override
             public void onCaptureSuccess(@NonNull ImageProxy image) {
@@ -113,4 +111,6 @@ public class CameraFragment extends BaseFragment<FragmentCameraBinding> {
                 : CameraSelector.LENS_FACING_BACK;
         openCamera();
     }
+
+
 }

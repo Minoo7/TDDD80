@@ -39,14 +39,14 @@ public class groups {
 
     public enum Genders {
         MAN("Man"), WOMAN("Woman"), NON_BINARY("Non_binary"), OTHER("Other");
-        private String value;
+        private final String value;
 
         Genders(String value) {
             this.value = value;
         }
 
         public String getValue() {
-            return value.replaceAll("_", "");
+            return value.replaceAll("_", " ");
         }
     }
 

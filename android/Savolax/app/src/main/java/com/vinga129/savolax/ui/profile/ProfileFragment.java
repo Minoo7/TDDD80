@@ -47,6 +47,8 @@ public class ProfileFragment extends BaseFragment<FragmentProfileBinding>
     }
 
     public void editProfile() {
+        System.out.println("ddddddd");
+        System.out.println(navController);
         navController.navigate(ProfileFragmentDirections.toEditProfile());
     }
 

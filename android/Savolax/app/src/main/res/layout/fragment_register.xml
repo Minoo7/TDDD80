@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.register.RegisterFragment" />
+        
+        <variable
             name="viewmodel"
             type="com.vinga129.savolax.ui.register.RegisterViewModel" />
 
@@ -22,32 +26,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
             android:paddingBottom="@dimen/fragment_vertical_margin"
             android:paddingLeft="@dimen/fragment_horizontal_margin"
             android:paddingRight="@dimen/fragment_horizontal_margin"
-            android:paddingTop="@dimen/fragment_vertical_margin"
-            tools:context=".ui.login.LoginFragment"
-            tools:theme="@style/Theme.Shrine">
+            android:paddingTop="@dimen/fragment_vertical_margin">
 
             <com.vinga129.savolax.custom.CustomTextInputLayout
                 android:id="@+id/field_username"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_marginStart="24dp"
                 android:hint="@string/username"
-                app:errorEnabled="true"
                 app:formRequired="true"
                 app:jsonKey="username"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:startIconDrawable="@drawable/ic_round_person_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_round_person_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -57,16 +56,13 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:baselineAligned="false"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_username">
+                android:orientation="horizontal">
 
                 <com.vinga129.savolax.custom.CustomTextInputLayout
                     android:id="@+id/field_first_name"
@@ -114,13 +110,10 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:hint="@string/email"
+                app:counterMaxLength="150"
                 app:formRequired="true"
                 app:jsonKey="email"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:startIconDrawable="@drawable/ic_baseline_email_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_baseline_email_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -140,9 +133,6 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/gender"
                 app:jsonKey="gender"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_email"
                 app:startIconDrawable="@drawable/ic_outline_circle_24">
 
                 <AutoCompleteTextView
@@ -165,11 +155,7 @@
                 android:hint="@string/phone_number"
                 app:formRequired="true"
                 app:jsonKey="phone_number"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_gender"
-                app:startIconDrawable="@drawable/ic_baseline_phone_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_baseline_phone_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -189,11 +175,7 @@
                 android:hint="@string/business_name"
                 app:formRequired="true"
                 app:jsonKey="business_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_phone"
-                app:startIconDrawable="@drawable/ic_baseline_business_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_baseline_business_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -213,9 +195,6 @@
                 android:hint="@string/business_type"
                 app:formRequired="true"
                 app:jsonKey="business_type"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_business_name"
                 app:startIconDrawable="@drawable/ic_baseline_restaurant_24">
 
                 <AutoCompleteTextView
@@ -237,11 +216,7 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/organization_number"
                 app:jsonKey="organization_number"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_business_type"
-                app:startIconDrawable="@drawable/ic_baseline_numbers_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_baseline_numbers_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -260,11 +235,7 @@
                 android:hint="@string/bio"
                 app:formRequired="true"
                 app:jsonKey="bio"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_organization_number"
-                app:startIconDrawable="@drawable/ic_baseline_short_text_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_baseline_short_text_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -282,13 +253,10 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/password"
                 app:endIconMode="password_toggle"
+                app:errorIconDrawable="@null"
                 app:formRequired="true"
                 app:jsonKey="password"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_bio"
-                app:startIconDrawable="@drawable/ic_baseline_password_24"
-                tools:ignore="ExtraText">
+                app:startIconDrawable="@drawable/ic_baseline_password_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -297,36 +265,30 @@
                     tools:ignore="TextContrastCheck" />
             </com.vinga129.savolax.custom.CustomTextInputLayout>
 
-            <Button
-                android:id="@+id/register"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginEnd="48dp"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="32dp"
-                android:enabled="true"
-                android:text="@string/action_register"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/field_password"
-                tools:ignore="TextContrastCheck" />
-
-            <ProgressBar
-                android:id="@+id/loading"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="64dp"
-                android:layout_marginTop="64dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.3" />
+                android:layout_height="wrap_content">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/register"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="48dp"
+                    android:layout_marginStart="48dp"
+                    android:onClick="@{() -> fragment.register()}"
+                    android:layout_marginTop="32dp"
+                    android:visibility="@{!viewmodel.showProgress}"
+                    android:enabled="true"
+                    android:text="@string/action_register" />
+
+                <ProgressBar
+                    android:id="@+id/loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{viewmodel.showProgress}" />
+            </RelativeLayout>
+
+        </LinearLayout>
     </ScrollView>
 </layout>

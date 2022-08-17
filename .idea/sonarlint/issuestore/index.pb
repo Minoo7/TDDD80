@@ -33,7 +33,3 @@ A
 MyProject/test.py,3\d\3d76a09927239474334390e5efe25000c763eb31
 L
 MyProject/server/__init__.py,0\8\08b102a16d9c9dde0e14ba478c92ef5d77e799c6
-G
-MyProject/server/run.py,0\4\042af4cc8916e9827fb124b54ece8141644cda4c
-V
-&MyProject/server/validation/schemas.py,8\1\811bd5e83bb817d5b4413546e91c69b62807a7c0

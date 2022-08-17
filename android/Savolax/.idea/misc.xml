@@ -61,6 +61,7 @@
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_products.xml" value="0.25813953488372093" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_profile.xml" value="0.15946985891406584" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_register.xml" value="0.20863616930312098" />
+        <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_scrolling.xml" value="0.2928637627432808" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/fragment_start.xml" value="0.42916666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/imp_activity.xml" value="0.42916666666666664" />
         <entry key="..\:/Documents/LiU/TDDD80_folder/TDDD80/android/Savolax/app/src/main/res/layout/layout_add_image.xml" value="0.27291666666666664" />
@@ -85,6 +86,11 @@
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.335" />
       </map>
     </option>
+  </component>
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId" />
+    </list>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

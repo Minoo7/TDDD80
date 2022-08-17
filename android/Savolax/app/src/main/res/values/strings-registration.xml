@@ -23,7 +23,13 @@
         <item>Other</item>
     </string-array>
 
-    <string name="on_new_user_info">We have generated a customer number which can be used to log in, please write this down</string>
+    <string name="register_success">Successfully registered</string>
+
+    <string name="on_new_user_info">We have generated a customer number which can be used to log in, please write this down
+        \nCustomer number: %1$s
+        \n---Other login methods:---
+        \nusername: %2$s
+        \nemail: %3$s</string>
 
     <!-- Strings for creating new Address: -->
     <string name="address_type">Address type <font color='#B3B71C1C'>*</font></string>
@@ -32,4 +38,7 @@
     <string name="zip_code">Zip code <font color='#B3B71C1C'>*</font></string>
     <string name="other_info">Other info</string>
     <string name="add_address">Add address</string>
+
+    <string name="address_success">Successfully added address</string>
+    <string name="on_added_address">Another address can be added later in settings.</string>
 </resources>

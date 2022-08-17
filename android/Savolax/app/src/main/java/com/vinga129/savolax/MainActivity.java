@@ -18,13 +18,11 @@ import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -32,6 +30,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.vinga129.savolax.base.NavigationActivity;
 import com.vinga129.savolax.databinding.ActivityMainBinding;
 import com.vinga129.savolax.retrofit.Controller;
 import com.vinga129.savolax.ui.add_post.PostLocationViewModel;
@@ -39,16 +38,18 @@ import com.vinga129.savolax.ui.home.HomeFragmentDirections;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends NavigationActivity {
 
     private static final int PERMISSION_REQUEST_CAMERA = 0;
 
     private ActivityMainBinding binding;
     private static WeakReference<Context> sContextReference;
-    private NavController navController;
     private ActionMode actionMode;
     private FusedLocationProviderClient fusedLocationClient;
     private Geocoder geocoder;
@@ -58,12 +59,24 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNav;
     private final List<Integer> bottomNavItems = new ArrayList<>();
 
+    private final static Map<Integer, Integer> navItemDestinationMap = Collections.unmodifiableMap(
+            new HashMap<Integer, Integer>() {
+                {
+                    put(R.id.navigation_home, R.id.start_home);
+                    put(R.id.navigation_products, R.id.start_products);
+                    put(R.id.navigation_add_post, R.id.start_add_post);
+                    put(R.id.navigation_more, R.id.start_more);
+                    put(R.id.nested_profile, R.id.start_profile);
+                }
+            });
+
     @Override
     protected void onStart() {
         super.onStart();
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -80,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = binding.navView;
         for (int i = 0; i < bottomNav.getMenu().size(); i++)
             bottomNavItems.add(bottomNav.getMenu().getItem(i).getItemId());
-        //NavigationUI.setupWithNavController(bottomNav, navController);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -117,29 +129,8 @@ public class MainActivity extends AppCompatActivity {
         );
 
         bottomNav.setOnItemSelectedListener(item -> {
-            //uncheckAllItems();
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    navController.navigate(R.id.start_home);
-                    break;
-                case R.id.navigation_products:
-                    //setBottomNavItem(1, R.id.start_products);
-                    navController.navigate(R.id.start_products);
-                    break;
-                case R.id.navigation_add_post:
-                    //setBottomNavItem(2, R.id.start_add_post);
-                    navController.navigate(R.id.start_add_post);
-                    break;
-                case R.id.navigation_more:
-                    navController.navigate(R.id.start_more);
-                    break;
-                case R.id.nested_profile:
-                    navController.navigate(R.id.start_profile);
-                    // break;
-            }
-            System.out.println(item.getItemId());
-            System.out.println(R.id.navigation_home);
-            return false;
+            navController.navigate(navItemDestinationMap.get(item.getItemId()));
+            return true;
         });
 
         // check if address already added, if not then go to AddAddressFragment
@@ -176,9 +167,7 @@ public class MainActivity extends AppCompatActivity {
         return sContextReference.get();
     }
 
-    public NavController getNavController() {
-        return navController;
-    }
+
 
     @Override
     public void onBackPressed() {
@@ -281,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCamera() {
-        //navController.navigate(R.id.to_camera);
         navController.navigate(MobileNavigationDirections.toCamera());
     }
 
@@ -294,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
                     actionMode.finish();
                     actionMode = null;
                 });
-        //int viewId=Resources.getSystem().getIdentifier( “action_mode_close_button”, “id”,”android”);
     }
 
     public void setCallBackWithTitle(ActionMode.Callback callback, String title) {

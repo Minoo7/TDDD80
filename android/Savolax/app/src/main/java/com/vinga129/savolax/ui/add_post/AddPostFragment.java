@@ -22,7 +22,6 @@ import com.vinga129.savolax.retrofit.rest_objects.Post;
 import com.vinga129.savolax.retrofit.rest_objects.groups;
 import com.vinga129.savolax.retrofit.rest_objects.groups.PostTypes;
 import java.io.IOException;
-import java.util.Arrays;
 
 @AnnotationContentId(contentId = R.layout.fragment_add_post)
 public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> {
@@ -43,6 +42,9 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         addImageViewModel = new ViewModelProvider(requireActivity()).get(AddImageViewModel.class);
         addImageBinding.setViewmodel(addImageViewModel);
         binding.setPostTypes(groups.enumToStrings(PostTypes.values(), PostTypes::name));
+        binding.setFragment(this);
+
+        binding.setLifecycleOwner(this);
 
         PostLocationViewModel postLocationViewModel = new ViewModelProvider(requireActivity())
                 .get(PostLocationViewModel.class);
@@ -59,11 +61,7 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
 
         // Set camera button to open camera fragment
         addImageBinding.buttonTakePhoto.setOnClickListener(
-                __ -> {
-                    addImageViewModel.setDestinationForResult(R.id.to_add_post);
-                    ((MainActivity) activity).requestCameraPermission();
-                }
-        );
+                __ -> ((MainActivity) activity).requestCameraPermission());
 
         // Initialize result launcher for adding photos from camera roll
         ActivityResultLauncher<String> mGetContent = registerForActivityResult(new GetContent(),
@@ -73,8 +71,8 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                         ContentResolver contentResolver = activity.getContentResolver();
                         ImageDecoder.Source source = ImageDecoder.createSource(contentResolver, uri);
                         Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+                        navController.navigate(R.id.start_add_post);
                         addImageViewModel.setCapturedImage(bitmap);
-                        addImageViewModel.showImageResult();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -85,31 +83,12 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
 
         // Reset view
         addImageBinding.buttonCloseImageResult.setOnClickListener(
-                __ -> addImageViewModel.showAddPhoto());
-
-        // Initialize form
-        formViews.addAll(Arrays
-                .asList(binding.fieldTitle, binding.fieldPostType, binding.fieldPostType, binding.fieldBio));
-
-        binding.buttonPublish.setOnClickListener(__ -> {
-            try {
-                Post post = formDataToClass(Post.class);
-                if (currentLocation != null && !currentLocation.isEmpty())
-                    post.setLocation(currentLocation);
-                if (imageSelected)
-                    addPostViewModel.addPostWithImage(addImageViewModel.getCapturedImage().getValue(), post);
-                else
-                    addPostViewModel.addPost(post);
-                setButtonAvailability(binding.buttonPublish, false);
-                binding.loading.setVisibility(View.VISIBLE);
-            } catch (IOException e) {
-                makeWarning(requireContext(), binding.container, e.getMessage());
-            }
-        });
+                __ -> {
+                    System.out.println("she on it");
+                    addImageViewModel.removeImage();
+                });
 
         addPostViewModel.getAddPostResult().observe(getViewLifecycleOwner(), addPostResult -> {
-            if (addPostResult == null)
-                return;
             if (addPostResult.getError() != null && addPostResult.getError().getErrorMap() != null) {
                 showErrors(addPostResult.getError().getErrorMap());
                 setButtonAvailability(binding.buttonPublish, true);
@@ -122,6 +101,22 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         });
     }
 
+    public void publish() {
+        try {
+            Post post = formDataToClass(binding.container, Post.class);
+            if (currentLocation != null && !currentLocation.isEmpty())
+                post.setLocation(currentLocation);
+            if (imageSelected)
+                addPostViewModel.addPostWithImage(addImageViewModel.getCapturedImage().getValue(), post);
+            else
+                addPostViewModel.addPost(post);
+            setButtonAvailability(binding.buttonPublish, false);
+            binding.loading.setVisibility(View.VISIBLE);
+        } catch (IOException e) {
+            makeWarning(requireContext(), binding.container, e.getMessage());
+        }
+    }
+
     private void setButtonAvailability(Button button, boolean value) {
         if (value) {
             button.setClickable(true);
@@ -132,8 +127,9 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
         }
     }
 
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        addImageViewModel.showAddPhoto();
+        addImageViewModel.removeImage();
     }
 }

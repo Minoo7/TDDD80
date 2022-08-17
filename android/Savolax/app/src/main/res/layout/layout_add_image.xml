@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="@{viewmodel.addPhotoVisibility}">
+                android:visibility="@{viewmodel.capturedImage == null}">
 
                 <Button
                     android:id="@+id/button_take_photo"
@@ -60,7 +60,7 @@
                 android:id="@+id/layout_image_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{viewmodel.imageResultVisibility}">
+                android:visibility="@{viewmodel.capturedImage != null}">
 
                 <ImageView
                     android:id="@+id/image_selected"

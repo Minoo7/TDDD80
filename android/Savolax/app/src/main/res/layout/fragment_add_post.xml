@@ -8,10 +8,14 @@
         <variable
             name="postTypes"
             type="String[]" />
-        
+
         <variable
             name="locationViewModel"
             type="com.vinga129.savolax.ui.add_post.PostLocationViewModel" />
+
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.add_post.AddPostFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,6 +126,7 @@
             android:layout_height="wrap_content"
             android:text="@string/publish"
             android:textSize="24sp"
+            android:onClick="@{() -> fragment.publish()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

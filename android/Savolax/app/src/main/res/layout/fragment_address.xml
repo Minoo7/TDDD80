@@ -8,6 +8,10 @@
         <variable
             name="viewmodel"
             type="com.vinga129.savolax.ui.address.AddressViewModel" />
+        
+        <variable
+            name="fragment"
+            type="com.vinga129.savolax.ui.address.AddressFragment" />
 
         <variable
             name="AddressTypes"
@@ -151,6 +155,7 @@
             android:layout_marginStart="48dp"
             android:enabled="true"
             android:text="@string/add_address"
+            android:onClick="@{() -> fragment.addAddress()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

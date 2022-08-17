@@ -2,13 +2,10 @@ package com.vinga129.savolax.ui.login;
 
 import static com.vinga129.savolax.util.HelperUtil.makeWarning;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
-import android.widget.Toast;
-import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.vinga129.savolax.MainActivity;
@@ -27,24 +24,20 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
 
     private LoginViewModel loginViewModel;
 
-    @SuppressLint("SetTextI18n")
-    @SuppressWarnings({"rawtypes", "ConstantConditions"})
     @Override
     protected void initFragment() {
         loginViewModel = new ViewModelProvider(this)
                 .get(LoginViewModel.class);
+        binding.setFragment(this);
+
+        SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
+        String token = sharedPref.getString("JWT_KEY", null);
+        if (token != null)
+            attemptLoginWithToken(token);
 
         formViews.addAll(Arrays.asList(binding.username, binding.password));
 
-        binding.setFragment(this);
-
-        // temp
-        //binding.username.getEditText().setText("rafeb3233");
-        //binding.password.getEditText().setText("goodPass123");
-
         loginViewModel.getLoginResult().observe(getViewLifecycleOwner(), loginResult -> {
-            if (loginResult == null)
-                return;
             binding.loading.setVisibility(View.GONE);
             if (loginResult.getError() != null && loginResult.getError().getErrorMap() != null)
                 showErrors(loginResult.getError().getErrorMap());
@@ -52,13 +45,12 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
                 makeWarning(requireContext(), binding.container, loginResult.getError().getError());
             if (loginResult.getSuccess() != null) {
                 // Save JWT Token
-                SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("JWT_KEY", loginResult.getSuccess().getJWT_KEY());
+                editor.putString("JWT_KEY", loginResult.getSuccess().getToken());
                 editor.apply();
 
                 // Set current user
-                UserRepository.getINSTANCE().setUser(new User(loginResult.getSuccess().getUserId()));
+                UserRepository.getINSTANCE().setUser(new User(loginResult.getSuccess().getId()));
 
                 // Go to MainActivity
                 Intent intent = new Intent(requireActivity(), MainActivity.class);
@@ -70,22 +62,12 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
         });
     }
 
-    private void showLoginFailed(@StringRes Integer errorString) {
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(
-                    getContext().getApplicationContext(),
-                    errorString,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void login() {
         try {
-            System.out.println("yuupp");
             binding.loading.setVisibility(View.VISIBLE);
             Class<Map<String, String>> clazz = (Class) Map.class;
-            loginViewModel.login(formDataToClass(clazz));
+            loginViewModel.login(formDataToClass(binding.container, clazz));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,9 +77,8 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
         Navigation.findNavController(binding.container).navigate(LoginFragmentDirections.toRegisterFragment());
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    private void attemptLoginWithToken(String token) {
+        binding.loading.setVisibility(View.VISIBLE);
+        loginViewModel.loginWithToken(token);
     }
 }

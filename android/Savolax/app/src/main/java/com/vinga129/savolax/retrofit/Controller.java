@@ -19,7 +19,7 @@ public class Controller {
     private static NoAuthAPI noAuthAPI;
     private static RestAPI restAPI;
     // private static final String BASE_URL = "https://tddd80-2022.herokuapp.com/";
-    public static final String BASE_URL = "http://10.0.1.7:5080/";
+    public static final String BASE_URL = "http://10.0.0.7:5080/";
     //public static final String BASE_URL = "http://192.168.10.172:5080/";
 
     private Controller() {

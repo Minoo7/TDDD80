@@ -34,7 +34,11 @@ def allowed_file(filename):
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload):
 	jti = jwt_payload['jti']
-	token = session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+	return check_if_token_revoked_manually(jti)
+
+
+def check_if_token_revoked_manually(token):
+	token = session.query(TokenBlocklist.id).filter_by(jti=token).scalar()
 	return token is not None
 
 
@@ -42,6 +46,7 @@ def check_if_token_revoked(jwt_header, jwt_payload):
 @require_method_params(POST=["login_method_name", "password"])
 def login():
 	if request.method == POST:
+
 		data = request.get_json()
 		login_method_name = data.get("login_method_name")
 		password = data.get("password")
@@ -61,7 +66,15 @@ def login():
 					   token=create_access_token(identity=existing_customer.id), first_login=first_login), 200
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/login/token", methods=[POST])
+@jwt_required()
+def login_with_token():
+	if request.method == POST:
+		return jsonify(message="Successfully logged in", id=get_jwt_identity(),
+					   token=create_access_token(identity=get_jwt_identity()), first_login=False), 200
+
+
+@app.route("/logout", methods=[POST])
 @jwt_required()
 def modify_token():
 	jti = get_jwt()['jti']
@@ -199,6 +212,7 @@ def unfollow(customer_id, follow_id):
 		# find(Customer, customer_id).unfollow(find(Customer, follow_id))
 		session.commit()
 		return jsonify(message=f"Successfully unfollowed user: ({follow_id})"), 200
+
 
 """@app.route("/customers/<int:customer_id_to_unfollow>/following", methods=[DELETE])
 @jwt_required()

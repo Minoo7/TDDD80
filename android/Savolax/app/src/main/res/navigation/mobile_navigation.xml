@@ -7,6 +7,10 @@
 
     <include app:graph="@navigation/camera_navigation" />
 
+    <action
+        android:id="@+id/moveToEdit"
+        app:destination="@id/navigation_editProfile" />
+
     <navigation
         android:id="@+id/nested_post"
         app:startDestination="@id/navigation_post">

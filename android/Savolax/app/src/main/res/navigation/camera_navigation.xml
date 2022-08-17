@@ -29,6 +29,6 @@
             app:destination="@id/navigation_add_post" />
         <action
             android:id="@+id/image_to_edit_profile"
-            app:destination="@id/nested_profile" />
+            app:destination="@id/navigation_editProfile" />
     </fragment>
 </navigation>
