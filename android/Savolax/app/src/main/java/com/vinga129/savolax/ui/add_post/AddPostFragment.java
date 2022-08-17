@@ -71,7 +71,6 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
                         ContentResolver contentResolver = activity.getContentResolver();
                         ImageDecoder.Source source = ImageDecoder.createSource(contentResolver, uri);
                         Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-                        navController.navigate(R.id.start_add_post);
                         addImageViewModel.setCapturedImage(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -83,10 +82,7 @@ public class AddPostFragment extends FormFragment<Post, FragmentAddPostBinding> 
 
         // Reset view
         addImageBinding.buttonCloseImageResult.setOnClickListener(
-                __ -> {
-                    System.out.println("she on it");
-                    addImageViewModel.removeImage();
-                });
+                __ -> addImageViewModel.removeImage());
 
         addPostViewModel.getAddPostResult().observe(getViewLifecycleOwner(), addPostResult -> {
             if (addPostResult.getError() != null && addPostResult.getError().getErrorMap() != null) {

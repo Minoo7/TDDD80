@@ -3,6 +3,7 @@ package com.vinga129.savolax.ui.post;
 import com.vinga129.savolax.R;
 import com.vinga129.savolax.base.AnnotationUtil.AnnotationContentId;
 import com.vinga129.savolax.base.BaseFragment;
+import com.vinga129.savolax.custom.CustomNullableIntegerArgument;
 import com.vinga129.savolax.databinding.FragmentPostBinding;
 import com.vinga129.savolax.retrofit.rest_objects.Comment;
 import com.vinga129.savolax.retrofit.rest_objects.Post;
@@ -29,10 +30,8 @@ public class PostFragment extends BaseFragment<FragmentPostBinding> {
     }
 
     public void navigateToPostUser() {
-        //fix multiple backstacks instead of popbackstack!
-        //navController.popBackStack();
-        //navController.navigate(moveToProfileAction(post.getCustomerId()));
-        navController.navigate(PostFragmentDirections.toPost());
+        navController.navigate(PostFragmentDirections.toPost()
+                .setCustomerId(new CustomNullableIntegerArgument(post.getCustomerId())));
     }
 
     @SuppressWarnings("ConstantConditions")

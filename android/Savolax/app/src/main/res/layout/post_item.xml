@@ -39,7 +39,7 @@
                         android:id="@+id/card_mini"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="#40FFFFFF"
+                        android:backgroundTint="#BFFFFFFF"
                         app:cardCornerRadius="5dp">
 
                         <RelativeLayout
@@ -107,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{post.content}"
                     android:textSize="23sp"
+                    android:visibility="gone"
                     tools:text="Post content" />
             </LinearLayout>
         </LinearLayout>

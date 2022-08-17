@@ -31,6 +31,7 @@ public class LoginFragment extends FormFragment<Map<String, String>, FragmentLog
         binding.setFragment(this);
 
         SharedPreferences sharedPref = requireContext().getSharedPreferences("API", Context.MODE_PRIVATE);
+        sharedPref.edit().remove("JWT_KEY").apply();
         String token = sharedPref.getString("JWT_KEY", null);
         if (token != null)
             attemptLoginWithToken(token);
